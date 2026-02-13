@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Add your package versions here -->
+    <!-- Example: <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" /> -->
+  </ItemGroup>
+</Project>
