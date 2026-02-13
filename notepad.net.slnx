@@ -1,8 +1,15 @@
 <Solution>
   <Folder Name="/.items/">
     <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
     <File Path="LICENSE" />
     <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/D20Tek.Notepad.Core/D20Tek.Notepad.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/D20Tek.Notepad.Core.UnitTests/D20Tek.Notepad.Core.UnitTests.csproj" />
   </Folder>
 </Solution>

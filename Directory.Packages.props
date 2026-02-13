@@ -2,9 +2,9 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
-
   <ItemGroup>
     <!-- Add your package versions here -->
-    <!-- Example: <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" /> -->
+    <!-- Test package versions here -->
+    <PackageVersion Include="MSTest" Version="4.1.0" />
   </ItemGroup>
 </Project>
