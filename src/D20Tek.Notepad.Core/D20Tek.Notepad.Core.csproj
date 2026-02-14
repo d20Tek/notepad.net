@@ -1,3 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="D20Tek.Notepad.Core.UnitTests" />
+  </ItemGroup>
+
 </Project>
