@@ -46,13 +46,13 @@ public sealed class SimpleTextStorage : ITextStorageStrategy
     private static List<TextLine> SplitIntoLines(string text)
     {
         if (string.IsNullOrEmpty(text)) return [TextLine.Empty];
-
+        
         var result = new List<TextLine>();
         foreach (var line in text.AsSpan().EnumerateLines())
         {
             result.Add(new TextLine(line.ToString()));
         }
 
-        return result.Count > 0 ? result : [TextLine.Empty];
+        return result;
     }
 }
