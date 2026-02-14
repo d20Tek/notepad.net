@@ -1,6 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <None Remove="test-files\utf16-be.txt" />
+    <None Remove="test-files\utf16-le.txt" />
+    <None Remove="test-files\utf8-no-bom.txt" />
+    <None Remove="test-files\utf8-with-bom.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="test-files\utf16-be.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="test-files\utf16-le.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="test-files\utf8-no-bom.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="test-files\utf8-with-bom.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MSTest" />
   </ItemGroup>
 

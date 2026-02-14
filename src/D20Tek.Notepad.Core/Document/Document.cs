@@ -17,10 +17,7 @@ internal sealed class Document : IDocument
 
     public int LineCount => _lines.Count;
 
-    public Document(IEnumerable<TextLine> lines)
-        : this(lines, Encoding.UTF8, LineEndingStyle.CRLF)
-    {
-    }
+    public Document(IEnumerable<TextLine> lines) : this(lines, Encoding.UTF8, LineEndingStyle.CRLF) { }
 
     public Document(IEnumerable<TextLine> lines, Encoding encoding, LineEndingStyle lineEndingStyle)
     {
