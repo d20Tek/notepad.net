@@ -68,6 +68,6 @@ internal sealed class Document : IDocument
 
     private void EnsureSingleLine()
     {
-        if (_lines.Count == 0) _lines.Add(new TextLine(string.Empty));
+        if (_lines.Count == 0) _lines.Add(TextLine.Empty);
     }
 }

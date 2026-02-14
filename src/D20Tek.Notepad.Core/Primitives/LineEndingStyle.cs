@@ -17,4 +17,12 @@ internal static class LineEndingStyleExtensions
         LineEndingStyle.CR => "\r",
         _ => string.Empty
     };
+
+    public static LineEndingStyle FromString(string text) => text switch
+    {
+        _ when text.Contains("\r\n", StringComparison.Ordinal) => LineEndingStyle.CRLF,
+        _ when text.Contains('\n') => LineEndingStyle.LF,
+        _ when text.Contains('\r') => LineEndingStyle.CR,
+        _ => LineEndingStyle.Unknown
+    };
 }
