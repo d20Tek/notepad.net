@@ -7,7 +7,7 @@ internal static class DocumentPositionExtensions
     public static TextPosition Normalize(this IDocument doc, TextPosition pos)
     {
         // clamp line
-        int line = Math.Clamp(pos.Line, 0, doc.LineCount - 1);
+        int line = Math.Clamp(pos.Line, 0, doc.Lines.Count - 1);
 
         // clamp column based on line length
         int maxColumn = doc.Lines[line].Content.Length;

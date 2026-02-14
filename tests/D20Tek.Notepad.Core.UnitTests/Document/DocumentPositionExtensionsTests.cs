@@ -1,6 +1,6 @@
 ﻿using D20Tek.Notepad.Core.Document;
 using D20Tek.Notepad.Core.Primitives;
-using D20Tek.Notepad.Core.UnitTests.Fakes;
+using Doc = D20Tek.Notepad.Core.Document;
 
 namespace D20Tek.Notepad.Core.UnitTests.Document;
 
@@ -11,7 +11,7 @@ public class DocumentPositionExtensionsTests
     public void Normalize_ValidPosition_ReturnsSamePosition()
     {
         // arrange
-        var doc = new FakeDocument("Hello", "World", "Test");
+        var doc = new Doc.Document([new("Hello"), new("World"), new("Test")]);
         var position = new TextPosition(1, 3);
 
         // act
@@ -25,7 +25,7 @@ public class DocumentPositionExtensionsTests
     public void Normalize_NegativeLine_ClampsToZero()
     {
         // arrange
-        var doc = new FakeDocument("Hello", "World");
+        var doc = new Doc.Document([new("Hello"), new("World")]);
         var position = new TextPosition(-5, 2);
 
         // act
@@ -39,7 +39,7 @@ public class DocumentPositionExtensionsTests
     public void Normalize_LineBeyondCount_ClampsToLastLine()
     {
         // arrange
-        var doc = new FakeDocument("Hello", "World", "Test");
+        var doc = new Doc.Document([new("Hello"), new("World"), new("Test")]);
         var position = new TextPosition(10, 2);
 
         // act
@@ -53,7 +53,7 @@ public class DocumentPositionExtensionsTests
     public void Normalize_NegativeColumn_ClampsToZero()
     {
         // arrange
-        var doc = new FakeDocument("Hello", "World");
+        var doc = new Doc.Document([new("Hello"), new("World")]);
         var position = new TextPosition(0, -3);
 
         // act
@@ -67,7 +67,7 @@ public class DocumentPositionExtensionsTests
     public void Normalize_ColumnBeyondLineLength_ClampsToLineEnd()
     {
         // arrange
-        var doc = new FakeDocument("Hello", "World");
+        var doc = new Doc.Document([new("Hello"), new("World")]);
         var position = new TextPosition(0, 100);
 
         // act
@@ -81,7 +81,7 @@ public class DocumentPositionExtensionsTests
     public void Normalize_BothOutOfBounds_ClampsBothValues()
     {
         // arrange
-        var doc = new FakeDocument("Hi", "There");
+        var doc = new Doc.Document([new("Hi"), new("There")]);
         var position = new TextPosition(50, 100);
 
         // act
@@ -96,7 +96,7 @@ public class DocumentPositionExtensionsTests
     public void Normalize_EmptyLine_ClampsColumnToZero()
     {
         // arrange
-        var doc = new FakeDocument("Hello", "", "World");
+        var doc = new Doc.Document([new("Hello"), new(""), new("World")]);
         var position = new TextPosition(1, 5);
 
         // act
@@ -111,7 +111,7 @@ public class DocumentPositionExtensionsTests
     public void Normalize_ColumnAtExactLineLength_ReturnsValidPosition()
     {
         // arrange
-        var doc = new FakeDocument("Hello");
+        var doc = new Doc.Document([new("Hello")]);
         var position = new TextPosition(0, 5);
 
         // act
