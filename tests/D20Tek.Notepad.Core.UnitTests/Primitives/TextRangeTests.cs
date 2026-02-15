@@ -1,6 +1,4 @@
-﻿using D20Tek.Notepad.Core.Primitives;
-
-namespace D20Tek.Notepad.Core.UnitTests.Primitives;
+﻿namespace D20Tek.Notepad.Core.UnitTests.Primitives;
 
 [TestClass]
 public class TextRangeTests

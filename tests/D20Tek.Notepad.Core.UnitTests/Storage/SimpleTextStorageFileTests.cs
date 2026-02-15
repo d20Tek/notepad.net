@@ -1,6 +1,4 @@
-﻿using D20Tek.Notepad.Core.Storage;
-
-namespace D20Tek.Notepad.Core.UnitTests.Storage;
+﻿namespace D20Tek.Notepad.Core.UnitTests.Storage;
 
 [TestClass]
 public class SimpleTextStorageFileTests

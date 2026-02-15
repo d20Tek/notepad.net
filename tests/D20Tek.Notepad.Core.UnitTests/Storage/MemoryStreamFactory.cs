@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace D20Tek.Notepad.Core.UnitTests.Storage;
+﻿namespace D20Tek.Notepad.Core.UnitTests.Storage;
 
 internal static class MemoryStreamFactory
 {

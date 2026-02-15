@@ -1,6 +1,3 @@
-using D20Tek.Notepad.Core.Storage;
-using System.Text;
-
 namespace D20Tek.Notepad.Core.UnitTests.Storage;
 
 [TestClass]

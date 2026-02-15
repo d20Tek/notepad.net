@@ -1,6 +1,4 @@
-﻿using System.IO.Pipes;
-
-namespace D20Tek.Notepad.Core.Primitives;
+﻿namespace D20Tek.Notepad.Core.Primitives;
 
 public sealed class TextLine(string content)
 {

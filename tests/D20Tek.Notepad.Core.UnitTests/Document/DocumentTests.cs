@@ -1,6 +1,4 @@
-﻿using D20Tek.Notepad.Core.Primitives;
-using System.Text;
-using Doc = D20Tek.Notepad.Core.Document;
+﻿using Doc = D20Tek.Notepad.Core.Document;
 
 namespace D20Tek.Notepad.Core.UnitTests.Document;
 
