@@ -13,4 +13,6 @@ public readonly record struct TextPosition(int Line, int Column) : IComparable<T
     public static TextPosition Min(TextPosition a, TextPosition b) => a.CompareTo(b) <= 0 ? a : b;
 
     public static TextPosition Max(TextPosition a, TextPosition b) => a.CompareTo(b) >= 0 ? a : b;
+
+    public TextPosition AdvanceColumn(int delta) => new(Line, Column + delta);
 }

@@ -178,4 +178,61 @@ public class TextPositionTests
         Assert.AreNotEqual(position1, position2);
         Assert.IsTrue(areNotEqual);
     }
+
+    [TestMethod]
+    public void AdvanceColumn_PositiveDelta_IncreasesColumn()
+    {
+        // arrange
+        var position = new TextPosition(5, 10);
+
+        // act
+        var result = position.AdvanceColumn(3);
+
+        // assert
+        Assert.AreEqual(5, result.Line);
+        Assert.AreEqual(13, result.Column);
+    }
+
+    [TestMethod]
+    public void AdvanceColumn_NegativeDelta_DecreasesColumn()
+    {
+        // arrange
+        var position = new TextPosition(5, 10);
+
+        // act
+        var result = position.AdvanceColumn(-4);
+
+        // assert
+        Assert.AreEqual(5, result.Line);
+        Assert.AreEqual(6, result.Column);
+    }
+
+    [TestMethod]
+    public void AdvanceColumn_ZeroDelta_ReturnsSameColumn()
+    {
+        // arrange
+        var position = new TextPosition(5, 10);
+
+        // act
+        var result = position.AdvanceColumn(0);
+
+        // assert
+        Assert.AreEqual(5, result.Line);
+        Assert.AreEqual(10, result.Column);
+    }
+
+    [TestMethod]
+    public void AdvanceColumn_DoesNotMutateOriginal()
+    {
+        // arrange
+        var original = new TextPosition(5, 10);
+
+        // act
+        var result = original.AdvanceColumn(5);
+
+        // assert
+        Assert.AreEqual(10, original.Column);
+        Assert.AreEqual(15, result.Column);
+        Assert.AreNotEqual(original, result);
+    }
 }
