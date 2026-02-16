@@ -1,4 +1,4 @@
-using D20Tek.Notepad.Core.History;
+﻿using D20Tek.Notepad.Core.History;
 using D20Tek.Notepad.Core.Primitives;
 
 namespace D20Tek.Notepad.Core.Editing;

@@ -1,4 +1,4 @@
-using D20Tek.Notepad.Core.Primitives;
+﻿using D20Tek.Notepad.Core.Primitives;
 
 namespace D20Tek.Notepad.Core.Editing;
 
