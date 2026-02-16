@@ -10,14 +10,9 @@ public class ReplaceRangeOperationTests
     {
         // arrange
         var doc = new Doc.Document([new("Hello World")]);
-        var session = new EditorSession(doc, new TextPosition(0, 0), new TextPosition(0, 0));
+        var session = new EditorSession(doc);
         var range = new TextRange(new TextPosition(0, 6), new TextPosition(0, 11));
-        var operation = new ReplaceRangeOperation(
-            range,
-            newText: "Universe",
-            oldText: "World",
-            oldCaret: new TextPosition(0, 6),
-            newCaret: new TextPosition(0, 14));
+        var operation = new ReplaceRangeOperation(range, "Universe", "World", new TextPosition(0, 6));
 
         // act
         operation.Redo(session);
@@ -33,14 +28,9 @@ public class ReplaceRangeOperationTests
     {
         // arrange
         var doc = new Doc.Document([new("Hello World")]);
-        var session = new EditorSession(doc, new TextPosition(0, 0), new TextPosition(0, 0));
+        var session = new EditorSession(doc);
         var range = new TextRange(new TextPosition(0, 6), new TextPosition(0, 11));
-        var operation = new ReplaceRangeOperation(
-            range,
-            newText: "Universe",
-            oldText: "World",
-            oldCaret: new TextPosition(0, 6),
-            newCaret: new TextPosition(0, 14));
+        var operation = new ReplaceRangeOperation(range, "Universe", "World", new TextPosition(0, 6));
         operation.Redo(session);
 
         // act
@@ -57,14 +47,9 @@ public class ReplaceRangeOperationTests
     {
         // arrange
         var doc = new Doc.Document([new("HelloWorld")]);
-        var session = new EditorSession(doc, new TextPosition(0, 5), new TextPosition(0, 5));
+        var session = new EditorSession(doc);
         var range = new TextRange(new TextPosition(0, 5), new TextPosition(0, 5));
-        var operation = new ReplaceRangeOperation(
-            range,
-            newText: " ",
-            oldText: "",
-            oldCaret: new TextPosition(0, 5),
-            newCaret: new TextPosition(0, 6));
+        var operation = new ReplaceRangeOperation(range, " ", "", new TextPosition(0, 5));
 
         // act
         operation.Redo(session);
@@ -79,14 +64,9 @@ public class ReplaceRangeOperationTests
     {
         // arrange
         var doc = new Doc.Document([new("HelloWorld")]);
-        var session = new EditorSession(doc, new TextPosition(0, 5), new TextPosition(0, 5));
+        var session = new EditorSession(doc);
         var range = new TextRange(new TextPosition(0, 5), new TextPosition(0, 5));
-        var operation = new ReplaceRangeOperation(
-            range,
-            newText: " ",
-            oldText: "",
-            oldCaret: new TextPosition(0, 5),
-            newCaret: new TextPosition(0, 6));
+        var operation = new ReplaceRangeOperation(range, " ", "", new TextPosition(0, 5));
         operation.Redo(session);
 
         // act
@@ -102,14 +82,9 @@ public class ReplaceRangeOperationTests
     {
         // arrange
         var doc = new Doc.Document([new("Hello World")]);
-        var session = new EditorSession(doc, new TextPosition(0, 5), new TextPosition(0, 5));
+        var session = new EditorSession(doc);
         var range = new TextRange(new TextPosition(0, 5), new TextPosition(0, 11));
-        var operation = new ReplaceRangeOperation(
-            range,
-            newText: "",
-            oldText: " World",
-            oldCaret: new TextPosition(0, 5),
-            newCaret: new TextPosition(0, 5));
+        var operation = new ReplaceRangeOperation(range, "", " World", new TextPosition(0, 5));
 
         // act
         operation.Redo(session);
@@ -124,14 +99,9 @@ public class ReplaceRangeOperationTests
     {
         // arrange
         var doc = new Doc.Document([new("Hello World")]);
-        var session = new EditorSession(doc, new TextPosition(0, 5), new TextPosition(0, 5));
+        var session = new EditorSession(doc);
         var range = new TextRange(new TextPosition(0, 5), new TextPosition(0, 11));
-        var operation = new ReplaceRangeOperation(
-            range,
-            newText: "",
-            oldText: " World",
-            oldCaret: new TextPosition(0, 5),
-            newCaret: new TextPosition(0, 5));
+        var operation = new ReplaceRangeOperation(range, "", " World", new TextPosition(0, 5));
         operation.Redo(session);
 
         // act
@@ -147,14 +117,9 @@ public class ReplaceRangeOperationTests
     {
         // arrange
         var doc = new Doc.Document([new("Hello World")]);
-        var session = new EditorSession(doc, new TextPosition(0, 0), new TextPosition(0, 0));
+        var session = new EditorSession(doc);
         var range = new TextRange(new TextPosition(0, 0), new TextPosition(0, 5));
-        var operation = new ReplaceRangeOperation(
-            range,
-            newText: "Hi",
-            oldText: "Hello",
-            oldCaret: new TextPosition(0, 0),
-            newCaret: new TextPosition(0, 2));
+        var operation = new ReplaceRangeOperation(range, "Hi", "Hello", new TextPosition(0, 0));
 
         // act & assert - first redo
         operation.Redo(session);
@@ -178,14 +143,9 @@ public class ReplaceRangeOperationTests
     {
         // arrange
         var doc = new Doc.Document([new("Hello World")]);
-        var session = new EditorSession(doc, new TextPosition(0, 0), new TextPosition(0, 0));
+        var session = new EditorSession(doc);
         var range = new TextRange(new TextPosition(0, 5), new TextPosition(0, 11));
-        var operation = new ReplaceRangeOperation(
-            range,
-            newText: null!,
-            oldText: " World",
-            oldCaret: new TextPosition(0, 5),
-            newCaret: new TextPosition(0, 5));
+        var operation = new ReplaceRangeOperation(range, null!, " World", new TextPosition(0, 5));
 
         // act
         operation.Redo(session);
@@ -199,14 +159,9 @@ public class ReplaceRangeOperationTests
     {
         // arrange
         var doc = new Doc.Document([new("Hello")]);
-        var session = new EditorSession(doc, new TextPosition(0, 5), new TextPosition(0, 5));
+        var session = new EditorSession(doc);
         var range = new TextRange(new TextPosition(0, 5), new TextPosition(0, 5));
-        var operation = new ReplaceRangeOperation(
-            range,
-            newText: " World",
-            oldText: null!,
-            oldCaret: new TextPosition(0, 5),
-            newCaret: new TextPosition(0, 11));
+        var operation = new ReplaceRangeOperation(range, " World", null!, new TextPosition(0, 5));
         operation.Redo(session);
 
         // act
@@ -214,5 +169,80 @@ public class ReplaceRangeOperationTests
 
         // assert
         Assert.AreEqual("Hello", doc.Lines[0].Content);
+    }
+
+    [TestMethod]
+    public void Redo_InsertNewLine_InsertsLineBreakAndUpdatesCaret()
+    {
+        // arrange
+        var doc = new Doc.Document([new("HelloWorld")]);
+        var session = new EditorSession(doc);
+        var range = new TextRange(new TextPosition(0, 5), new TextPosition(0, 5));
+        var operation = new ReplaceRangeOperation(range, Environment.NewLine, "", new TextPosition(0, 5));
+
+        // act
+        operation.Redo(session);
+
+        // assert
+        Assert.HasCount(2, doc.Lines);
+        Assert.AreEqual("Hello", doc.Lines[0].Content);
+        Assert.AreEqual("World", doc.Lines[1].Content);
+        Assert.AreEqual(new TextPosition(1, 0), session.Caret);
+    }
+
+    [TestMethod]
+    public void Undo_AfterInsertNewLine_RestoresSingleLine()
+    {
+        // arrange
+        var doc = new Doc.Document([new("HelloWorld")]);
+        var session = new EditorSession(doc);
+        var range = new TextRange(new TextPosition(0, 5), new TextPosition(0, 5));
+        var operation = new ReplaceRangeOperation(range, Environment.NewLine, "", new TextPosition(0, 5));
+        operation.Redo(session);
+
+        // act
+        operation.Undo(session);
+
+        // assert
+        Assert.AreEqual(1, doc.Lines.Count);
+        Assert.AreEqual("HelloWorld", doc.Lines[0].Content);
+        Assert.AreEqual(new TextPosition(0, 5), session.Caret);
+    }
+
+    [TestMethod]
+    public void Redo_InsertMultiLineText_InsertsAllLinesAndUpdatesCaret()
+    {
+        // arrange
+        var doc = new Doc.Document([new("Start End")]);
+        var session = new EditorSession(doc);
+        var range = new TextRange(new TextPosition(0, 6), new TextPosition(0, 6));
+        var multiLineText = $"Line1{Environment.NewLine}Line2{Environment.NewLine}Line3";
+        var operation = new ReplaceRangeOperation(range, multiLineText, "", new TextPosition(0, 6));
+
+        // act
+        operation.Redo(session);
+
+        // assert
+        Assert.AreEqual(3, doc.Lines.Count);
+        Assert.AreEqual(new TextPosition(2, 5), session.Caret); // "Line3" has 5 characters
+    }
+
+    [TestMethod]
+    public void Undo_AfterInsertMultiLineText_RestoresOriginalContent()
+    {
+        // arrange
+        var doc = new Doc.Document([new("Start End")]);
+        var session = new EditorSession(doc);
+        var range = new TextRange(new TextPosition(0, 6), new TextPosition(0, 6));
+        var multiLineText = $"Line1{Environment.NewLine}Line2";
+        var operation = new ReplaceRangeOperation(range, multiLineText, "", new TextPosition(0, 6));
+        operation.Redo(session);
+
+        // act
+        operation.Undo(session);
+
+        // assert
+        Assert.AreEqual(1, doc.Lines.Count);
+        Assert.AreEqual("Start End", doc.Lines[0].Content);
     }
 }

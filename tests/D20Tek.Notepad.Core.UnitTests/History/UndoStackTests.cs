@@ -27,8 +27,7 @@ public partial class UndoStackTests
         // arrange
         var stack = new UndoStack();
         var (session, op1) = CreateTestOperation("Hello", " World");
-        var op2 = new InsertTextOperation(
-            new TextPosition(0, 11), "!", string.Empty, new TextPosition(0, 11), new TextPosition(0, 12));
+        var op2 = new InsertTextOperation(new TextPosition(0, 11), "!", string.Empty, new TextPosition(0, 11));
 
         stack.Push(op1);
         op1.Redo(session);
@@ -66,7 +65,7 @@ public partial class UndoStackTests
         var stack = new UndoStack();
         var lines = new[] { new TextLine("Hello") };
         var document = new Doc.Document(lines);
-        var session = new EditorSession(document, new TextPosition(0, 5), new TextPosition(0, 5));
+        var session = new EditorSession(document);
 
         // act
         stack.Undo(session);
@@ -116,7 +115,7 @@ public partial class UndoStackTests
         var stack = new UndoStack();
         var lines = new[] { new TextLine("Hello") };
         var document = new Doc.Document(lines);
-        var session = new EditorSession(document, new TextPosition(0, 5), new TextPosition(0, 5));
+        var session = new EditorSession(document);
 
         // act
         stack.Redo(session);
@@ -163,7 +162,7 @@ public partial class UndoStackTests
         var stack = new UndoStack();
         var lines = new[] { new TextLine("Hello") };
         var document = new Doc.Document(lines);
-        var session = new EditorSession(document, new TextPosition(0, 5), new TextPosition(0, 5));
+        var session = new EditorSession(document);
 
         // act
         stack.BeginGroup();
@@ -199,12 +198,10 @@ public partial class UndoStackTests
         var stack = new UndoStack();
         var lines = new[] { new TextLine("Hello") };
         var document = new Doc.Document(lines);
-        var session = new EditorSession(document, new TextPosition(0, 5), new TextPosition(0, 5));
+        var session = new EditorSession(document);
 
-        var op1 = new InsertTextOperation(
-            new TextPosition(0, 5), " World", string.Empty, new TextPosition(0, 5), new TextPosition(0, 11));
-        var op2 = new InsertTextOperation(
-            new TextPosition(0, 11), "!", string.Empty, new TextPosition(0, 11), new TextPosition(0, 12));
+        var op1 = new InsertTextOperation(new TextPosition(0, 5), " World", string.Empty, new TextPosition(0, 5));
+        var op2 = new InsertTextOperation(new TextPosition(0, 11), "!", string.Empty, new TextPosition(0, 11));
 
         stack.BeginGroup();
         stack.Push(op1);
@@ -227,14 +224,11 @@ public partial class UndoStackTests
         var stack = new UndoStack();
         var lines = new[] { new TextLine("Test") };
         var document = new Doc.Document(lines);
-        var session = new EditorSession(document, new TextPosition(0, 4), new TextPosition(0, 4));
+        var session = new EditorSession(document);
 
-        var op1 = new InsertTextOperation(
-            new TextPosition(0, 4), "1", string.Empty, new TextPosition(0, 4), new TextPosition(0, 5));
-        var op2 = new InsertTextOperation(
-            new TextPosition(0, 5), "2", string.Empty, new TextPosition(0, 5), new TextPosition(0, 6));
-        var op3 = new InsertTextOperation(
-            new TextPosition(0, 6), "3", string.Empty, new TextPosition(0, 6), new TextPosition(0, 7));
+        var op1 = new InsertTextOperation(new TextPosition(0, 4), "1", string.Empty, new TextPosition(0, 4));
+        var op2 = new InsertTextOperation(new TextPosition(0, 5), "2", string.Empty, new TextPosition(0, 5));
+        var op3 = new InsertTextOperation(new TextPosition(0, 6), "3", string.Empty, new TextPosition(0, 6));
 
         stack.BeginGroup();
         stack.Push(op1);
@@ -259,12 +253,10 @@ public partial class UndoStackTests
         var stack = new UndoStack();
         var lines = new[] { new TextLine("A") };
         var document = new Doc.Document(lines);
-        var session = new EditorSession(document, new TextPosition(0, 1), new TextPosition(0, 1));
+        var session = new EditorSession(document);
 
-        var op1 = new InsertTextOperation(
-            new TextPosition(0, 1), "B", string.Empty, new TextPosition(0, 1), new TextPosition(0, 2));
-        var op2 = new InsertTextOperation(
-            new TextPosition(0, 2), "C", string.Empty, new TextPosition(0, 2), new TextPosition(0, 3));
+        var op1 = new InsertTextOperation(new TextPosition(0, 1), "B", string.Empty, new TextPosition(0, 1));
+        var op2 = new InsertTextOperation(new TextPosition(0, 2), "C", string.Empty, new TextPosition(0, 2));
 
         stack.Push(op1);
         op1.Redo(session);
@@ -289,9 +281,9 @@ public partial class UndoStackTests
         var document = new Doc.Document(lines);
         var position = new TextPosition(0, initialText.Length);
         var newCaret = new TextPosition(0, initialText.Length + textToInsert.Length);
-        var session = new EditorSession(document, position, position);
+        var session = new EditorSession(document);
 
-        var op = new InsertTextOperation(position, textToInsert, string.Empty, position, newCaret);
+        var op = new InsertTextOperation(position, textToInsert, string.Empty, position);
 
         return (session, op);
     }

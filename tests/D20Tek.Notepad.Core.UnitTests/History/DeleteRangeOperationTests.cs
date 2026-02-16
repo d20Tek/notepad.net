@@ -15,9 +15,9 @@ public class DeleteRangeOperationTests
         var oldText = " World";
         var oldCaret = new TextPosition(0, 11);
         var newCaret = new TextPosition(0, 5);
-        var session = new EditorSession(document, oldCaret, oldCaret);
+        var session = new EditorSession(document);
 
-        var operation = new DeleteRangeOperation(range, oldText, oldCaret, newCaret);
+        var operation = new DeleteRangeOperation(range, oldText, oldCaret);
 
         // act
         operation.Redo(session);
@@ -37,10 +37,9 @@ public class DeleteRangeOperationTests
         var range = new TextRange(new TextPosition(0, 5), new TextPosition(0, 11));
         var oldText = " World";
         var oldCaret = new TextPosition(0, 11);
-        var newCaret = new TextPosition(0, 5);
-        var session = new EditorSession(document, oldCaret, oldCaret);
+        var session = new EditorSession(document);
 
-        var operation = new DeleteRangeOperation(range, oldText, oldCaret, newCaret);
+        var operation = new DeleteRangeOperation(range, oldText, oldCaret);
         operation.Redo(session);
 
         // act
@@ -61,10 +60,9 @@ public class DeleteRangeOperationTests
         var range = new TextRange(new TextPosition(0, 0), new TextPosition(0, 6));
         var oldText = "Hello ";
         var oldCaret = new TextPosition(0, 6);
-        var newCaret = new TextPosition(0, 0);
-        var session = new EditorSession(document, oldCaret, oldCaret);
+        var session = new EditorSession(document);
 
-        var operation = new DeleteRangeOperation(range, oldText, oldCaret, newCaret);
+        var operation = new DeleteRangeOperation(range, oldText, oldCaret);
 
         // act
         operation.Redo(session);
@@ -82,10 +80,9 @@ public class DeleteRangeOperationTests
         var range = new TextRange(new TextPosition(0, 0), new TextPosition(0, 5));
         var oldText = "Hello";
         var oldCaret = new TextPosition(0, 5);
-        var newCaret = new TextPosition(0, 0);
-        var session = new EditorSession(document, oldCaret, oldCaret);
+        var session = new EditorSession(document);
 
-        var operation = new DeleteRangeOperation(range, oldText, oldCaret, newCaret);
+        var operation = new DeleteRangeOperation(range, oldText, oldCaret);
 
         // act
         operation.Redo(session);
@@ -103,10 +100,9 @@ public class DeleteRangeOperationTests
         var range = new TextRange(new TextPosition(0, 5), new TextPosition(0, 11));
         var oldText = " World";
         var oldCaret = new TextPosition(0, 11);
-        var newCaret = new TextPosition(0, 5);
-        var session = new EditorSession(document, oldCaret, oldCaret);
+        var session = new EditorSession(document);
 
-        var operation = new DeleteRangeOperation(range, oldText, oldCaret, newCaret);
+        var operation = new DeleteRangeOperation(range, oldText, oldCaret);
 
         // act & assert - multiple redo/undo cycles
         operation.Redo(session);
@@ -130,9 +126,9 @@ public class DeleteRangeOperationTests
         var document = new Doc.Document(lines);
         var position = new TextPosition(0, 3);
         var range = new TextRange(position, position);
-        var session = new EditorSession(document, position, position);
+        var session = new EditorSession(document);
 
-        var operation = new DeleteRangeOperation(range, string.Empty, position, position);
+        var operation = new DeleteRangeOperation(range, string.Empty, position);
 
         // act
         operation.Redo(session);

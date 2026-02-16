@@ -50,7 +50,8 @@ internal static class RangeEditingService
         {
             if (text[i] == '\n')
             {
-                string segment = text[start..i];
+                int end = (i > 0 && text[i - 1] == '\r') ? i - 1 : i;
+                string segment = text[start..end];
                 lines.Add(new TextLine(segment));
                 start = i + 1;
             }

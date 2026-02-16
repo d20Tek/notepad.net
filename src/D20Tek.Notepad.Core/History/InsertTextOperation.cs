@@ -7,10 +7,9 @@ internal sealed class InsertTextOperation(
     TextPosition position,
     string text,
     string oldText,
-    TextPosition oldCaret,
-    TextPosition newCaret) : IUndoableOperation
+    TextPosition oldCaret) : IUndoableOperation
 {
-    private readonly ReplaceRangeOperation _inner = new(new TextRange(position, position), text, oldText, oldCaret, newCaret);
+    private readonly ReplaceRangeOperation _inner = new(new TextRange(position, position), text, oldText, oldCaret);
 
     public void Undo(EditorSession session) => _inner.Undo(session);
 

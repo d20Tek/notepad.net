@@ -13,10 +13,9 @@ public class InsertTextOperationTests
         var document = new Doc.Document(lines);
         var position = new TextPosition(0, 5);
         var oldCaret = new TextPosition(0, 5);
-        var newCaret = new TextPosition(0, 6);
-        var session = new EditorSession(document, newCaret, newCaret);
+        var session = new EditorSession(document);
 
-        var operation = new InsertTextOperation(position, " ", string.Empty, oldCaret, newCaret);
+        var operation = new InsertTextOperation(position, " ", string.Empty, oldCaret);
 
         // act
         operation.Undo(session);
@@ -35,9 +34,9 @@ public class InsertTextOperationTests
         var position = new TextPosition(0, 5);
         var oldCaret = new TextPosition(0, 5);
         var newCaret = new TextPosition(0, 11);
-        var session = new EditorSession(document, oldCaret, oldCaret);
+        var session = new EditorSession(document);
 
-        var operation = new InsertTextOperation(position, " World", string.Empty, oldCaret, newCaret);
+        var operation = new InsertTextOperation(position, " World", string.Empty, oldCaret);
 
         // act
         operation.Redo(session);
@@ -56,10 +55,9 @@ public class InsertTextOperationTests
         var document = new Doc.Document(lines);
         var position = new TextPosition(0, 5);
         var oldCaret = new TextPosition(0, 5);
-        var newCaret = new TextPosition(0, 11);
-        var session = new EditorSession(document, oldCaret, oldCaret);
+        var session = new EditorSession(document);
 
-        var operation = new InsertTextOperation(position, " World", string.Empty, oldCaret, newCaret);
+        var operation = new InsertTextOperation(position, " World", string.Empty, oldCaret);
 
         // act
         operation.Redo(session);
@@ -78,10 +76,9 @@ public class InsertTextOperationTests
         var document = new Doc.Document(lines);
         var position = new TextPosition(0, 0);
         var oldCaret = new TextPosition(0, 0);
-        var newCaret = new TextPosition(0, 6);
-        var session = new EditorSession(document, oldCaret, oldCaret);
+        var session = new EditorSession(document);
 
-        var operation = new InsertTextOperation(position, "Hello ", string.Empty, oldCaret, newCaret);
+        var operation = new InsertTextOperation(position, "Hello ", string.Empty, oldCaret);
 
         // act
         operation.Redo(session);
@@ -98,9 +95,9 @@ public class InsertTextOperationTests
         var document = new Doc.Document(lines);
         var position = new TextPosition(0, 5);
         var caret = new TextPosition(0, 5);
-        var session = new EditorSession(document, caret, caret);
+        var session = new EditorSession(document);
 
-        var operation = new InsertTextOperation(position, string.Empty, string.Empty, caret, caret);
+        var operation = new InsertTextOperation(position, string.Empty, string.Empty, caret);
 
         // act
         operation.Redo(session);
