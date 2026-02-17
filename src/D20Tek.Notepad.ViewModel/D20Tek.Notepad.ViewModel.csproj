@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\D20Tek.Notepad.Core\D20Tek.Notepad.Core.csproj" />
+  </ItemGroup>
+
 </Project>
