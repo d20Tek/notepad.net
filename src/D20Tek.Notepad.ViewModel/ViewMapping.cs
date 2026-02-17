@@ -20,10 +20,11 @@ public static class ViewMapping
     public static SelectionViewRange DocumentSelectionToView(
         TextPosition anchor,
         TextPosition caret,
-        int firstVisibleLine)
+        int firstVisibleLine,
+        int visibleLineCount)
     {
-        var start = DocumentToView(anchor, firstVisibleLine);
-        var end = DocumentToView(caret, firstVisibleLine);
+        var start = ClampToViewport(anchor, firstVisibleLine, visibleLineCount);
+        var end = ClampToViewport(caret, firstVisibleLine, visibleLineCount);
         return new SelectionViewRange(start, end).Normalize();
     }
 

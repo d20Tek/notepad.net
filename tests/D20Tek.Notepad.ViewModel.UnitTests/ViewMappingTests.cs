@@ -117,9 +117,10 @@ public class ViewMappingTests
         var anchor = new TextPosition(10, 5);
         var caret = new TextPosition(12, 10);
         var firstVisibleLine = 10;
+        var visibleLineCount = 10;
 
         // act
-        var result = ViewMapping.DocumentSelectionToView(anchor, caret, firstVisibleLine);
+        var result = ViewMapping.DocumentSelectionToView(anchor, caret, firstVisibleLine, visibleLineCount);
 
         // assert
         Assert.AreEqual(new ViewPosition(0, 5), result.Start);
@@ -133,9 +134,10 @@ public class ViewMappingTests
         var anchor = new TextPosition(12, 10);
         var caret = new TextPosition(10, 5);
         var firstVisibleLine = 10;
+        var visibleLineCount = 10;
 
         // act
-        var result = ViewMapping.DocumentSelectionToView(anchor, caret, firstVisibleLine);
+        var result = ViewMapping.DocumentSelectionToView(anchor, caret, firstVisibleLine, visibleLineCount);
 
         // assert
         Assert.AreEqual(new ViewPosition(0, 5), result.Start);
@@ -148,9 +150,10 @@ public class ViewMappingTests
         // arrange
         var position = new TextPosition(10, 5);
         var firstVisibleLine = 10;
+        var visibleLineCount = 10;
 
         // act
-        var result = ViewMapping.DocumentSelectionToView(position, position, firstVisibleLine);
+        var result = ViewMapping.DocumentSelectionToView(position, position, firstVisibleLine, visibleLineCount);
 
         // assert
         Assert.IsTrue(result.IsEmpty);
@@ -165,9 +168,10 @@ public class ViewMappingTests
         var anchor = new TextPosition(10, 15);
         var caret = new TextPosition(10, 5);
         var firstVisibleLine = 10;
+        var visibleLineCount = 10;
 
         // act
-        var result = ViewMapping.DocumentSelectionToView(anchor, caret, firstVisibleLine);
+        var result = ViewMapping.DocumentSelectionToView(anchor, caret, firstVisibleLine, visibleLineCount);
 
         // assert
         Assert.AreEqual(new ViewPosition(0, 5), result.Start);
