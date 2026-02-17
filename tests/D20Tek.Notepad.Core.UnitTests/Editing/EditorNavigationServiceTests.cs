@@ -13,9 +13,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello"]);
         session.Caret = new TextPosition(0, 3);
         session.Anchor = new TextPosition(0, 3);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.MoveLeft(session);
+        navigation.MoveLeft(session);
 
         // assert
         Assert.AreEqual(new TextPosition(0, 2), session.Caret);
@@ -29,9 +30,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello"]);
         session.Caret = new TextPosition(0, 2);
         session.Anchor = new TextPosition(0, 2);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.MoveRight(session);
+        navigation.MoveRight(session);
 
         // assert
         Assert.AreEqual(new TextPosition(0, 3), session.Caret);
@@ -45,9 +47,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello", "World"]);
         session.Caret = new TextPosition(1, 2);
         session.Anchor = new TextPosition(1, 2);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.MoveUp(session);
+        navigation.MoveUp(session);
 
         // assert
         Assert.AreEqual(new TextPosition(0, 2), session.Caret);
@@ -61,9 +64,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello", "World"]);
         session.Caret = new TextPosition(0, 2);
         session.Anchor = new TextPosition(0, 2);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.MoveDown(session);
+        navigation.MoveDown(session);
 
         // assert
         Assert.AreEqual(new TextPosition(1, 2), session.Caret);
@@ -78,9 +82,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello World"]);
         session.Caret = new TextPosition(0, 6);
         session.Anchor = new TextPosition(0, 6);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.MoveToLineStart(session);
+        navigation.MoveToLineStart(session);
 
         // assert
         Assert.AreEqual(new TextPosition(0, 0), session.Caret);
@@ -94,9 +99,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello", "World"]);
         session.Caret = new TextPosition(1, 3);
         session.Anchor = new TextPosition(1, 3);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.MoveToLineStart(session);
+        navigation.MoveToLineStart(session);
 
         // assert
         Assert.AreEqual(new TextPosition(1, 0), session.Caret);
@@ -111,9 +117,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello World"]);
         session.Caret = new TextPosition(0, 3);
         session.Anchor = new TextPosition(0, 3);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.MoveToLineEnd(session);
+        navigation.MoveToLineEnd(session);
 
         // assert
         Assert.AreEqual(new TextPosition(0, 11), session.Caret);
@@ -127,9 +134,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello", "World"]);
         session.Caret = new TextPosition(1, 1);
         session.Anchor = new TextPosition(1, 1);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.MoveToLineEnd(session);
+        navigation.MoveToLineEnd(session);
 
         // assert
         Assert.AreEqual(new TextPosition(1, 5), session.Caret);
@@ -144,9 +152,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello", "World", "Test"]);
         session.Caret = new TextPosition(1, 3);
         session.Anchor = new TextPosition(1, 3);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.MoveToDocumentStart(session);
+        navigation.MoveToDocumentStart(session);
 
         // assert
         Assert.AreEqual(new TextPosition(0, 0), session.Caret);
@@ -160,9 +169,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello", "World"]);
         session.Caret = new TextPosition(1, 5);
         session.Anchor = new TextPosition(1, 5);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.MoveToDocumentStart(session);
+        navigation.MoveToDocumentStart(session);
 
         // assert
         Assert.AreEqual(new TextPosition(0, 0), session.Caret);
@@ -177,9 +187,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello", "World", "Test"]);
         session.Caret = new TextPosition(0, 2);
         session.Anchor = new TextPosition(0, 2);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.MoveToDocumentEnd(session);
+        navigation.MoveToDocumentEnd(session);
 
         // assert
         Assert.AreEqual(new TextPosition(2, 4), session.Caret);
@@ -193,9 +204,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello", "World"]);
         session.Caret = new TextPosition(0, 0);
         session.Anchor = new TextPosition(0, 0);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.MoveToDocumentEnd(session);
+        navigation.MoveToDocumentEnd(session);
 
         // assert
         Assert.AreEqual(new TextPosition(1, 5), session.Caret);
@@ -210,9 +222,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello"]);
         session.Caret = new TextPosition(0, 3);
         session.Anchor = new TextPosition(0, 3);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.ExtendLeft(session);
+        navigation.ExtendLeft(session);
 
         // assert
         Assert.AreEqual(new TextPosition(0, 2), session.Caret);
@@ -227,9 +240,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello"]);
         session.Anchor = new TextPosition(0, 4);
         session.Caret = new TextPosition(0, 2);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.ExtendLeft(session);
+        navigation.ExtendLeft(session);
 
         // assert
         Assert.AreEqual(new TextPosition(0, 1), session.Caret);
@@ -244,9 +258,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello"]);
         session.Caret = new TextPosition(0, 2);
         session.Anchor = new TextPosition(0, 2);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.ExtendRight(session);
+        navigation.ExtendRight(session);
 
         // assert
         Assert.AreEqual(new TextPosition(0, 3), session.Caret);
@@ -261,9 +276,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello"]);
         session.Anchor = new TextPosition(0, 0);
         session.Caret = new TextPosition(0, 3);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.ExtendRight(session);
+        navigation.ExtendRight(session);
 
         // assert
         Assert.AreEqual(new TextPosition(0, 4), session.Caret);
@@ -278,9 +294,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello", "World"]);
         session.Caret = new TextPosition(1, 2);
         session.Anchor = new TextPosition(1, 2);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.ExtendUp(session);
+        navigation.ExtendUp(session);
 
         // assert
         Assert.AreEqual(new TextPosition(0, 2), session.Caret);
@@ -296,9 +313,10 @@ public class EditorNavigationServiceTests
         var session = CreateSession(["Hello", "World"]);
         session.Caret = new TextPosition(0, 2);
         session.Anchor = new TextPosition(0, 2);
+        var navigation = new EditorNavigationService();
 
         // act
-        EditorNavigationService.ExtendDown(session);
+        navigation.ExtendDown(session);
 
         // assert
         Assert.AreEqual(new TextPosition(1, 2), session.Caret);
