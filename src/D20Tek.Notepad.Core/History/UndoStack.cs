@@ -56,14 +56,15 @@ public sealed class UndoStack
         var group = _currentGroup;
         _currentGroup = null;
 
-        if (group.Count == 0) return;
-
-        if (group.Count == 1)
+        switch (group.Count)
         {
-            Push(group[0]);
-            return;
+            case 0: break;
+            case 1:
+                Push(group[0]);
+                break;
+            default:
+                Push(new CompositeOperation(group));
+                break;
         }
-
-        Push(new CompositeOperation(group));
     }
 }

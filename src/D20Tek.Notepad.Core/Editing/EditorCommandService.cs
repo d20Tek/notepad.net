@@ -1,6 +1,4 @@
-﻿using D20Tek.Notepad.Core.Primitives;
-
-namespace D20Tek.Notepad.Core.Editing;
+﻿namespace D20Tek.Notepad.Core.Editing;
 
 public sealed class EditorCommandService(EditorSession session, EditorNavigationService navigation)
 {
