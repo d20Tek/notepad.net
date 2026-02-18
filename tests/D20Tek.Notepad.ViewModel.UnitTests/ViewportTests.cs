@@ -8,11 +8,12 @@ public class ViewportTests
     public void Constructor_WithDefaultParameters_SetsPropertiesToZero()
     {
         // act
-        var viewport = new Viewport();  
+        var viewport = new Viewport();
 
         // assert
         Assert.AreEqual(0, viewport.FirstVisibleLine);
         Assert.AreEqual(0, viewport.VisibleLineCount);
+        Assert.AreEqual(0, viewport.HorizontalOffset);
     }
 
     [TestMethod]
@@ -375,5 +376,205 @@ public class ViewportTests
 
         // assert
         Assert.IsFalse(result);
+    }
+
+    // HorizontalOffset tests
+    [TestMethod]
+    public void Constructor_InitializesHorizontalOffsetToZero()
+    {
+        // act
+        var viewport = new Viewport();
+
+        // assert
+        Assert.AreEqual(0, viewport.HorizontalOffset);
+    }
+
+    // ScrollColumns tests
+    [TestMethod]
+    public void ScrollColumns_WithPositiveDelta_IncreasesHorizontalOffset()
+    {
+        // arrange
+        var viewport = new Viewport();
+
+        // act
+        viewport.ScrollColumns(10);
+
+        // assert
+        Assert.AreEqual(10, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void ScrollColumns_WithNegativeDelta_DecreasesHorizontalOffset()
+    {
+        // arrange
+        var viewport = new Viewport();
+        viewport.ScrollColumns(20);
+
+        // act
+        viewport.ScrollColumns(-5);
+
+        // assert
+        Assert.AreEqual(15, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void ScrollColumns_ClampsToZero_WhenScrollingPastStart()
+    {
+        // arrange
+        var viewport = new Viewport();
+        viewport.ScrollColumns(5);
+
+        // act
+        viewport.ScrollColumns(-10);
+
+        // assert
+        Assert.AreEqual(0, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void ScrollColumns_WithZeroDelta_DoesNotChangeOffset()
+    {
+        // arrange
+        var viewport = new Viewport();
+        viewport.ScrollColumns(10);
+
+        // act
+        viewport.ScrollColumns(0);
+
+        // assert
+        Assert.AreEqual(10, viewport.HorizontalOffset);
+    }
+
+    // EnsureColumnVisible tests
+    [TestMethod]
+    public void EnsureColumnVisible_WhenColumnInViewport_DoesNotScroll()
+    {
+        // arrange
+        var viewport = new Viewport();
+        viewport.ScrollColumns(10);
+        var viewportWidth = 80;
+
+        // act
+        viewport.EnsureColumnVisible(50, viewportWidth);
+
+        // assert
+        Assert.AreEqual(10, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void EnsureColumnVisible_WhenColumnLeftOfViewport_ScrollsLeft()
+    {
+        // arrange
+        var viewport = new Viewport();
+        viewport.ScrollColumns(20);
+        var viewportWidth = 80;
+
+        // act
+        viewport.EnsureColumnVisible(10, viewportWidth);
+
+        // assert
+        Assert.AreEqual(10, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void EnsureColumnVisible_WhenColumnRightOfViewport_ScrollsRight()
+    {
+        // arrange
+        var viewport = new Viewport();
+        var viewportWidth = 80;
+
+        // act
+        viewport.EnsureColumnVisible(100, viewportWidth);
+
+        // assert
+        Assert.AreEqual(21, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void EnsureColumnVisible_WithZeroViewportWidth_DoesNotScroll()
+    {
+        // arrange
+        var viewport = new Viewport();
+        viewport.ScrollColumns(10);
+
+        // act
+        viewport.EnsureColumnVisible(50, 0);
+
+        // assert
+        Assert.AreEqual(10, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void EnsureColumnVisible_WithNegativeViewportWidth_DoesNotScroll()
+    {
+        // arrange
+        var viewport = new Viewport();
+        viewport.ScrollColumns(10);
+
+        // act
+        viewport.EnsureColumnVisible(50, -10);
+
+        // assert
+        Assert.AreEqual(10, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void EnsureColumnVisible_AtLeftEdge_DoesNotScroll()
+    {
+        // arrange
+        var viewport = new Viewport();
+        viewport.ScrollColumns(10);
+        var viewportWidth = 80;
+
+        // act
+        viewport.EnsureColumnVisible(10, viewportWidth);
+
+        // assert
+        Assert.AreEqual(10, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void EnsureColumnVisible_AtRightEdge_DoesNotScroll()
+    {
+        // arrange
+        var viewport = new Viewport();
+        viewport.ScrollColumns(10);
+        var viewportWidth = 80;
+
+        // act
+        viewport.EnsureColumnVisible(89, viewportWidth);
+
+        // assert
+        Assert.AreEqual(10, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void EnsureColumnVisible_JustPastRightEdge_ScrollsRight()
+    {
+        // arrange
+        var viewport = new Viewport();
+        viewport.ScrollColumns(10);
+        var viewportWidth = 80;
+
+        // act
+        viewport.EnsureColumnVisible(90, viewportWidth);
+
+        // assert
+        Assert.AreEqual(11, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void EnsureColumnVisible_WithColumnZero_ScrollsToStart()
+    {
+        // arrange
+        var viewport = new Viewport();
+        viewport.ScrollColumns(50);
+        var viewportWidth = 80;
+
+        // act
+        viewport.EnsureColumnVisible(0, viewportWidth);
+
+        // assert
+        Assert.AreEqual(0, viewport.HorizontalOffset);
     }
 }

@@ -6,6 +6,8 @@ public sealed class Viewport
 
     public int VisibleLineCount { get; private set; }
 
+    public int HorizontalOffset { get; private set; } = 0;
+
     public Viewport(int firstVisibleLine = 0, int visibleLineCount = 0)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(firstVisibleLine);
@@ -53,4 +55,28 @@ public sealed class Viewport
 
     public bool IsLineVisible(int lineIndex) =>
         lineIndex >= FirstVisibleLine && lineIndex < FirstVisibleLine + VisibleLineCount;
+
+    public void ScrollColumns(int delta)
+    {
+        int newOffset = HorizontalOffset + delta;
+        HorizontalOffset = Math.Max(0, newOffset);
+    }
+
+    public void EnsureColumnVisible(int caretColumn, int viewportWidth)
+    {
+        if (viewportWidth <= 0) return;
+        
+        int left = HorizontalOffset;
+        int right = HorizontalOffset + viewportWidth - 1;
+        if (caretColumn < left)
+        {
+            HorizontalOffset = caretColumn;
+        }
+        else if (caretColumn > right)
+        {
+            HorizontalOffset = caretColumn - viewportWidth + 1;
+        }
+
+        ArgumentOutOfRangeException.ThrowIfNegative(HorizontalOffset);
+    }
 }
