@@ -8,6 +8,7 @@ namespace D20Tek.Notepad.ViewModel.UnitTests;
 public class EditorViewModelHorizontalTests
 {
     private static readonly DocumentFactory _docFactory = new();
+    private readonly EditorNavigationService _nav = new();
 
     // SetViewportWidth tests
     [TestMethod]
@@ -15,7 +16,7 @@ public class EditorViewModelHorizontalTests
     {
         // arrange
         var session = CreateSession(["Hello World this is a long line"]);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
 
         // act
@@ -30,7 +31,7 @@ public class EditorViewModelHorizontalTests
     {
         // arrange
         var session = CreateSession(["Hello"]);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
 
         // act
@@ -47,7 +48,7 @@ public class EditorViewModelHorizontalTests
     {
         // arrange
         var session = CreateSession(["Hello World this is a long line"]);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
         viewModel.SetViewportWidth(10);
 
@@ -64,7 +65,7 @@ public class EditorViewModelHorizontalTests
     {
         // arrange
         var session = CreateSession(["Hello World"]);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
         viewModel.SetViewportWidth(5);
         viewModel.ScrollColumns(6);
@@ -82,7 +83,7 @@ public class EditorViewModelHorizontalTests
     {
         // arrange
         var session = CreateSession(["Hello"]);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
         viewModel.SetViewportWidth(5);
         viewModel.ScrollColumns(2);
@@ -101,7 +102,7 @@ public class EditorViewModelHorizontalTests
         // arrange
         var session = CreateSession(["Hello World this is a long line"]);
         session.Caret = new TextPosition(0, 5);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
         viewModel.SetViewportWidth(10);
         viewModel.ScrollColumns(10);
@@ -119,7 +120,7 @@ public class EditorViewModelHorizontalTests
         // arrange
         var session = CreateSession(["Hello World this is a long line"]);
         session.Caret = new TextPosition(0, 20);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
         viewModel.SetViewportWidth(10);
 
@@ -136,7 +137,7 @@ public class EditorViewModelHorizontalTests
         // arrange
         var session = CreateSession(["Hello World"]);
         session.Caret = new TextPosition(0, 5);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
         viewModel.SetViewportWidth(20);
 
@@ -153,7 +154,7 @@ public class EditorViewModelHorizontalTests
     {
         // arrange
         var session = CreateSession(["0123456789ABCDEF"]);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
         viewModel.SetViewportWidth(5);
         viewModel.ScrollColumns(5);
@@ -167,7 +168,7 @@ public class EditorViewModelHorizontalTests
     {
         // arrange
         var session = CreateSession(["Short"]);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
         viewModel.SetViewportWidth(10);
         viewModel.ScrollColumns(10);
@@ -181,7 +182,7 @@ public class EditorViewModelHorizontalTests
     {
         // arrange
         var session = CreateSession(["Hello"]);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
         viewModel.SetViewportWidth(10);
         viewModel.ScrollColumns(2);
@@ -197,7 +198,7 @@ public class EditorViewModelHorizontalTests
         var session = CreateSession(["Short"]);
         session.Caret = new TextPosition(0, 10); // Set caret beyond text to avoid negative column issue
         session.Anchor = new TextPosition(0, 10);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
         // Don't set viewport width (stays 0 = no limit)
         viewModel.ScrollColumns(10); // Scroll past the 5-character line
@@ -213,7 +214,7 @@ public class EditorViewModelHorizontalTests
         // arrange
         var session = CreateSession(["Hello World"]);
         session.Caret = new TextPosition(0, 8);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
         viewModel.SetViewportWidth(10);
         viewModel.ScrollColumns(3);
@@ -233,7 +234,7 @@ public class EditorViewModelHorizontalTests
         var session = CreateSession(["Hello World Test"]);
         session.Anchor = new TextPosition(0, 6);
         session.Caret = new TextPosition(0, 11);
-        var viewModel = new EditorViewModel(session);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
         viewModel.SetViewportHeight(1);
         viewModel.SetViewportWidth(20);
         viewModel.ScrollColumns(3);

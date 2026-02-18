@@ -3,12 +3,14 @@ using D20Tek.Notepad.Core.Editing;
 
 namespace D20Tek.Notepad.ViewModel;
 
-public sealed class EditorViewModel(EditorSession session)
+public sealed partial class EditorViewModel(EditorSession session, EditorCommandService commandService)
 {
     private List<ViewLine> _visibleLines = [];
     private int _viewportWidth;
 
     public EditorSession Session { get; } = session ?? throw new ArgumentNullException(nameof(session));
+
+    public EditorCommandService Commands { get; } = commandService ?? throw new ArgumentNullException(nameof(session));
 
     public Viewport Viewport { get; } = new Viewport();
 
