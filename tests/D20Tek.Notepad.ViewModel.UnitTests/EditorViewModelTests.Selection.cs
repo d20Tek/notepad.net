@@ -1,7 +1,3 @@
-using D20Tek.Notepad.Core.Document;
-using D20Tek.Notepad.Core.Editing;
-using D20Tek.Notepad.Core.Primitives;
-
 namespace D20Tek.Notepad.ViewModel.UnitTests;
 
 [TestClass]

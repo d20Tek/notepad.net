@@ -1,5 +1,3 @@
-using D20Tek.Notepad.Core.Primitives;
-
 namespace D20Tek.Notepad.ViewModel.UnitTests;
 
 [TestClass]
