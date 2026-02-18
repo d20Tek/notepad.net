@@ -1,5 +1,6 @@
 ﻿using D20Tek.Notepad.Core.Document;
 using D20Tek.Notepad.Core.Editing;
+using D20Tek.Notepad.ViewModel.Rendering;
 
 namespace D20Tek.Notepad.ViewModel;
 
@@ -7,6 +8,10 @@ public sealed partial class EditorViewModel(EditorSession session, EditorCommand
 {
     private List<ViewLine> _visibleLines = [];
     private int _viewportWidth;
+
+    public event Action? ViewChanged;
+    public event Action<ViewPosition>? CaretMoved;
+    public event Action<SelectionViewRange?>? SelectionChanged;
 
     public EditorSession Session { get; } = session ?? throw new ArgumentNullException(nameof(session));
 
@@ -40,12 +45,37 @@ public sealed partial class EditorViewModel(EditorSession session, EditorCommand
 
     public void SetViewportWidth(int width) => SetWithRefresh(() => _viewportWidth = Math.Max(0, width));
 
+    public void RenderFrame(IEditorRenderer renderer)
+    {
+        renderer.BeginFrame(this);
+
+        for (int i = 0; i < VisibleLines.Count; i++)
+        {
+            var line = VisibleLines[i];
+            var segment = GetSelectionSegmentForLine(i);
+
+            renderer.RenderLine(i, line, segment);
+        }
+
+        renderer.RenderCaret(CaretViewPosition);
+
+        renderer.EndFrame();
+    }
+
     public void Refresh()
     {
+        var oldCaret = CaretViewPosition;
+        var oldSelection = SelectionViewRange;
+
         _visibleLines = BuildVisibleLines(Viewport.FirstVisibleLine, Viewport.VisibleLineCount, Session.Document);
 
         CaretViewPosition = MapCaret();
         SelectionViewRange = MapSelection();
+
+        // fire events
+        ViewChanged?.Invoke();
+        if (!CaretViewPosition.Equals(oldCaret)) CaretMoved?.Invoke(CaretViewPosition);
+        if (SelectionChangedNeeded(oldSelection, SelectionViewRange)) SelectionChanged?.Invoke(SelectionViewRange);
     }
 
     private void SetWithRefresh(Action setAction)

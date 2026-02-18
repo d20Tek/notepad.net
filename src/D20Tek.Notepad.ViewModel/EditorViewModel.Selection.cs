@@ -19,4 +19,12 @@ public sealed partial class EditorViewModel
             _             => new SelectionSegment(0, textLength)                           // middle line
         };
     }
+
+    private static bool SelectionChangedNeeded(SelectionViewRange? oldSel, SelectionViewRange? newSel)
+    {
+        if (oldSel is null && newSel is null) return false;
+        if (oldSel is null || newSel is null) return true;
+
+        return !oldSel.Value.Equals(newSel.Value);
+    }
 }
