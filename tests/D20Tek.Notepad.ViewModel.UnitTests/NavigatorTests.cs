@@ -1,7 +1,7 @@
 namespace D20Tek.Notepad.ViewModel.UnitTests;
 
 [TestClass]
-public class EditorViewModelNavigationTests
+public class NavigatorTests
 {
     private static readonly DocumentFactory _docFactory = new();
 
@@ -16,7 +16,7 @@ public class EditorViewModelNavigationTests
         viewModel.SetViewportHeight(1);
 
         // act
-        viewModel.MoveCaretLeft();
+        viewModel.Navigator.MoveCaretLeft();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 4), session.Caret);
@@ -32,7 +32,7 @@ public class EditorViewModelNavigationTests
         viewModel.SetViewportHeight(2);
 
         // act
-        viewModel.MoveCaretLeft();
+        viewModel.Navigator.MoveCaretLeft();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 5), session.Caret);
@@ -49,7 +49,7 @@ public class EditorViewModelNavigationTests
         viewModel.SetViewportHeight(1);
 
         // act
-        viewModel.MoveCaretRight();
+        viewModel.Navigator.MoveCaretRight();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 6), session.Caret);
@@ -65,7 +65,7 @@ public class EditorViewModelNavigationTests
         viewModel.SetViewportHeight(2);
 
         // act
-        viewModel.MoveCaretRight();
+        viewModel.Navigator.MoveCaretRight();
 
         // assert
         Assert.AreEqual(new TextPosition(1, 0), session.Caret);
@@ -82,7 +82,7 @@ public class EditorViewModelNavigationTests
         viewModel.SetViewportHeight(3);
 
         // act
-        viewModel.MoveCaretUp();
+        viewModel.Navigator.MoveCaretUp();
 
         // assert
         Assert.AreEqual(new TextPosition(1, 2), session.Caret);
@@ -99,7 +99,7 @@ public class EditorViewModelNavigationTests
         viewModel.ScrollLines(3);
 
         // act
-        viewModel.MoveCaretUp();
+        viewModel.Navigator.MoveCaretUp();
 
         // assert
         Assert.AreEqual(new TextPosition(2, 0), session.Caret);
@@ -117,7 +117,7 @@ public class EditorViewModelNavigationTests
         viewModel.SetViewportHeight(3);
 
         // act
-        viewModel.MoveCaretDown();
+        viewModel.Navigator.MoveCaretDown();
 
         // assert
         Assert.AreEqual(new TextPosition(1, 2), session.Caret);
@@ -133,7 +133,7 @@ public class EditorViewModelNavigationTests
         viewModel.SetViewportHeight(3);
 
         // act
-        viewModel.MoveCaretDown();
+        viewModel.Navigator.MoveCaretDown();
 
         // assert
         Assert.AreEqual(new TextPosition(3, 0), session.Caret);
@@ -151,7 +151,7 @@ public class EditorViewModelNavigationTests
         viewModel.SetViewportHeight(1);
 
         // act
-        viewModel.MoveToLineStart();
+        viewModel.Navigator.MoveToLineStart();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 0), session.Caret);
@@ -169,7 +169,7 @@ public class EditorViewModelNavigationTests
         viewModel.ScrollColumns(10);
 
         // act
-        viewModel.MoveToLineStart();
+        viewModel.Navigator.MoveToLineStart();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 0), session.Caret);
@@ -187,7 +187,7 @@ public class EditorViewModelNavigationTests
         viewModel.SetViewportHeight(1);
 
         // act
-        viewModel.MoveToLineEnd();
+        viewModel.Navigator.MoveToLineEnd();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 11), session.Caret);
@@ -204,7 +204,7 @@ public class EditorViewModelNavigationTests
         viewModel.SetViewportWidth(10);
 
         // act
-        viewModel.MoveToLineEnd();
+        viewModel.Navigator.MoveToLineEnd();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 31), session.Caret);
@@ -223,7 +223,7 @@ public class EditorViewModelNavigationTests
         viewModel.ScrollLines(3);
 
         // act
-        viewModel.MoveToDocumentStart();
+        viewModel.Navigator.MoveToDocumentStart();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 0), session.Caret);
@@ -242,7 +242,7 @@ public class EditorViewModelNavigationTests
         viewModel.ScrollColumns(10);
 
         // act
-        viewModel.MoveToDocumentStart();
+        viewModel.Navigator.MoveToDocumentStart();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 0), session.Caret);
@@ -260,7 +260,7 @@ public class EditorViewModelNavigationTests
         viewModel.SetViewportHeight(3);
 
         // act
-        viewModel.MoveToDocumentEnd();
+        viewModel.Navigator.MoveToDocumentEnd();
 
         // assert
         Assert.AreEqual(new TextPosition(2, 4), session.Caret);
@@ -276,7 +276,7 @@ public class EditorViewModelNavigationTests
         viewModel.SetViewportHeight(5);
 
         // act
-        viewModel.MoveToDocumentEnd();
+        viewModel.Navigator.MoveToDocumentEnd();
 
         // assert
         Assert.AreEqual(new TextPosition(19, 7), session.Caret);

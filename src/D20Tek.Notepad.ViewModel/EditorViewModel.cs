@@ -1,10 +1,9 @@
-﻿using D20Tek.Notepad.Core.Document;
-using D20Tek.Notepad.Core.Editing;
+﻿using D20Tek.Notepad.Core.Editing;
 using D20Tek.Notepad.ViewModel.Rendering;
 
 namespace D20Tek.Notepad.ViewModel;
 
-public sealed partial class EditorViewModel(EditorSession session, EditorCommandService commandService)
+public sealed partial class EditorViewModel
 {
     private List<ViewLine> _visibleLines = [];
     private int _viewportWidth;
@@ -13,11 +12,23 @@ public sealed partial class EditorViewModel(EditorSession session, EditorCommand
     public event Action<ViewPosition>? CaretMoved;
     public event Action<SelectionViewRange?>? SelectionChanged;
 
-    public EditorSession Session { get; } = session ?? throw new ArgumentNullException(nameof(session));
+    public EditorViewModel(EditorSession session, EditorCommandService commandService)
+    {
+        ArgumentNullException.ThrowIfNull(session);
+        ArgumentNullException.ThrowIfNull(commandService);
+        Session = session;
+        Commands = commandService;
+        Navigator = new Navigator(this);
+        Viewport = new Viewport();
+    }
 
-    public EditorCommandService Commands { get; } = commandService ?? throw new ArgumentNullException(nameof(session));
+    public EditorSession Session { get; }
 
-    public Viewport Viewport { get; } = new Viewport();
+    public EditorCommandService Commands { get; }
+
+    public Navigator Navigator { get; }
+
+    public Viewport Viewport { get; }
 
     public IReadOnlyList<ViewLine> VisibleLines => _visibleLines;
 
@@ -27,6 +38,8 @@ public sealed partial class EditorViewModel(EditorSession session, EditorCommand
 
     public void SetViewportHeight(int visibleLineCount) => SetWithRefresh(() =>
         Viewport.SetVisibleLineCount(visibleLineCount));
+
+    public void SetViewportWidth(int width) => SetWithRefresh(() => _viewportWidth = Math.Max(0, width));
 
     public void ScrollLines(int delta) => SetWithRefresh(() =>
         Viewport.ScrollLines(delta, Session.Document.Lines.Count));
@@ -43,34 +56,17 @@ public sealed partial class EditorViewModel(EditorSession session, EditorCommand
 
     public void ScrollColumns(int delta) => SetWithRefresh(() => Viewport.ScrollColumns(delta));
 
-    public void SetViewportWidth(int width) => SetWithRefresh(() => _viewportWidth = Math.Max(0, width));
-
-    public void RenderFrame(IEditorRenderer renderer)
-    {
-        renderer.BeginFrame(this);
-
-        for (int i = 0; i < VisibleLines.Count; i++)
-        {
-            var line = VisibleLines[i];
-            var segment = GetSelectionSegmentForLine(i);
-
-            renderer.RenderLine(i, line, segment);
-        }
-
-        renderer.RenderCaret(CaretViewPosition);
-
-        renderer.EndFrame();
-    }
-
+    public void RenderFrame(IEditorRenderer renderer) => RendererLoop.RenderFull(this, renderer);
+    
     public void Refresh()
     {
         var oldCaret = CaretViewPosition;
         var oldSelection = SelectionViewRange;
 
-        _visibleLines = BuildVisibleLines(Viewport.FirstVisibleLine, Viewport.VisibleLineCount, Session.Document);
+        _visibleLines = VisibleLinesBuilder.Build(this, _viewportWidth);
 
-        CaretViewPosition = MapCaret();
-        SelectionViewRange = MapSelection();
+        CaretViewPosition = VisibleLinesBuilder.MapCaret(this);
+        SelectionViewRange = VisibleLinesBuilder.MapSelection(this);
 
         // fire events
         ViewChanged?.Invoke();
@@ -82,55 +78,5 @@ public sealed partial class EditorViewModel(EditorSession session, EditorCommand
     {
         setAction();
         Refresh();
-    }
-
-    private List<ViewLine> BuildVisibleLines(int first, int count, IDocument doc)
-    {
-        var visibleLines = new List<ViewLine>(count);
-        var total = doc.Lines.Count;
-        int lastExclusive = Math.Min(first + count, total);     // last visible line index
-
-        int hOffset = Viewport.HorizontalOffset;
-        int width = _viewportWidth;
-
-        for (int docLine = first; docLine < lastExclusive; docLine++)
-        {
-            var fullText = doc.Lines[docLine].Content;
-
-            string sliced;
-            if (width <= 0)
-            {
-                // no horizontal limit - return full text (minus offset)
-                sliced = hOffset < fullText.Length ? fullText.Substring(hOffset) : string.Empty;
-            }
-            else if (hOffset < fullText.Length)
-            {
-                sliced = fullText.Substring(hOffset, Math.Min(width, fullText.Length - hOffset));
-            }
-            else
-            {
-                sliced = string.Empty;
-            }
-
-            visibleLines.Add(new ViewLine(docLine, sliced));
-        }
-
-        return visibleLines;
-    }
-
-    private ViewPosition MapCaret() => new(
-        Math.Max(0, Session.Caret.Line - Viewport.FirstVisibleLine),
-        Math.Max(0, Session.Caret.Column - Viewport.HorizontalOffset));
-
-    private SelectionViewRange? MapSelection()
-    {
-        if (!Session.HasSelection) return null;
-
-        var raw = ViewMapping.DocumentSelectionToView(
-            Session.Anchor, Session.Caret, Viewport.FirstVisibleLine, Viewport.VisibleLineCount);
-
-        return new SelectionViewRange(
-            new ViewPosition(raw.Start.LineIndex, Math.Max(0, raw.Start.Column - Viewport.HorizontalOffset)),
-            new ViewPosition(raw.End.LineIndex, Math.Max(0, raw.End.Column - Viewport.HorizontalOffset))).Normalize();
     }
 }
