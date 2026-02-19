@@ -33,7 +33,11 @@ public sealed class TerminalGuiRenderer(View target) : IEditorRenderer
 
         if (selection is null)
         {
-            driver.AddStr(line.Text);
+            var visible = line.Text;
+            if (visible.Length > _target.Bounds.Width)
+                visible = visible[.._target.Bounds.Width];
+
+            driver.AddStr(visible);
             return;
         }
 
