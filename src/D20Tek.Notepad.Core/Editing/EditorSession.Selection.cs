@@ -10,6 +10,15 @@ public sealed partial class EditorSession
 
     public string GetSelectedText() => !HasSelection ? string.Empty : GetTextInRange(GetSelectionRange());
 
+    public void EnsureAnchorExists()
+    {
+        // If a selection already exists, keep the existing anchor.
+        if (HasSelection) return;
+
+        // If no selection exists, anchor = caret.
+        Anchor = Caret;
+    }
+
     public void SelectAll()
     {
         Anchor = new TextPosition(0, 0);

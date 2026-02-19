@@ -20,6 +20,30 @@ public sealed class Navigator(EditorViewModel viewModel)
 
     public void MoveToDocumentEnd() => ExecuteNavigation(_viewModel.Commands.MoveToDocumentEnd);
 
+    public void ExtendSelectionLeft() => ExecuteNavigation(_viewModel.Commands.SelectLeft);
+
+    public void ExtendSelectionRight() => ExecuteNavigation(_viewModel.Commands.SelectRight);
+
+    public void ExtendSelectionUp() => ExecuteNavigation(_viewModel.Commands.SelectUp);
+
+    public void ExtendSelectionDown() => ExecuteNavigation(_viewModel.Commands.SelectDown);
+
+    public void ExtendSelectionToLineStart()
+    {
+        _viewModel.Session.EnsureAnchorExists();
+        var anchor = _viewModel.Session.Anchor;
+        MoveToLineStart();
+        _viewModel.Session.Anchor = anchor;
+    }
+
+    public void ExtendSelectionToLineEnd()
+    {
+        _viewModel.Session.EnsureAnchorExists();
+        var anchor = _viewModel.Session.Anchor;
+        MoveToLineEnd();
+        _viewModel.Session.Anchor = anchor;
+    }
+
     private void ExecuteNavigation(Action navAction)
     {
         navAction();
