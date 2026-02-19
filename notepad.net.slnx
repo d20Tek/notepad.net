@@ -9,6 +9,7 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/D20Tek.Notepad.Core/D20Tek.Notepad.Core.csproj" />
+    <Project Path="src/D20Tek.Notepad.Tui/D20Tek.Notepad.Tui.csproj" />
     <Project Path="src/D20Tek.Notepad.ViewModel/D20Tek.Notepad.ViewModel.csproj" />
   </Folder>
   <Folder Name="/tests/">
