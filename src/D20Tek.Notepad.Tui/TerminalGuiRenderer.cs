@@ -1,62 +1,106 @@
 ﻿using D20Tek.Notepad.ViewModel;
 using D20Tek.Notepad.ViewModel.Rendering;
 using Terminal.Gui;
+using Attribute = Terminal.Gui.Attribute;
 
 namespace D20Tek.Notepad.Tui;
 
 public sealed class TerminalGuiRenderer(View target) : IEditorRenderer
 {
     private readonly View _target = target;
+    private Attribute _normalAttribute;
+    private Attribute _selectionAttribute;
 
+    private int AbsX => _target.Frame.X;
+    private int AbsY => _target.Frame.Y;
+    private int Width => _target.Frame.Width;
+    private int Height => _target.Frame.Height;
+
+    // ---------------------------------------------------------
+    // Clear the viewport
+    // ---------------------------------------------------------
     public void BeginFrame(EditorViewModel viewModel)
     {
+        _normalAttribute = _target.ColorScheme.Normal;
+        _selectionAttribute = new Attribute(_normalAttribute.Foreground, _target.ColorScheme.Focus.Background);
+
         var driver = Application.Driver;
 
-        int absX = _target.Frame.X;
-        int absY = _target.Frame.Y;
-
-        for (int y = 0; y < _target.Frame.Height; y++)
+        for (int y = 0; y < Height; y++)
         {
-            driver.Move(absX, absY + y);
-            driver.AddStr(new string(' ', _target.Frame.Width));
+            driver.Move(AbsX, AbsY + y);
+            driver.SetAttribute(_normalAttribute);
+            driver.AddStr(new string(' ', Width));
         }
     }
 
+    // ---------------------------------------------------------
+    // Draw a single line with selection highlight
+    // ---------------------------------------------------------
     public void RenderLine(int viewLineIndex, ViewLine line, SelectionSegment? selection)
     {
         var driver = Application.Driver;
 
-        int absX = _target.Frame.X;
-        int absY = _target.Frame.Y;
+        driver.Move(AbsX, AbsY + viewLineIndex);
 
-        driver.Move(absX, absY + viewLineIndex);
+        string text = line.Text ?? string.Empty;
 
+        // Clip text to viewport width
+        if (text.Length > Width) text = text[..Width];
+
+        // No selection → draw normally
         if (selection is null)
         {
-            var visible = line.Text;
-            if (visible.Length > _target.Bounds.Width)
-                visible = visible[.._target.Bounds.Width];
-
-            driver.AddStr(visible);
+            driver.SetAttribute(_normalAttribute);
+            driver.AddStr(text);
             return;
         }
 
-        // selection drawing logic stays the same
+        int selStart = selection.Value.StartColumn;
+        int selEnd = selection.Value.EndColumn;
+
+        // Clamp to visible text
+        selStart = Math.Max(0, Math.Min(selStart, text.Length));
+        selEnd = Math.Max(0, Math.Min(selEnd, text.Length));
+
+        // Part 1: before selection
+        if (selStart > 0)
+        {
+            driver.SetAttribute(_normalAttribute);
+            driver.AddStr(text.Substring(0, selStart));
+        }
+
+        // Part 2: selected text
+        if (selEnd > selStart)
+        {
+            driver.SetAttribute(_selectionAttribute);
+            driver.AddStr(text[selStart..selEnd]);
+        }
+
+        // Part 3: after selection
+        if (selEnd < text.Length)
+        {
+            driver.SetAttribute(_normalAttribute);
+            driver.AddStr(text[selEnd..]);
+        }
     }
 
+    // ---------------------------------------------------------
+    // Draw caret
+    // ---------------------------------------------------------
     public void RenderCaret(ViewPosition caret)
     {
         var driver = Application.Driver;
 
-        int absX = _target.Frame.X;
-        int absY = _target.Frame.Y;
+        int x = AbsX + caret.Column;
+        int y = AbsY + caret.LineIndex;
 
-        driver.Move(absX + caret.Column, absY + caret.LineIndex);
-        Application.Driver.SetCursorVisibility(CursorVisibility.Default);
+        if (x < AbsX || x >= AbsX + Width) return;
+        if (y < AbsY || y >= AbsY + Height) return;
+
+        driver.Move(x, y);
+        driver.SetCursorVisibility(CursorVisibility.Default);
     }
 
-    public void EndFrame()
-    {
-        // Nothing needed yet
-    }
+    public void EndFrame() { }
 }

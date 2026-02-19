@@ -15,7 +15,7 @@ internal static class EditorViewFactory
         ColorScheme = new ColorScheme
         {
             Normal = new Attribute(Color.White, Color.Black),
-            Focus = new Attribute(Color.White, Color.Black),
+            Focus = new Attribute(Color.White, Color.Blue),
             HotNormal = new Attribute(Color.BrightYellow, Color.Black),
             HotFocus = new Attribute(Color.BrightYellow, Color.White),
             Disabled = new Attribute(Color.Gray, Color.Black)
