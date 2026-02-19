@@ -3,4 +3,6 @@
 public interface IDocumentFactory
 {
     IDocument Create(DocumentData data);
+
+    IDocument Load(string filePath);
 }

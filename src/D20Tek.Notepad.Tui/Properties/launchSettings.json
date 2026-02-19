@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Notepad.Tui": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    },
+    "Notepad.Tui with File": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\temp\\json\\gridlock-puzzles.json"
+    }
+  }
+}

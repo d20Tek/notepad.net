@@ -15,9 +15,8 @@ class Program
 
         var top = Application.Top;
 
-        // Create your editor session + viewmodel
-        var docFactory = new DocumentFactory();
-        var session = new EditorSession(docFactory.Create(new([new("Empty document loaded.")], Encoding.UTF8, LineEndingStyle.CRLF)));
+        var document = CreateDocument(args);
+        var session = new EditorSession(document);
         var viewModel = new EditorViewModel(session, new EditorCommandService(session, new EditorNavigationService()));
 
         var editorView = EditorViewFactory.Create(viewModel);
@@ -25,5 +24,26 @@ class Program
 
         Application.Run();
         Application.Shutdown();
+    }
+
+    private static IDocument CreateDocument(string[] args)
+    {
+        IDocument document;
+        var docFactory = new DocumentFactory();
+
+        if (args.Length > 0)
+        {
+            var filename = args[0];
+            if (File.Exists(filename))
+                document = docFactory.Load(filename);
+            else
+                document = docFactory.Create(
+                    new([new($"File not found: {args[0]}")], Encoding.UTF8, LineEndingStyle.CRLF));
+        }
+        else
+        { 
+            document = docFactory.Create(new([new(string.Empty) ], Encoding.UTF8, LineEndingStyle.CRLF));
+        }
+        return document;   
     }
 }
