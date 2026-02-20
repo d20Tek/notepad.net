@@ -23,7 +23,6 @@ internal static class MouseHandler
         }
 
         // --- Mouse Drag: extend selection (check BEFORE Button1Pressed alone) ---
-        // Drag events have both Button1Pressed AND ReportMousePosition
         if (flags.HasFlag(MouseFlags.Button1Pressed) && flags.HasFlag(MouseFlags.ReportMousePosition))
         {
             UpdateMouseSelection(vm, mouseEvent);
@@ -31,7 +30,7 @@ internal static class MouseHandler
         }
 
         // --- Mouse Down: start selection (only when NOT dragging) ---
-        if (flags.HasFlag(MouseFlags.Button1Pressed) && flags.HasFlag(MouseFlags.ReportMousePosition))
+        if (flags.HasFlag(MouseFlags.Button1Pressed))
         {
             BeginMouseSelection(vm, mouseEvent);
             return true;

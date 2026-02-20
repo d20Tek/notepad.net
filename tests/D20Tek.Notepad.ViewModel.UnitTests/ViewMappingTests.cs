@@ -121,8 +121,9 @@ public class ViewMappingTests
         var result = ViewMapping.DocumentSelectionToView(anchor, caret, firstVisibleLine, visibleLineCount);
 
         // assert
-        Assert.AreEqual(new ViewPosition(0, 5), result.Start);
-        Assert.AreEqual(new ViewPosition(2, 10), result.End);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(new ViewPosition(0, 5), result.Value.Start);
+        Assert.AreEqual(new ViewPosition(2, 10), result.Value.End);
     }
 
     [TestMethod]
@@ -138,8 +139,9 @@ public class ViewMappingTests
         var result = ViewMapping.DocumentSelectionToView(anchor, caret, firstVisibleLine, visibleLineCount);
 
         // assert
-        Assert.AreEqual(new ViewPosition(0, 5), result.Start);
-        Assert.AreEqual(new ViewPosition(2, 10), result.End);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(new ViewPosition(0, 5), result.Value.Start);
+        Assert.AreEqual(new ViewPosition(2, 10), result.Value.End);
     }
 
     [TestMethod]
@@ -154,9 +156,10 @@ public class ViewMappingTests
         var result = ViewMapping.DocumentSelectionToView(position, position, firstVisibleLine, visibleLineCount);
 
         // assert
-        Assert.IsTrue(result.IsEmpty);
-        Assert.AreEqual(new ViewPosition(0, 5), result.Start);
-        Assert.AreEqual(new ViewPosition(0, 5), result.End);
+        Assert.IsNotNull(result);
+        Assert.IsTrue(result.Value.IsEmpty);
+        Assert.AreEqual(new ViewPosition(0, 5), result.Value.Start);
+        Assert.AreEqual(new ViewPosition(0, 5), result.Value.End);
     }
 
     [TestMethod]
@@ -172,8 +175,9 @@ public class ViewMappingTests
         var result = ViewMapping.DocumentSelectionToView(anchor, caret, firstVisibleLine, visibleLineCount);
 
         // assert
-        Assert.AreEqual(new ViewPosition(0, 5), result.Start);
-        Assert.AreEqual(new ViewPosition(0, 15), result.End);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(new ViewPosition(0, 5), result.Value.Start);
+        Assert.AreEqual(new ViewPosition(0, 15), result.Value.End);
     }
 
     // ClampToViewport tests

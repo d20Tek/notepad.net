@@ -442,6 +442,7 @@ public class EditorViewModelTests
 
         // assert - verify through visible line truncation or refresh behavior
         Assert.HasCount(1, viewModel.VisibleLines);
+        Assert.AreEqual(20, viewModel.ViewportWidth);
     }
 
     [TestMethod]

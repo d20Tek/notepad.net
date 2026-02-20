@@ -17,12 +17,19 @@ public static class ViewMapping
         return new TextPosition(docLine, viewPos.Column);
     }
 
-    public static SelectionViewRange DocumentSelectionToView(
+    public static SelectionViewRange? DocumentSelectionToView(
         TextPosition anchor,
         TextPosition caret,
         int firstVisibleLine,
         int visibleLineCount)
     {
+        // Normalize to get the actual start and end positions
+        var (selStart, selEnd) = anchor.CompareTo(caret) <= 0 ? (anchor, caret) : (caret, anchor);
+        int lastVisibleLine = firstVisibleLine + visibleLineCount - 1;
+
+        // Check if selection intersects viewport at all, if not return null
+        if (selEnd.Line < firstVisibleLine || selStart.Line > lastVisibleLine) return null;
+
         var start = ClampToViewport(anchor, firstVisibleLine, visibleLineCount);
         var end = ClampToViewport(caret, firstVisibleLine, visibleLineCount);
         return new SelectionViewRange(start, end).Normalize();

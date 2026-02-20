@@ -29,38 +29,4 @@ public readonly struct SelectionViewRange(ViewPosition start, ViewPosition end) 
     public static bool operator !=(SelectionViewRange left, SelectionViewRange right) => !left.Equals(right);
 
     public override string ToString() => $"{Start} -> {End}";
-    /* todo: remove if unnecessary
-    public bool ContainsLine(int lineIndex)
-    {
-        var norm = Normalize();
-        return lineIndex >= norm.Start.LineIndex && lineIndex <= norm.End.LineIndex;
-    }
-
-    public SelectionSegment? GetSegmentForLine(int lineIndex, int lineLength)
-    {
-        var norm = Normalize();
-        if (lineIndex < norm.Start.LineIndex || lineIndex > norm.End.LineIndex) return null;
-
-        // Single-line selection
-        if (norm.Start.LineIndex == norm.End.LineIndex)
-        {
-            return new SelectionSegment(norm.Start.Column, norm.End.Column);
-        }
-
-        // First line of multi-line selection
-        if (lineIndex == norm.Start.LineIndex)
-        {
-            return new SelectionSegment(norm.Start.Column, lineLength);
-        }
-
-        // Last line of multi-line selection
-        if (lineIndex == norm.End.LineIndex)
-        {
-            return new SelectionSegment(0, norm.End.Column);
-        }
-
-        // Middle line of multi-line selection
-        return new SelectionSegment(0, lineLength);
-    }
-    */
 }

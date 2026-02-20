@@ -51,9 +51,11 @@ internal static class VisibleLinesBuilder
             viewModel.Viewport.FirstVisibleLine,
             viewModel.Viewport.VisibleLineCount);
 
+        if (raw is null) return null;
+
         return new SelectionViewRange(
-            new ViewPosition(raw.Start.LineIndex, Math.Max(0, raw.Start.Column - viewModel.Viewport.HorizontalOffset)),
-            new ViewPosition(raw.End.LineIndex, Math.Max(0, raw.End.Column - viewModel.Viewport.HorizontalOffset))
+            new ViewPosition(raw.Value.Start.LineIndex, Math.Max(0, raw.Value.Start.Column - viewModel.Viewport.HorizontalOffset)),
+            new ViewPosition(raw.Value.End.LineIndex, Math.Max(0, raw.Value.End.Column - viewModel.Viewport.HorizontalOffset))
             ).Normalize();
     }
 }
