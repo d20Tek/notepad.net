@@ -55,18 +55,7 @@ internal static class MouseHandler
     private static void MoveCaretFromMouse(EditorViewModel vm, MouseEvent me)
     {
         var (line, col) = MouseToDocumentPosition(vm, me);
-
-        bool shift = me.Flags.HasFlag(MouseFlags.ButtonShift);
-
-        if (shift)
-        {
-            vm.ExtendSelectionTo(line, col);
-        }
-        else
-        {
-            vm.MoveCaretTo(line, col);
-        }
-        vm.Refresh();
+        vm.MoveCaretTo(line, col);
     }
 
     private static void BeginMouseSelection(EditorViewModel vm, MouseEvent me)
@@ -74,21 +63,18 @@ internal static class MouseHandler
         var (line, col) = MouseToDocumentPosition(vm, me);
         vm.MoveCaretTo(line, col);
         vm.SetAnchorToCaret();
-        vm.Refresh();
     }
 
     private static void UpdateMouseSelection(EditorViewModel vm, MouseEvent me)
     {
         var (line, col) = MouseToDocumentPosition(vm, me);
         vm.ExtendSelectionTo(line, col);
-        vm.Refresh();
     }
 
     private static void EndMouseSelection(EditorViewModel vm, MouseEvent me)
     {
         var (line, col) = MouseToDocumentPosition(vm, me);
         vm.ExtendSelectionTo(line, col);
-        vm.Refresh();
     }
 
     private static (int line, int col) MouseToDocumentPosition(EditorViewModel vm, MouseEvent me)
