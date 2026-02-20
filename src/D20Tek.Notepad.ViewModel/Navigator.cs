@@ -34,13 +34,28 @@ public sealed class Navigator(EditorViewModel viewModel)
 
     public void ExtendSelectionDown() => ExecuteNavigation(_viewModel.Commands.SelectDown);
 
-    public void ExtendSelectionToDocumentStart() => ExecuteNavigation(_viewModel.Commands.SelectUp);  // todo: implement selection page up/down
+    public void ExtendSelectionToDocumentStart()
+    {
+        _viewModel.Session.EnsureAnchorExists();
+        var anchor = _viewModel.Session.Anchor;
+        MoveToDocumentEnd();
+        _viewModel.Session.Anchor = anchor;
+    }
 
-    public void ExtendSelectionToDocumentEnd() => ExecuteNavigation(_viewModel.Commands.SelectDown);
 
-    public void ExtendSelectionPageUp() => ExecuteNavigation(_viewModel.Commands.SelectUp);  // todo: implement selection doc start/end
+    public void ExtendSelectionToDocumentEnd()
+    {
+        _viewModel.Session.EnsureAnchorExists();
+        var anchor = _viewModel.Session.Anchor;
+        MoveToDocumentEnd();
+        _viewModel.Session.Anchor = anchor;
+    }
 
-    public void ExtendSelectionPageDown() => ExecuteNavigation(_viewModel.Commands.SelectDown);
+    public void ExtendSelectionPageUp() => ExecuteNavigation(() =>
+        _viewModel.Commands.SelectPageUp(_viewModel.Viewport.VisibleLineCount));
+
+    public void ExtendSelectionPageDown() => ExecuteNavigation(() =>
+        _viewModel.Commands.SelectPageDown(_viewModel.Viewport.VisibleLineCount));
 
     public void ExtendSelectionToLineStart()
     {

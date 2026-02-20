@@ -62,6 +62,10 @@ public sealed class EditorCommandService(EditorSession session, EditorNavigation
 
     public void SelectDown() => _navigation.ExtendDown(_session);
 
+    public void SelectPageUp(int pageHeight) => _navigation.ExtendPageUp(_session, pageHeight);
+
+    public void SelectPageDown(int pageHeight) => _navigation.ExtendPageDown(_session, pageHeight);
+
     public void SelectAll() => session.SelectAll();
 
     // Undo / Redo

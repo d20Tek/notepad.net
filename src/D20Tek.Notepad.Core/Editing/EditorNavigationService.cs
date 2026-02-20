@@ -76,4 +76,18 @@ public sealed class EditorNavigationService
         SelectionMovementHelper.MoveDown(session);
         session.Anchor = oldAnchor;
     }
+
+    public void ExtendPageUp(EditorSession session, int pageHeight)
+    {
+        var oldAnchor = session.Anchor;
+        SelectionMovementHelper.MovePageUp(session, pageHeight);
+        session.Anchor = oldAnchor;
+    }
+
+    public void ExtendPageDown(EditorSession session, int pageHeight)
+    {
+        var oldAnchor = session.Anchor;
+        SelectionMovementHelper.MovePageDown(session, pageHeight);
+        session.Anchor = oldAnchor;
+    }
 }

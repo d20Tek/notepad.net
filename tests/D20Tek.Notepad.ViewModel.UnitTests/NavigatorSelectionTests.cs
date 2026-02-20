@@ -170,6 +170,82 @@ public class NavigatorSelectionTests
         Assert.AreEqual(new TextPosition(0, 6), session.Anchor);
     }
 
+    // ExtendSelectionPageUp tests
+    [TestMethod]
+    public void ExtendSelectionPageUp_ExtendsSelectionUpByVisibleLineCount()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(GenerateLines(20));
+        session.Caret = new TextPosition(15, 3);
+        session.Anchor = new TextPosition(15, 3);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.Navigator.ExtendSelectionPageUp();
+
+        // assert
+        Assert.AreEqual(new TextPosition(10, 3), session.Caret);
+        Assert.AreEqual(new TextPosition(15, 3), session.Anchor);
+        Assert.IsTrue(session.HasSelection);
+    }
+
+    // ExtendSelectionPageDown tests
+    [TestMethod]
+    public void ExtendSelectionPageDown_ExtendsSelectionDownByVisibleLineCount()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(GenerateLines(20));
+        session.Caret = new TextPosition(5, 3);
+        session.Anchor = new TextPosition(5, 3);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.Navigator.ExtendSelectionPageDown();
+
+        // assert
+        Assert.AreEqual(new TextPosition(10, 3), session.Caret);
+        Assert.AreEqual(new TextPosition(5, 3), session.Anchor);
+        Assert.IsTrue(session.HasSelection);
+    }
+
+    // ExtendSelectionToDocumentStart tests
+    [TestMethod]
+    public void ExtendSelectionToDocumentStart_ExtendsSelectionToDocumentEnd()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello", "World", "Test"]);
+        session.Caret = new TextPosition(1, 2);
+        session.Anchor = new TextPosition(1, 2);
+        viewModel.SetViewportHeight(3);
+
+        // act
+        viewModel.Navigator.ExtendSelectionToDocumentStart();
+
+        // assert
+        Assert.AreEqual(new TextPosition(2, 4), session.Caret);
+        Assert.AreEqual(new TextPosition(1, 2), session.Anchor);
+        Assert.IsTrue(session.HasSelection);
+    }
+
+    // ExtendSelectionToDocumentEnd tests
+    [TestMethod]
+    public void ExtendSelectionToDocumentEnd_ExtendsSelectionToDocumentEnd()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello", "World", "Test"]);
+        session.Caret = new TextPosition(1, 2);
+        session.Anchor = new TextPosition(1, 2);
+        viewModel.SetViewportHeight(3);
+
+        // act
+        viewModel.Navigator.ExtendSelectionToDocumentEnd();
+
+        // assert
+        Assert.AreEqual(new TextPosition(2, 4), session.Caret);
+        Assert.AreEqual(new TextPosition(1, 2), session.Anchor);
+        Assert.IsTrue(session.HasSelection);
+    }
+
     // EnsureCaretVisible tests
     [TestMethod]
     public void ExtendSelectionLeft_EnsuresCaretVisible()
@@ -201,4 +277,7 @@ public class NavigatorSelectionTests
         var viewModel = new EditorViewModel(session, commandService);
         return (viewModel, session);
     }
+
+    private static string[] GenerateLines(int count) =>
+        [.. Enumerable.Range(1, count).Select(i => $"Line {i}")];
 }

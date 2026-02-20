@@ -358,6 +358,44 @@ public class EditorNavigationServiceTests
         Assert.IsTrue(session.HasSelection);
     }
 
+    // ExtendPageUp tests
+    [TestMethod]
+    public void ExtendPageUp_MovesCaretUpByPageHeightAndPreservesAnchor()
+    {
+        // arrange
+        var session = CreateSession(["Line1", "Line2", "Line3", "Line4", "Line5", "Line6", "Line7", "Line8"]);
+        session.Caret = new TextPosition(7, 3);
+        session.Anchor = new TextPosition(7, 3);
+        var navigation = new EditorNavigationService();
+
+        // act
+        navigation.ExtendPageUp(session, 5);
+
+        // assert
+        Assert.AreEqual(new TextPosition(2, 3), session.Caret);
+        Assert.AreEqual(new TextPosition(7, 3), session.Anchor);
+        Assert.IsTrue(session.HasSelection);
+    }
+
+    // ExtendPageDown tests
+    [TestMethod]
+    public void ExtendPageDown_MovesCaretDownByPageHeightAndPreservesAnchor()
+    {
+        // arrange
+        var session = CreateSession(["Line1", "Line2", "Line3", "Line4", "Line5", "Line6", "Line7", "Line8"]);
+        session.Caret = new TextPosition(0, 3);
+        session.Anchor = new TextPosition(0, 3);
+        var navigation = new EditorNavigationService();
+
+        // act
+        navigation.ExtendPageDown(session, 5);
+
+        // assert
+        Assert.AreEqual(new TextPosition(5, 3), session.Caret);
+        Assert.AreEqual(new TextPosition(0, 3), session.Anchor);
+        Assert.IsTrue(session.HasSelection);
+    }
+
     private static EditorSession CreateSession(string[] lines)
     {
         var textLines = lines.Select(l => new TextLine(l)).ToArray();

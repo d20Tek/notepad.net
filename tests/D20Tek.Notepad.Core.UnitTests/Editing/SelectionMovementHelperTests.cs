@@ -268,6 +268,104 @@ public class SelectionMovementHelperTests
         Assert.IsTrue(session.HasSelection);
     }
 
+    // MovePageUp tests
+    [TestMethod]
+    public void MovePageUp_AtMiddleOfDocument_MovesUpByPageHeightWithoutChangingAnchor()
+    {
+        // arrange
+        var session = CreateSession(["Line1", "Line2", "Line3", "Line4", "Line5", "Line6", "Line7", "Line8", "Line9", "Line10"]);
+        session.Caret = new TextPosition(7, 3);
+        session.Anchor = new TextPosition(7, 3);
+
+        // act
+        SelectionMovementHelper.MovePageUp(session, 5);
+
+        // assert
+        Assert.AreEqual(new TextPosition(2, 3), session.Caret);
+        Assert.AreEqual(new TextPosition(7, 3), session.Anchor);
+    }
+
+    [TestMethod]
+    public void MovePageUp_WhenTargetLineShorter_ClampsColumn()
+    {
+        // arrange
+        var session = CreateSession(["Hi", "Line2", "Line3", "Line4", "Hello"]);
+        session.Caret = new TextPosition(4, 4);
+        session.Anchor = new TextPosition(4, 4);
+
+        // act
+        SelectionMovementHelper.MovePageUp(session, 4);
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 2), session.Caret);
+        Assert.AreEqual(new TextPosition(4, 4), session.Anchor);
+    }
+
+    [TestMethod]
+    public void MovePageUp_AtFirstLine_MovesToLineStart()
+    {
+        // arrange
+        var session = CreateSession(["Hello", "World"]);
+        session.Caret = new TextPosition(0, 3);
+        session.Anchor = new TextPosition(0, 3);
+
+        // act
+        SelectionMovementHelper.MovePageUp(session, 5);
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 0), session.Caret);
+        Assert.AreEqual(new TextPosition(0, 3), session.Anchor);
+    }
+
+    // MovePageDown tests
+    [TestMethod]
+    public void MovePageDown_AtMiddleOfDocument_MovesDownByPageHeightWithoutChangingAnchor()
+    {
+        // arrange
+        var session = CreateSession(["Line1", "Line2", "Line3", "Line4", "Line5", "Line6", "Line7", "Line8", "Line9", "Line10"]);
+        session.Caret = new TextPosition(2, 3);
+        session.Anchor = new TextPosition(2, 3);
+
+        // act
+        SelectionMovementHelper.MovePageDown(session, 5);
+
+        // assert
+        Assert.AreEqual(new TextPosition(7, 3), session.Caret);
+        Assert.AreEqual(new TextPosition(2, 3), session.Anchor);
+    }
+
+    [TestMethod]
+    public void MovePageDown_WhenTargetLineShorter_ClampsColumn()
+    {
+        // arrange
+        var session = CreateSession(["Hello", "Line2", "Line3", "Line4", "Hi"]);
+        session.Caret = new TextPosition(0, 4);
+        session.Anchor = new TextPosition(0, 4);
+
+        // act
+        SelectionMovementHelper.MovePageDown(session, 4);
+
+        // assert
+        Assert.AreEqual(new TextPosition(4, 2), session.Caret);
+        Assert.AreEqual(new TextPosition(0, 4), session.Anchor);
+    }
+
+    [TestMethod]
+    public void MovePageDown_AtLastLine_MovesToLineEnd()
+    {
+        // arrange
+        var session = CreateSession(["Hello", "World"]);
+        session.Caret = new TextPosition(1, 2);
+        session.Anchor = new TextPosition(1, 2);
+
+        // act
+        SelectionMovementHelper.MovePageDown(session, 5);
+
+        // assert
+        Assert.AreEqual(new TextPosition(1, 5), session.Caret);
+        Assert.AreEqual(new TextPosition(1, 2), session.Anchor);
+    }
+
     private static EditorSession CreateSession(string[] lines)
     {
         var textLines = lines.Select(l => new TextLine(l)).ToArray();

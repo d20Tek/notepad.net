@@ -67,6 +67,38 @@ public partial class EditorCommandServiceTests
     }
 
     [TestMethod]
+    public void SelectPageUp_ExtendsSelectionUpByPageHeight()
+    {
+        // arrange
+        var (service, session) = CreateService(["Line1", "Line2", "Line3", "Line4", "Line5", "Line6", "Line7", "Line8"]);
+        session.Caret = new TextPosition(7, 3);
+        session.Anchor = new TextPosition(7, 3);
+
+        // act
+        service.SelectPageUp(5);
+
+        // assert
+        Assert.AreEqual(new TextPosition(2, 3), session.Caret);
+        Assert.AreEqual(new TextPosition(7, 3), session.Anchor);
+    }
+
+    [TestMethod]
+    public void SelectPageDown_ExtendsSelectionDownByPageHeight()
+    {
+        // arrange
+        var (service, session) = CreateService(["Line1", "Line2", "Line3", "Line4", "Line5", "Line6", "Line7", "Line8"]);
+        session.Caret = new TextPosition(0, 3);
+        session.Anchor = new TextPosition(0, 3);
+
+        // act
+        service.SelectPageDown(5);
+
+        // assert
+        Assert.AreEqual(new TextPosition(5, 3), session.Caret);
+        Assert.AreEqual(new TextPosition(0, 3), session.Anchor);
+    }
+
+    [TestMethod]
     public void SelectAll_SelectsEntireDocument()
     {
         // arrange
