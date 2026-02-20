@@ -1,4 +1,6 @@
-﻿namespace D20Tek.Notepad.Tui;
+﻿using static Terminal.Gui.Application;
+
+namespace D20Tek.Notepad.Tui;
 
 public sealed class EditorView : View
 {
@@ -13,6 +15,7 @@ public sealed class EditorView : View
         CanFocus = true;
         WantMousePositionReports = true;
 
+        Resized += OnViewResized;
         // Subscribe to ViewModel events
         _viewModel.ViewChanged += () => RedrawEditor();
         _viewModel.CaretMoved += _ => RedrawEditor();
@@ -49,6 +52,15 @@ public sealed class EditorView : View
         {
             _viewModel.SetViewportWidth(Bounds.Width);
         }
+    }
+
+    private void OnViewResized(ResizedEventArgs args)
+    {
+        _viewModel.SetViewportWidth(Frame.Width);
+        _viewModel.SetViewportHeight(Frame.Height);
+        _viewModel.EnsureCaretVisible();
+
+        SetNeedsDisplay();
     }
 
     public override bool MouseEvent(MouseEvent me)
