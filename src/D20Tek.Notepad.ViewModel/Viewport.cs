@@ -17,7 +17,7 @@ public sealed class Viewport
         VisibleLineCount = visibleLineCount;
     }
 
-    public void ResetViewport()
+    public void Reset()
     {
         HorizontalOffset = 0;
         FirstVisibleLine = 0;

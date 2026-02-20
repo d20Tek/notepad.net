@@ -4,5 +4,7 @@ public interface IDocumentFactory
 {
     IDocument Create(DocumentData data);
 
+    IDocument Empty { get; }
+
     IDocument Load(string filePath);
 }

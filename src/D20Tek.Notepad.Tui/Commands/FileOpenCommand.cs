@@ -22,7 +22,7 @@ internal sealed class FileOpenCommand(string name, EditorViewModel viewModel, Ke
             var newDoc = factory.Load(filePath);
 
             viewModel.Session.ReplaceDocument(newDoc);
-            viewModel.Viewport.ResetViewport();
+            viewModel.Viewport.Reset();
             viewModel.Refresh();
         }
         catch (Exception ex)

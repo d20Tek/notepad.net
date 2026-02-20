@@ -31,6 +31,65 @@ public class ViewportTests
         Assert.AreEqual(visibleLineCount, viewport.VisibleLineCount);
     }
 
+    // Reset tests
+    [TestMethod]
+    public void Reset_ResetsFirstVisibleLineToZero()
+    {
+        // arrange
+        var viewport = new Viewport(10, 20);
+        viewport.ScrollLines(5, 100);
+
+        // act
+        viewport.Reset();
+
+        // assert
+        Assert.AreEqual(0, viewport.FirstVisibleLine);
+    }
+
+    [TestMethod]
+    public void Reset_ResetsHorizontalOffsetToZero()
+    {
+        // arrange
+        var viewport = new Viewport();
+        viewport.ScrollColumns(15);
+
+        // act
+        viewport.Reset();
+
+        // assert
+        Assert.AreEqual(0, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void Reset_ResetsBothScrollPositions()
+    {
+        // arrange
+        var viewport = new Viewport(0, 10);
+        viewport.ScrollLines(20, 100);
+        viewport.ScrollColumns(30);
+
+        // act
+        viewport.Reset();
+
+        // assert
+        Assert.AreEqual(0, viewport.FirstVisibleLine);
+        Assert.AreEqual(0, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void Reset_DoesNotAffectVisibleLineCount()
+    {
+        // arrange
+        var viewport = new Viewport(0, 25);
+        viewport.ScrollLines(10, 100);
+
+        // act
+        viewport.Reset();
+
+        // assert
+        Assert.AreEqual(25, viewport.VisibleLineCount);
+    }
+
     // SetVisibleLineCount tests
     [TestMethod]
     public void SetVisibleLineCount_WithValidCount_UpdatesProperty()

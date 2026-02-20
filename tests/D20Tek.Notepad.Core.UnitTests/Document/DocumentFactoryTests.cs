@@ -103,6 +103,59 @@ public class DocumentFactoryTests
         Assert.IsFalse(result.IsModified);
     }
 
+    // Empty tests
+    [TestMethod]
+    public void Empty_ReturnsDocumentWithSingleEmptyLine()
+    {
+        // act
+        var result = _factory.Empty;
+
+        // assert
+        Assert.AreEqual(1, result.Lines.Count);
+        Assert.AreEqual(string.Empty, result.Lines[0].Content);
+    }
+
+    [TestMethod]
+    public void Empty_ReturnsDocumentWithUtf8Encoding()
+    {
+        // act
+        var result = _factory.Empty;
+
+        // assert
+        Assert.AreEqual(Encoding.UTF8.CodePage, result.Encoding.CodePage);
+    }
+
+    [TestMethod]
+    public void Empty_ReturnsDocumentWithCrlfLineEnding()
+    {
+        // act
+        var result = _factory.Empty;
+
+        // assert
+        Assert.AreEqual(LineEndingStyle.CRLF, result.LineEndingStyle);
+    }
+
+    [TestMethod]
+    public void Empty_ReturnsSameInstanceOnMultipleCalls()
+    {
+        // act
+        var result1 = _factory.Empty;
+        var result2 = _factory.Empty;
+
+        // assert
+        Assert.AreSame(result1, result2);
+    }
+
+    [TestMethod]
+    public void Empty_IsModifiedIsFalse()
+    {
+        // act
+        var result = _factory.Empty;
+
+        // assert
+        Assert.IsFalse(result.IsModified);
+    }
+
     // Load tests
     [TestMethod]
     public void Load_WithValidFile_ReturnsDocumentWithCorrectContent()

@@ -40,8 +40,8 @@ internal static class MenuBuilder
             {
                 Normal = new Attribute(Color.White, Color.Black),
                 Focus = new Attribute(Color.Black, Color.Gray),
-                HotNormal = new Attribute(Color.BrightBlue, Color.DarkGray),
-                HotFocus = new Attribute(Color.BrightBlue, Color.Gray)
+                HotNormal = new Attribute(Color.BrightBlue, Color.Black),
+                HotFocus = new Attribute(Color.BrightBlue, Color.DarkGray)
             }
         };
     }

@@ -14,7 +14,7 @@ class Program
         Application.Init();
         var top = Application.Top;
 
-        var session = new EditorSession(CommandLineHandler.RetrieveDocument(args));
+        var session = new EditorSession(CommandLineHandler.GetDocumentOrDefault(args));
         var viewModel = new EditorViewModel(session, new EditorCommandService(session, new EditorNavigationService()));
 
         top.Add(MenuBuilder.Build(viewModel));
