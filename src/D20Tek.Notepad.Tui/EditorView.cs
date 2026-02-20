@@ -41,7 +41,6 @@ public sealed class EditorView : View
 
     public override void PositionCursor()
     {
-        // todo: can this be moved to the TerminalGuiRenderer?
         var caretLine = _viewModel.Session.Caret.Line;
         var caretCol = _viewModel.Session.Caret.Column;
         var verticalOffset = _viewModel.Viewport.FirstVisibleLine;
@@ -58,7 +57,7 @@ public sealed class EditorView : View
             int screenX = caretCol - _viewModel.Viewport.HorizontalOffset + Frame.X;
             int screenY = caretLine - verticalOffset + Frame.Y;
 
-            Application.Driver.SetCursorVisibility(CursorVisibility.Box);
+            Application.Driver.SetCursorVisibility(CursorVisibility.Default);
             Application.Driver.Move(screenX, screenY);
         }
         else
