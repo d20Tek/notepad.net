@@ -1,6 +1,4 @@
-﻿using D20Tek.Notepad.ViewModel;
-using D20Tek.Notepad.ViewModel.Rendering;
-using Terminal.Gui;
+﻿using D20Tek.Notepad.ViewModel.Rendering;
 using Attribute = Terminal.Gui.Attribute;
 
 namespace D20Tek.Notepad.Tui;

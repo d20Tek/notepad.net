@@ -17,6 +17,12 @@ public sealed class Viewport
         VisibleLineCount = visibleLineCount;
     }
 
+    public void ResetViewport()
+    {
+        HorizontalOffset = 0;
+        FirstVisibleLine = 0;
+    }
+
     public void SetVisibleLineCount(int count)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(count);

@@ -1,7 +1,4 @@
-﻿using D20Tek.Notepad.ViewModel;
-using Terminal.Gui;
-
-namespace D20Tek.Notepad.Tui;
+﻿namespace D20Tek.Notepad.Tui;
 
 public sealed class EditorView : View
 {

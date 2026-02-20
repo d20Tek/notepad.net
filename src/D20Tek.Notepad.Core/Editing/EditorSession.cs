@@ -6,7 +6,7 @@ namespace D20Tek.Notepad.Core.Editing;
 
 public sealed partial class EditorSession(IDocument document)
 {
-    public IDocument Document { get; } = document ?? throw new ArgumentNullException(nameof(document));
+    public IDocument Document { get; private set; } = document ?? throw new ArgumentNullException(nameof(document));
 
     public TextPosition Caret { get; set; } = new TextPosition(0, 0);
 
@@ -33,4 +33,14 @@ public sealed partial class EditorSession(IDocument document)
     public void Undo() => UndoStack.Undo(this);
 
     public void Redo() => UndoStack.Redo(this);
+
+    public void ReplaceDocument(IDocument newDocument)
+    {
+        Document = newDocument;
+        Caret = new TextPosition(0, 0);
+        ClearSelection();
+
+        // Notify listeners (ViewModel) that the document changed
+        //DocumentChanged?.Invoke(this, EventArgs.Empty);
+    }
 }
