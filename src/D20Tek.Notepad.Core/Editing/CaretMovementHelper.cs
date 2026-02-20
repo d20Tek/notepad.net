@@ -78,4 +78,50 @@ internal static class CaretMovementHelper
         session.Caret = new TextPosition(caret.Line + 1, newCol);
         session.Anchor = session.Caret;
     }
+
+    public static void MovePageUp(EditorSession session, int pageHeight)
+    {
+        var caret = session.Caret;
+
+        // If already at the top, clamp to (0, 0)
+        if (caret.Line == 0)
+        {
+            session.Caret = new TextPosition(0, 0);
+            session.Anchor = session.Caret;
+            return;
+        }
+
+        // Compute target line
+        int targetLine = Math.Max(0, caret.Line - pageHeight);
+
+        var target = session.Document.Lines[targetLine];
+        int newCol = Math.Min(caret.Column, target.Content.Length);
+
+        session.Caret = new TextPosition(targetLine, newCol);
+        session.Anchor = session.Caret;
+    }
+
+    public static void MovePageDown(EditorSession session, int pageHeight)
+    {
+        var caret = session.Caret;
+        int lastLineIndex = session.Document.Lines.Count - 1;
+
+        // If already at the bottom, clamp to end of last line
+        if (caret.Line == lastLineIndex)
+        {
+            var lastLine = session.Document.Lines[lastLineIndex];
+            session.Caret = new TextPosition(lastLineIndex, lastLine.Content.Length);
+            session.Anchor = session.Caret;
+            return;
+        }
+
+        // Compute target line
+        int targetLine = Math.Min(lastLineIndex, caret.Line + pageHeight);
+
+        var target = session.Document.Lines[targetLine];
+        int newCol = Math.Min(caret.Column, target.Content.Length);
+
+        session.Caret = new TextPosition(targetLine, newCol);
+        session.Anchor = session.Caret;
+    }
 }

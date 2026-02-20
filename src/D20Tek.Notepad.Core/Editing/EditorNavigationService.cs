@@ -13,6 +13,12 @@ public sealed class EditorNavigationService
 
     public void MoveDown(EditorSession session) => CaretMovementHelper.MoveDown(session);
 
+    public void MovePageUp(EditorSession session, int pageHeight) => 
+        CaretMovementHelper.MovePageUp(session, pageHeight);
+
+    public void MovePageDown(EditorSession session, int pageHeight) =>
+        CaretMovementHelper.MovePageDown(session, pageHeight);
+
     // Line/document boundary movement
     public void MoveToLineStart(EditorSession session)
     {

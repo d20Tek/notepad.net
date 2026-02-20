@@ -30,8 +30,10 @@ public static class ViewMapping
 
     public static ViewPosition ClampToViewport(TextPosition docPos, int firstVisibleLine, int visibleLineCount)
     {
-        int lastVisibleLine = firstVisibleLine + visibleLineCount - 1;
+        if (visibleLineCount <= 0)
+            return new ViewPosition(0, docPos.Column);
 
+        int lastVisibleLine = firstVisibleLine + visibleLineCount - 1;
         int clampedLine = Math.Clamp(docPos.Line, firstVisibleLine, lastVisibleLine);
         int viewLine = clampedLine - firstVisibleLine;
 

@@ -20,7 +20,7 @@ public sealed class TerminalGuiRenderer(View target) : IEditorRenderer
     public void BeginFrame(EditorViewModel viewModel)
     {
         _normalAttribute = _target.ColorScheme.Normal;
-        _selectionAttribute = new Attribute(_normalAttribute.Foreground, _target.ColorScheme.Focus.Background);
+        _selectionAttribute = new Attribute(_normalAttribute.Foreground, Color.Blue);
 
         var driver = Application.Driver;
 

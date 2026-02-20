@@ -50,63 +50,6 @@ public sealed class EditorView : View
         }
     }
 
-    public override bool ProcessKey(KeyEvent keyEvent)
-    {
-        bool shift = (keyEvent.Key & Key.ShiftMask) != 0;
-        Key key = keyEvent.Key & ~Key.ShiftMask;   // strip modifiers
-
-        switch (key)
-        {
-            // -----------------------------
-            // Arrow Keys
-            // -----------------------------
-            case Key.CursorLeft:
-                if (shift) _viewModel.Navigator.ExtendSelectionLeft();
-                else _viewModel.Navigator.MoveCaretLeft();
-                return true;
-
-            case Key.CursorRight:
-                if (shift) _viewModel.Navigator.ExtendSelectionRight();
-                else _viewModel.Navigator.MoveCaretRight();
-                return true;
-
-            case Key.CursorUp:
-                if (shift) _viewModel.Navigator.ExtendSelectionUp();
-                else _viewModel.Navigator.MoveCaretUp();
-                return true;
-
-            case Key.CursorDown:
-                if (shift) _viewModel.Navigator.ExtendSelectionDown();
-                else _viewModel.Navigator.MoveCaretDown();
-                return true;
-
-            // -----------------------------
-            // Home / End
-            // -----------------------------
-            case Key.Home:
-                if (shift) _viewModel.Navigator.ExtendSelectionToLineStart();
-                else _viewModel.Navigator.MoveToLineStart();
-                return true;
-
-            case Key.End:
-                if (shift) _viewModel.Navigator.ExtendSelectionToLineEnd();
-                else _viewModel.Navigator.MoveToLineEnd();
-                return true;
-
-            // -----------------------------
-            // todo: Page Up / Page Down
-            // -----------------------------
-            //case Key.PageUp:
-            //    if (shift) _viewModel.Navigator.ExtendSelectionPageUp();
-            //    else _viewModel.Navigator.PageUp();
-            //    return true;
-
-            //case Key.PageDown:
-            //    if (shift) _viewModel.Navigator.ExtendSelectionPageDown();
-            //    else _viewModel.Navigator.PageDown();
-            //    return true;
-        }
-
-        return base.ProcessKey(keyEvent);
-    }
+    public override bool ProcessKey(KeyEvent keyEvent) =>
+        KeyProcessorService.ProcessKey(_viewModel, keyEvent) || base.ProcessKey(keyEvent);
 }

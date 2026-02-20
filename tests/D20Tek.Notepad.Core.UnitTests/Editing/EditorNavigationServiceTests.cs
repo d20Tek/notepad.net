@@ -74,6 +74,40 @@ public class EditorNavigationServiceTests
         Assert.AreEqual(session.Caret, session.Anchor);
     }
 
+    [TestMethod]
+    public void MovePageUp_DelegatesToCaretMovementHelper()
+    {
+        // arrange
+        var session = CreateSession(["Line1", "Line2", "Line3", "Line4", "Line5"]);
+        session.Caret = new TextPosition(4, 2);
+        session.Anchor = new TextPosition(4, 2);
+        var navigation = new EditorNavigationService();
+
+        // act
+        navigation.MovePageUp(session, 3);
+
+        // assert
+        Assert.AreEqual(new TextPosition(1, 2), session.Caret);
+        Assert.AreEqual(session.Caret, session.Anchor);
+    }
+
+    [TestMethod]
+    public void MovePageDown_DelegatesToCaretMovementHelper()
+    {
+        // arrange
+        var session = CreateSession(["Line1", "Line2", "Line3", "Line4", "Line5"]);
+        session.Caret = new TextPosition(0, 2);
+        session.Anchor = new TextPosition(0, 2);
+        var navigation = new EditorNavigationService();
+
+        // act
+        navigation.MovePageDown(session, 3);
+
+        // assert
+        Assert.AreEqual(new TextPosition(3, 2), session.Caret);
+        Assert.AreEqual(session.Caret, session.Anchor);
+    }
+
     // MoveToLineStart tests
     [TestMethod]
     public void MoveToLineStart_AtMiddleOfLine_MovesToColumnZero()

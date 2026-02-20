@@ -272,4 +272,20 @@ public class ViewMappingTests
         Assert.AreEqual(0, result.LineIndex);
         Assert.AreEqual(5, result.Column);
     }
+
+    [TestMethod]
+    public void ClampToViewport_WithZeroVisibleLineCount_ReturnsZeroLineIndex()
+    {
+        // arrange
+        var docPos = new TextPosition(15, 8);
+        var firstVisibleLine = 10;
+        var visibleLineCount = 0;
+
+        // act
+        var result = ViewMapping.ClampToViewport(docPos, firstVisibleLine, visibleLineCount);
+
+        // assert
+        Assert.AreEqual(0, result.LineIndex);
+        Assert.AreEqual(8, result.Column);
+    }
 }

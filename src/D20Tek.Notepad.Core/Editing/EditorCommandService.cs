@@ -41,6 +41,10 @@ public sealed class EditorCommandService(EditorSession session, EditorNavigation
     
     public void MoveDown() => _navigation.MoveDown(_session);
 
+    public void PageUp(int pageHeight) => _navigation.MovePageUp(_session, pageHeight);
+
+    public void PageDown(int pageHeight) => _navigation.MovePageDown(_session, pageHeight);
+
     public void MoveToLineStart() => _navigation.MoveToLineStart(_session);
     
     public void MoveToLineEnd() => _navigation.MoveToLineEnd(_session);

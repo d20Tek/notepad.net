@@ -12,6 +12,12 @@ public sealed class Navigator(EditorViewModel viewModel)
 
     public void MoveCaretDown() => ExecuteNavigation(_viewModel.Commands.MoveDown);
 
+    public void MovePageUp() => ExecuteNavigation(() =>
+        _viewModel.Commands.PageUp(_viewModel.Viewport.VisibleLineCount));
+
+    public void MovePageDown() => ExecuteNavigation(() =>
+        _viewModel.Commands.PageDown(_viewModel.Viewport.VisibleLineCount));
+
     public void MoveToLineStart() => ExecuteNavigation(_viewModel.Commands.MoveToLineStart);
 
     public void MoveToLineEnd() => ExecuteNavigation(_viewModel.Commands.MoveToLineEnd);
@@ -27,6 +33,14 @@ public sealed class Navigator(EditorViewModel viewModel)
     public void ExtendSelectionUp() => ExecuteNavigation(_viewModel.Commands.SelectUp);
 
     public void ExtendSelectionDown() => ExecuteNavigation(_viewModel.Commands.SelectDown);
+
+    public void ExtendSelectionToDocumentStart() => ExecuteNavigation(_viewModel.Commands.SelectUp);  // todo: implement selection page up/down
+
+    public void ExtendSelectionToDocumentEnd() => ExecuteNavigation(_viewModel.Commands.SelectDown);
+
+    public void ExtendSelectionPageUp() => ExecuteNavigation(_viewModel.Commands.SelectUp);  // todo: implement selection doc start/end
+
+    public void ExtendSelectionPageDown() => ExecuteNavigation(_viewModel.Commands.SelectDown);
 
     public void ExtendSelectionToLineStart()
     {

@@ -140,6 +140,40 @@ public class NavigatorTests
         Assert.AreEqual(1, viewModel.Viewport.FirstVisibleLine);
     }
 
+    // MovePageUp tests
+    [TestMethod]
+    public void MovePageUp_MovesCaretUpByVisibleLineCount()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(GenerateLines(20));
+        session.Caret = new TextPosition(15, 3);
+        session.Anchor = new TextPosition(15, 3);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.Navigator.MovePageUp();
+
+        // assert
+        Assert.AreEqual(new TextPosition(10, 3), session.Caret);
+    }
+
+    // MovePageDown tests
+    [TestMethod]
+    public void MovePageDown_MovesCaretDownByVisibleLineCount()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(GenerateLines(20));
+        session.Caret = new TextPosition(5, 3);
+        session.Anchor = new TextPosition(5, 3);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.Navigator.MovePageDown();
+
+        // assert
+        Assert.AreEqual(new TextPosition(10, 3), session.Caret);
+    }
+
     // MoveToLineStart tests
     [TestMethod]
     public void MoveToLineStart_MovesCaretToColumnZero()
