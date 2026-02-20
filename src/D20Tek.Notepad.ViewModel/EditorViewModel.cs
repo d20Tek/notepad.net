@@ -1,5 +1,7 @@
 ﻿using D20Tek.Notepad.Core.Editing;
+using D20Tek.Notepad.Core.Primitives;
 using D20Tek.Notepad.ViewModel.Rendering;
+using System.Runtime.InteropServices;
 
 namespace D20Tek.Notepad.ViewModel;
 
@@ -55,6 +57,31 @@ public sealed partial class EditorViewModel
     }
 
     public void ScrollColumns(int delta) => SetWithRefresh(() => Viewport.ScrollColumns(delta));
+
+    public int GetLineLength(int lineIndex)
+    {
+        if (lineIndex < 0 || lineIndex >= Session.Document.Lines.Count)
+            return 0;
+
+        return Session.Document.Lines[lineIndex].Content.Length;
+    }
+
+    public void SetAnchorToCaret() => Session.Anchor = Session.Caret;
+
+    public void MoveCaretTo(int line, int column)
+    {
+        // Clamp line
+        line = Math.Max(0, Math.Min(line, Session.Document.Lines.Count - 1));
+
+        // Clamp column
+        int lineLength = Session.Document.Lines[line].Content.Length;
+        column = Math.Max(0, Math.Min(column, lineLength));
+
+        var newPos = new TextPosition(line, column);
+
+        Session.Caret = newPos;
+        Session.Anchor = newPos;
+    }
 
     public void RenderFrame(IEditorRenderer renderer) => RendererLoop.RenderFull(this, renderer);
     

@@ -1,4 +1,7 @@
-﻿namespace D20Tek.Notepad.ViewModel;
+﻿using D20Tek.Notepad.Core.Editing;
+using D20Tek.Notepad.Core.Primitives;
+
+namespace D20Tek.Notepad.ViewModel;
 
 public sealed partial class EditorViewModel
 {
@@ -18,6 +21,20 @@ public sealed partial class EditorViewModel
             (false, true) => new SelectionSegment(0, endCol),                              // last line
             _             => new SelectionSegment(0, textLength)                           // middle line
         };
+    }
+
+    public void ExtendSelectionTo(int line, int column)
+    {
+        // Clamp line
+        line = Math.Max(0, Math.Min(line, Session.Document.Lines.Count - 1));
+
+        // Clamp column
+        int lineLength = Session.Document.Lines[line].Content.Length;
+        column = Math.Max(0, Math.Min(column, lineLength));
+
+        Session.Caret = new TextPosition(line, column);
+
+        // IMPORTANT: Do NOT modify session.Anchor here. Anchor was set when selection began.
     }
 
     private static bool SelectionChangedNeeded(SelectionViewRange? oldSel, SelectionViewRange? newSel)

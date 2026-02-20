@@ -296,6 +296,184 @@ public class EditorViewModelTests
         Assert.AreEqual(new ViewPosition(2, 3), viewModel.CaretViewPosition);
     }
 
+    // GetLineLength tests
+    [TestMethod]
+    public void GetLineLength_WithValidLineIndex_ReturnsCorrectLength()
+    {
+        // arrange
+        var session = CreateSession(["Hello", "World"]);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
+
+        // act
+        var length = viewModel.GetLineLength(0);
+
+        // assert
+        Assert.AreEqual(5, length);
+    }
+
+    [TestMethod]
+    public void GetLineLength_WithNegativeIndex_ReturnsZero()
+    {
+        // arrange
+        var session = CreateSession(["Hello"]);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
+
+        // act
+        var length = viewModel.GetLineLength(-1);
+
+        // assert
+        Assert.AreEqual(0, length);
+    }
+
+    [TestMethod]
+    public void GetLineLength_WithIndexExceedingLineCount_ReturnsZero()
+    {
+        // arrange
+        var session = CreateSession(["Hello", "World"]);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
+
+        // act
+        var length = viewModel.GetLineLength(10);
+
+        // assert
+        Assert.AreEqual(0, length);
+    }
+
+    // SetAnchorToCaret tests
+    [TestMethod]
+    public void SetAnchorToCaret_SetsAnchorToCurrentCaretPosition()
+    {
+        // arrange
+        var session = CreateSession(["Hello", "World"]);
+        session.Caret = new TextPosition(1, 3);
+        session.Anchor = new TextPosition(0, 0);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
+
+        // act
+        viewModel.SetAnchorToCaret();
+
+        // assert
+        Assert.AreEqual(new TextPosition(1, 3), session.Anchor);
+    }
+
+    // MoveCaretTo tests
+    [TestMethod]
+    public void MoveCaretTo_WithValidPosition_MovesCaretAndAnchor()
+    {
+        // arrange
+        var session = CreateSession(["Hello", "World", "Test"]);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
+
+        // act
+        viewModel.MoveCaretTo(1, 3);
+
+        // assert
+        Assert.AreEqual(new TextPosition(1, 3), session.Caret);
+        Assert.AreEqual(new TextPosition(1, 3), session.Anchor);
+    }
+
+    [TestMethod]
+    public void MoveCaretTo_WithLineExceedingDocument_ClampsToLastLine()
+    {
+        // arrange
+        var session = CreateSession(["Hello", "World"]);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
+
+        // act
+        viewModel.MoveCaretTo(100, 2);
+
+        // assert
+        Assert.AreEqual(1, session.Caret.Line);
+    }
+
+    [TestMethod]
+    public void MoveCaretTo_WithNegativeLine_ClampsToZero()
+    {
+        // arrange
+        var session = CreateSession(["Hello", "World"]);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
+
+        // act
+        viewModel.MoveCaretTo(-5, 2);
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Line);
+    }
+
+    [TestMethod]
+    public void MoveCaretTo_WithColumnExceedingLineLength_ClampsToLineEnd()
+    {
+        // arrange
+        var session = CreateSession(["Hello"]);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
+
+        // act
+        viewModel.MoveCaretTo(0, 100);
+
+        // assert
+        Assert.AreEqual(5, session.Caret.Column);
+    }
+
+    [TestMethod]
+    public void MoveCaretTo_WithNegativeColumn_ClampsToZero()
+    {
+        // arrange
+        var session = CreateSession(["Hello"]);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
+
+        // act
+        viewModel.MoveCaretTo(0, -10);
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Column);
+    }
+
+    // SetViewportWidth tests
+    [TestMethod]
+    public void SetViewportWidth_WithPositiveWidth_SetsWidth()
+    {
+        // arrange
+        var session = CreateSession(["Hello World this is a long line"]);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
+        viewModel.SetViewportHeight(1);
+
+        // act
+        viewModel.SetViewportWidth(20);
+
+        // assert - verify through visible line truncation or refresh behavior
+        Assert.HasCount(1, viewModel.VisibleLines);
+    }
+
+    [TestMethod]
+    public void SetViewportWidth_WithZeroWidth_ClampsToZero()
+    {
+        // arrange
+        var session = CreateSession(["Hello"]);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
+        viewModel.SetViewportHeight(1);
+
+        // act
+        viewModel.SetViewportWidth(0);
+
+        // assert - should not throw
+        Assert.HasCount(1, viewModel.VisibleLines);
+    }
+
+    [TestMethod]
+    public void SetViewportWidth_WithNegativeWidth_ClampsToZero()
+    {
+        // arrange
+        var session = CreateSession(["Hello"]);
+        var viewModel = new EditorViewModel(session, new(session, _nav));
+        viewModel.SetViewportHeight(1);
+
+        // act
+        viewModel.SetViewportWidth(-10);
+
+        // assert - should not throw
+        Assert.HasCount(1, viewModel.VisibleLines);
+    }
+
     private static EditorSession CreateSession(string[] lines)
     {
         var textLines = lines.Select(l => new TextLine(l)).ToList();

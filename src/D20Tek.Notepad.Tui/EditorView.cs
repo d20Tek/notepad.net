@@ -11,6 +11,7 @@ public sealed class EditorView : View
         _renderer = new TerminalGuiRenderer(this);
 
         CanFocus = true;
+        WantMousePositionReports = true;
 
         // Subscribe to ViewModel events
         _viewModel.ViewChanged += () => RedrawEditor();
@@ -50,6 +51,17 @@ public sealed class EditorView : View
         }
     }
 
+    public override bool MouseEvent(MouseEvent me)
+    {
+        if (MouseHandler.ProcessMouse(_viewModel, me))
+        {
+            SetNeedsDisplay();
+            return true;
+        }
+
+        return base.MouseEvent(me);
+    }
+
     public override bool ProcessKey(KeyEvent keyEvent) =>
-        KeyProcessorService.ProcessKey(_viewModel, keyEvent) || base.ProcessKey(keyEvent);
+        KeyboardHandler.ProcessKey(_viewModel, keyEvent) || base.ProcessKey(keyEvent);
 }

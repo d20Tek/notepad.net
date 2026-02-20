@@ -1,6 +1,6 @@
 ﻿namespace D20Tek.Notepad.Tui;
 
-internal static class KeyProcessorService
+internal static class KeyboardHandler
 {
     public static bool ProcessKey(EditorViewModel vm, KeyEvent keyEvent)
     {

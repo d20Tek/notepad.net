@@ -245,6 +245,72 @@ public class EditorViewModelSelectionTests
         Assert.AreEqual(5, result.Value.EndColumn);
     }
 
+    // ExtendSelectionTo tests
+    [TestMethod]
+    public void ExtendSelectionTo_WithValidPosition_MovesCaretAndKeepsAnchor()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello", "World", "Test"]);
+        session.Caret = new TextPosition(0, 2);
+        session.Anchor = new TextPosition(0, 2);
+        viewModel.SetViewportHeight(3);
+
+        // act
+        viewModel.ExtendSelectionTo(1, 3);
+
+        // assert
+        Assert.AreEqual(new TextPosition(1, 3), session.Caret);
+        Assert.AreEqual(new TextPosition(0, 2), session.Anchor);
+    }
+
+    [TestMethod]
+    public void ExtendSelectionTo_WithLineExceedingDocument_ClampsToLastLine()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello", "World"]);
+        session.Caret = new TextPosition(0, 0);
+        session.Anchor = new TextPosition(0, 0);
+        viewModel.SetViewportHeight(2);
+
+        // act
+        viewModel.ExtendSelectionTo(10, 3);
+
+        // assert
+        Assert.AreEqual(new TextPosition(1, 3), session.Caret);
+    }
+
+    [TestMethod]
+    public void ExtendSelectionTo_WithNegativeLine_ClampsToZero()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello", "World"]);
+        session.Caret = new TextPosition(1, 3);
+        session.Anchor = new TextPosition(1, 3);
+        viewModel.SetViewportHeight(2);
+
+        // act
+        viewModel.ExtendSelectionTo(-5, 2);
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 2), session.Caret);
+    }
+
+    [TestMethod]
+    public void ExtendSelectionTo_WithColumnExceedingLineLength_ClampsToLineEnd()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello"]);
+        session.Caret = new TextPosition(0, 0);
+        session.Anchor = new TextPosition(0, 0);
+        viewModel.SetViewportHeight(1);
+
+        // act
+        viewModel.ExtendSelectionTo(0, 100);
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 5), session.Caret);
+    }
+
     // Helper methods
     private static (EditorViewModel viewModel, EditorSession session) CreateViewModel(string[] lines)
     {
