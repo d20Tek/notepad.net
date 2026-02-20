@@ -39,6 +39,34 @@ public sealed class EditorView : View
         _viewModel.RenderFrame(_renderer);
     }
 
+    public override void PositionCursor()
+    {
+        // todo: can this be moved to the TerminalGuiRenderer?
+        var caretLine = _viewModel.Session.Caret.Line;
+        var caretCol = _viewModel.Session.Caret.Column;
+        var verticalOffset = _viewModel.Viewport.FirstVisibleLine;
+        var viewportHeight = _viewModel.Viewport.VisibleLineCount;
+
+        bool caretVisible =
+            caretLine >= verticalOffset &&
+            caretLine < verticalOffset + viewportHeight &&
+            caretCol >= _viewModel.Viewport.HorizontalOffset &&
+            caretCol < _viewModel.Viewport.HorizontalOffset + _viewModel.ViewportWidth;
+
+        if (HasFocus && caretVisible)
+        {
+            int screenX = caretCol - _viewModel.Viewport.HorizontalOffset + Frame.X;
+            int screenY = caretLine - verticalOffset + Frame.Y;
+
+            Application.Driver.SetCursorVisibility(CursorVisibility.Box);
+            Application.Driver.Move(screenX, screenY);
+        }
+        else
+        {
+            Application.Driver.SetCursorVisibility(CursorVisibility.Invisible);
+        }
+    }
+
     private void UpdateViewportSize()
     {
         // Set viewport dimensions based on the view's bounds

@@ -7,6 +7,10 @@
     "Notepad.Tui with File": {
       "commandName": "Project",
       "commandLineArgs": "C:\\temp\\json\\gridlock-puzzles.json"
+    },
+    "Notepad.Tui with Wide File": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\temp\\json\\gridlock-puzzles.min.json"
     }
   }
 }

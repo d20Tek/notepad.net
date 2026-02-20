@@ -1,7 +1,6 @@
 ﻿using D20Tek.Notepad.Core.Editing;
 using D20Tek.Notepad.Core.Primitives;
 using D20Tek.Notepad.ViewModel.Rendering;
-using System.Runtime.InteropServices;
 
 namespace D20Tek.Notepad.ViewModel;
 
@@ -32,11 +31,13 @@ public sealed partial class EditorViewModel
 
     public Viewport Viewport { get; }
 
+    public int ViewportWidth { get { return _viewportWidth; } }
+
     public IReadOnlyList<ViewLine> VisibleLines => _visibleLines;
 
     public ViewPosition CaretViewPosition { get; private set; }
 
-    public SelectionViewRange? SelectionViewRange { get; private set; }
+    public SelectionViewRange? SelectionViewRange { get; set; }
 
     public void SetViewportHeight(int visibleLineCount) => SetWithRefresh(() =>
         Viewport.SetVisibleLineCount(visibleLineCount));

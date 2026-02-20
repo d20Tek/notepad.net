@@ -56,7 +56,7 @@ public sealed class TerminalGuiRenderer(View target) : IEditorRenderer
 
         int selStart = selection.Value.StartColumn;
         int selEnd = selection.Value.EndColumn;
-
+        
         // Clamp to visible text
         selStart = Math.Max(0, Math.Min(selStart, text.Length));
         selEnd = Math.Max(0, Math.Min(selEnd, text.Length));
@@ -65,7 +65,7 @@ public sealed class TerminalGuiRenderer(View target) : IEditorRenderer
         if (selStart > 0)
         {
             driver.SetAttribute(_normalAttribute);
-            driver.AddStr(text.Substring(0, selStart));
+            driver.AddStr(text[..selStart]);
         }
 
         // Part 2: selected text
@@ -97,7 +97,6 @@ public sealed class TerminalGuiRenderer(View target) : IEditorRenderer
         if (y < AbsY || y >= AbsY + Height) return;
 
         driver.Move(x, y);
-        driver.SetCursorVisibility(CursorVisibility.Default);
     }
 
     public void EndFrame() { }
