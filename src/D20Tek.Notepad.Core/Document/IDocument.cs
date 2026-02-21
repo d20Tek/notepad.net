@@ -13,5 +13,11 @@ public interface IDocument
 
     bool IsModified { get; }
 
+    int LineCount { get; }
+
     void ReplaceLines(int startIndex, int count, IEnumerable<TextLine> newLines);
+
+    void SetEncoding(Encoding encoding);
+
+    void SetLineEndingStyle(LineEndingStyle style);
 }

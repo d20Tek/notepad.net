@@ -1,6 +1,4 @@
-﻿using D20Tek.Notepad.Core.Primitives;
-
-namespace D20Tek.Notepad.ViewModel;
+﻿namespace D20Tek.Notepad.ViewModel;
 
 public sealed partial class EditorViewModel
 {

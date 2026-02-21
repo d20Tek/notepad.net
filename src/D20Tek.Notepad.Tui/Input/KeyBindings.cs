@@ -1,8 +1,5 @@
 namespace D20Tek.Notepad.Tui.Input;
 
-/// <summary>
-/// Maps keyboard input to EditorViewModel actions using a command pattern.
-/// </summary>
 internal static class KeyBindings
 {
     private static readonly Dictionary<(Key key, bool shift, bool ctrl), Action<EditorViewModel>> _bindings = new()

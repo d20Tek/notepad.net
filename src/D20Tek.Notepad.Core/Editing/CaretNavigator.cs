@@ -2,18 +2,11 @@ using D20Tek.Notepad.Core.Primitives;
 
 namespace D20Tek.Notepad.Core.Editing;
 
-/// <summary>
-/// Unified navigation service for caret movement and selection extension.
-/// Consolidates CaretMovementHelper and SelectionMovementHelper into a single class.
-/// </summary>
 public sealed class CaretNavigator(EditorSession session)
 {
     private readonly EditorSession _session = session;
 
-    // ============================================================
     // Movement (resets selection by setting Anchor = Caret)
-    // ============================================================
-
     public void MoveLeft() => Move(ComputeLeft, resetAnchor: true);
 
     public void MoveRight() => Move(ComputeRight, resetAnchor: true);
@@ -34,10 +27,7 @@ public sealed class CaretNavigator(EditorSession session)
 
     public void MoveToDocumentEnd() => Move(ComputeDocumentEnd, resetAnchor: true);
 
-    // ============================================================
     // Selection Extension (preserves anchor)
-    // ============================================================
-
     public void ExtendLeft() => Move(ComputeLeft, resetAnchor: false);
 
     public void ExtendRight() => Move(ComputeRight, resetAnchor: false);
@@ -58,10 +48,7 @@ public sealed class CaretNavigator(EditorSession session)
 
     public void ExtendToDocumentEnd() => Move(ComputeDocumentEnd, resetAnchor: false);
 
-    // ============================================================
     // Core Movement Logic
-    // ============================================================
-
     private void Move(Func<TextPosition> computeNewPosition, bool resetAnchor)
     {
         _session.Caret = computeNewPosition();
@@ -71,10 +58,7 @@ public sealed class CaretNavigator(EditorSession session)
         }
     }
 
-    // ============================================================
     // Position Computation Helpers
-    // ============================================================
-
     private TextPosition ComputeLeft()
     {
         var caret = _session.Caret;
@@ -165,10 +149,6 @@ public sealed class CaretNavigator(EditorSession session)
 
     private TextPosition ComputeDocumentEnd() =>
         new(LastLineIndex, GetLineLength(LastLineIndex));
-
-    // ============================================================
-    // Utility Properties and Methods
-    // ============================================================
 
     private int LastLineIndex => _session.Document.Lines.Count - 1;
 

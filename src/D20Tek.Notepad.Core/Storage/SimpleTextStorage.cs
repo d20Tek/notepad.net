@@ -39,8 +39,7 @@ public sealed class SimpleTextStorage : ITextStorageStrategy
             detectEncodingFromByteOrderMarks: false,
             leaveOpen: true);
 
-        var text = reader.ReadToEnd();
-        return text;
+        return reader.ReadToEnd();
     }
 
     private static List<TextLine> SplitIntoLines(string text)

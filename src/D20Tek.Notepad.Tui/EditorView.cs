@@ -25,7 +25,7 @@ public sealed class EditorView : View, IDisposable
         _viewModel.SelectionChanged += OnSelectionChanged;
     }
 
-    public void Dispose()
+    public new void Dispose()
     {
         if (_disposed) return;
         _disposed = true;
@@ -122,5 +122,5 @@ public sealed class EditorView : View, IDisposable
     }
 
     public override bool ProcessKey(KeyEvent keyEvent) =>
-        KeyboardHandler.ProcessKey(_viewModel, keyEvent) || base.ProcessKey(keyEvent);
+        KeyBindings.TryExecute(_viewModel, keyEvent) || base.ProcessKey(keyEvent);
 }

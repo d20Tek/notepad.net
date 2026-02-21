@@ -1,9 +1,5 @@
 ﻿namespace D20Tek.Notepad.Core.Editing;
 
-/// <summary>
-/// Service for editing commands (typing, clipboard, undo/redo).
-/// Navigation is handled directly by EditorSession.Navigator (CaretNavigator).
-/// </summary>
 public sealed class EditorCommandService(EditorSession session)
 {
     private readonly EditorSession _session = session ?? throw new ArgumentNullException(nameof(session));
@@ -35,7 +31,6 @@ public sealed class EditorCommandService(EditorSession session)
 
     public void Paste(string text) => _session.InsertText(text);
 
-    // Selection
     public void SelectAll() => _session.SelectAll();
 
     // Undo / Redo
@@ -43,7 +38,6 @@ public sealed class EditorCommandService(EditorSession session)
 
     public void Redo() => _session.Redo();
 
-    // Grouping (typing sessions)
     public void BeginTypingGroup() => _session.UndoStack.BeginGroup();
 
     public void EndTypingGroup() => _session.UndoStack.EndGroup();

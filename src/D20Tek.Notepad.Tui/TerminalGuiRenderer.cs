@@ -14,9 +14,6 @@ public sealed class TerminalGuiRenderer(View target) : IEditorRenderer
     private int Width => _target.Frame.Width;
     private int Height => _target.Frame.Height;
 
-    // ---------------------------------------------------------
-    // Clear the viewport
-    // ---------------------------------------------------------
     public void BeginFrame(EditorViewModel viewModel)
     {
         _normalAttribute = _target.ColorScheme.Normal;
@@ -32,9 +29,6 @@ public sealed class TerminalGuiRenderer(View target) : IEditorRenderer
         }
     }
 
-    // ---------------------------------------------------------
-    // Draw a single line with selection highlight
-    // ---------------------------------------------------------
     public void RenderLine(int viewLineIndex, ViewLine line, SelectionSegment? selection)
     {
         var driver = Application.Driver;
@@ -83,9 +77,6 @@ public sealed class TerminalGuiRenderer(View target) : IEditorRenderer
         }
     }
 
-    // ---------------------------------------------------------
-    // Draw caret
-    // ---------------------------------------------------------
     public void RenderCaret(ViewPosition caret)
     {
         var driver = Application.Driver;
