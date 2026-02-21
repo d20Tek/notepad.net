@@ -2,16 +2,15 @@
 
 internal static class MouseHandler
 {
-    private const int EdgeScrollSpeed = 3;
-
     public static bool ProcessMouse(EditorViewModel vm, MouseEvent mouseEvent)
     {
         var flags = mouseEvent.Flags;
+        var settings = vm.Settings;
 
         // Scroll up
         if (flags.HasFlag(MouseFlags.WheeledUp))
         {
-            vm.ScrollLines(-3);
+            vm.ScrollLines(-settings.MouseWheelScrollLines);
             Application.Driver.SetCursorVisibility(CursorVisibility.Invisible);
             return true;
         }
@@ -19,7 +18,7 @@ internal static class MouseHandler
         // Scroll down
         if (flags.HasFlag(MouseFlags.WheeledDown))
         {
-            vm.ScrollLines(3);
+            vm.ScrollLines(settings.MouseWheelScrollLines);
             Application.Driver.SetCursorVisibility(CursorVisibility.Invisible);
             return true;
         }
@@ -86,33 +85,35 @@ internal static class MouseHandler
     {
         int viewportHeight = vm.Viewport.VisibleLineCount;
         int totalLines = vm.Session.Document.Lines.Count;
+        int edgeScrollSpeed = vm.Settings.EdgeScrollSpeed;
 
         if (me.Y <= 0 && vm.Viewport.FirstVisibleLine > 0)
         {
             // Dragging at or above the top edge - scroll up
-            vm.ScrollLines(-EdgeScrollSpeed);
+            vm.ScrollLines(-edgeScrollSpeed);
         }
         else if (me.Y >= viewportHeight - 1 &&
                  vm.Viewport.FirstVisibleLine + viewportHeight < totalLines)
         {
             // Dragging at or below the bottom edge - scroll down
-            vm.ScrollLines(EdgeScrollSpeed);
+            vm.ScrollLines(edgeScrollSpeed);
         }
     }
 
     private static void EdgeScrollHorizontal(EditorViewModel vm, MouseEvent me)
     {
         int viewportWidth = vm.ViewportWidth;
+        int horizontalScrollAmount = vm.Settings.HorizontalEdgeScrollAmount;
 
         if (me.X <= 0 && vm.Viewport.HorizontalOffset > 0)
         {
             // Dragging at or left of the left edge - scroll left
-            vm.ScrollColumns(-20);
+            vm.ScrollColumns(-horizontalScrollAmount);
         }
         else if (me.X >= viewportWidth - 1)
         {
             // Dragging at or right of the right edge - scroll right
-            vm.ScrollColumns(20);
+            vm.ScrollColumns(horizontalScrollAmount);
         }
     }
 

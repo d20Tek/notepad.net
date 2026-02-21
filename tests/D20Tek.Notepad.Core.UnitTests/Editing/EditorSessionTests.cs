@@ -177,9 +177,153 @@ public partial class EditorSessionTests
         Assert.AreEqual("Fresh Start", session.Document.Lines[0].Content);
     }
 
+    // ClampToDocument tests
+    [TestMethod]
+    public void ClampToDocument_WithValidPosition_ReturnsUnchanged()
+    {
+        // arrange
+        var session = CreateMultiLineSession(["Hello", "World", "Test"]);
+
+        // act
+        var result = session.ClampToDocument(1, 3);
+
+        // assert
+        Assert.AreEqual(new TextPosition(1, 3), result);
+    }
+
+    [TestMethod]
+    public void ClampToDocument_WithNegativeLine_ClampsToZero()
+    {
+        // arrange
+        var session = CreateMultiLineSession(["Hello", "World"]);
+
+        // act
+        var result = session.ClampToDocument(-5, 2);
+
+        // assert
+        Assert.AreEqual(0, result.Line);
+        Assert.AreEqual(2, result.Column);
+    }
+
+    [TestMethod]
+    public void ClampToDocument_WithLineExceedingDocument_ClampsToLastLine()
+    {
+        // arrange
+        var session = CreateMultiLineSession(["Hello", "World"]);
+
+        // act
+        var result = session.ClampToDocument(100, 2);
+
+        // assert
+        Assert.AreEqual(1, result.Line);
+        Assert.AreEqual(2, result.Column);
+    }
+
+    [TestMethod]
+    public void ClampToDocument_WithNegativeColumn_ClampsToZero()
+    {
+        // arrange
+        var session = CreateSession("Hello");
+
+        // act
+        var result = session.ClampToDocument(0, -10);
+
+        // assert
+        Assert.AreEqual(0, result.Line);
+        Assert.AreEqual(0, result.Column);
+    }
+
+    [TestMethod]
+    public void ClampToDocument_WithColumnExceedingLineLength_ClampsToLineEnd()
+    {
+        // arrange
+        var session = CreateSession("Hello");
+
+        // act
+        var result = session.ClampToDocument(0, 100);
+
+        // assert
+        Assert.AreEqual(0, result.Line);
+        Assert.AreEqual(5, result.Column);
+    }
+
+    [TestMethod]
+    public void ClampToDocument_WithBothOutOfBounds_ClampsBoth()
+    {
+        // arrange
+        var session = CreateMultiLineSession(["Hi", "Bye"]);
+
+        // act
+        var result = session.ClampToDocument(100, 100);
+
+        // assert
+        Assert.AreEqual(1, result.Line);
+        Assert.AreEqual(3, result.Column); // "Bye" has length 3
+    }
+
+    // GetLineLength tests
+    [TestMethod]
+    public void GetLineLength_WithValidIndex_ReturnsCorrectLength()
+    {
+        // arrange
+        var session = CreateMultiLineSession(["Hello", "World"]);
+
+        // act
+        var length = session.GetLineLength(0);
+
+        // assert
+        Assert.AreEqual(5, length);
+    }
+
+    [TestMethod]
+    public void GetLineLength_WithNegativeIndex_ReturnsZero()
+    {
+        // arrange
+        var session = CreateSession("Hello");
+
+        // act
+        var length = session.GetLineLength(-1);
+
+        // assert
+        Assert.AreEqual(0, length);
+    }
+
+    [TestMethod]
+    public void GetLineLength_WithIndexExceedingLineCount_ReturnsZero()
+    {
+        // arrange
+        var session = CreateMultiLineSession(["Hello", "World"]);
+
+        // act
+        var length = session.GetLineLength(10);
+
+        // assert
+        Assert.AreEqual(0, length);
+    }
+
+    [TestMethod]
+    public void GetLineLength_WithEmptyLine_ReturnsZero()
+    {
+        // arrange
+        var session = CreateMultiLineSession(["Hello", "", "World"]);
+
+        // act
+        var length = session.GetLineLength(1);
+
+        // assert
+        Assert.AreEqual(0, length);
+    }
+
     private static EditorSession CreateSession(string content)
     {
         var doc = new Doc.Document([new(content)]);
+        return new EditorSession(doc);
+    }
+
+    private static EditorSession CreateMultiLineSession(string[] lines)
+    {
+        var textLines = lines.Select(l => new TextLine(l)).ToArray();
+        var doc = new Doc.Document(textLines);
         return new EditorSession(doc);
     }
 }

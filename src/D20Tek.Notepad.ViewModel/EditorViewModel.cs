@@ -14,17 +14,26 @@ public sealed partial class EditorViewModel
     public event Action<SelectionViewRange?>? SelectionChanged;
 
     public EditorViewModel(EditorSession session, EditorCommandService commandService)
+        : this(session, commandService, EditorSettings.Default)
+    {
+    }
+
+    public EditorViewModel(EditorSession session, EditorCommandService commandService, EditorSettings settings)
     {
         ArgumentNullException.ThrowIfNull(session);
         ArgumentNullException.ThrowIfNull(commandService);
+        ArgumentNullException.ThrowIfNull(settings);
         Session = session;
         Commands = commandService;
+        Settings = settings;
         Viewport = new Viewport();
     }
 
     public EditorSession Session { get; }
 
     public EditorCommandService Commands { get; }
+
+    public EditorSettings Settings { get; }
 
     public Viewport Viewport { get; }
 
@@ -94,27 +103,13 @@ public sealed partial class EditorViewModel
     // Caret/Selection Helpers
     // ============================================================
 
-    public int GetLineLength(int lineIndex)
-    {
-        if (lineIndex < 0 || lineIndex >= Session.Document.Lines.Count)
-            return 0;
-
-        return Session.Document.Lines[lineIndex].Content.Length;
-    }
+    public int GetLineLength(int lineIndex) => Session.GetLineLength(lineIndex);
 
     public void SetAnchorToCaret() => Session.Anchor = Session.Caret;
 
     public void MoveCaretTo(int line, int column)
     {
-        // Clamp line
-        line = Math.Max(0, Math.Min(line, Session.Document.Lines.Count - 1));
-
-        // Clamp column
-        int lineLength = Session.Document.Lines[line].Content.Length;
-        column = Math.Max(0, Math.Min(column, lineLength));
-
-        var newPos = new TextPosition(line, column);
-
+        var newPos = Session.ClampToDocument(line, column);
         Session.Caret = newPos;
         Session.Anchor = newPos;
     }

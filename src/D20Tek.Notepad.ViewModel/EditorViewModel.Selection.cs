@@ -24,15 +24,7 @@ public sealed partial class EditorViewModel
 
     public void ExtendSelectionTo(int line, int column)
     {
-        // Clamp line
-        line = Math.Max(0, Math.Min(line, Session.Document.Lines.Count - 1));
-
-        // Clamp column
-        int lineLength = Session.Document.Lines[line].Content.Length;
-        column = Math.Max(0, Math.Min(column, lineLength));
-
-        Session.Caret = new TextPosition(line, column);
-
+        Session.Caret = Session.ClampToDocument(line, column);
         // IMPORTANT: Do NOT modify session.Anchor here. Anchor was set when selection began.
     }
 
