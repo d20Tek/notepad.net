@@ -29,6 +29,18 @@ public sealed class Viewport
         VisibleLineCount = count;
     }
 
+    public void SetVerticalOffset(int offset)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(offset);
+        FirstVisibleLine = offset;
+    }
+
+    public void SetHorizontalOffset(int offset)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(offset);
+        HorizontalOffset = offset;
+    }
+
     public void ScrollLines(int delta, int totalDocumentLines)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(totalDocumentLines);

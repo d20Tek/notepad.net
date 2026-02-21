@@ -11,8 +11,10 @@ public sealed class TerminalGuiRenderer(View target) : IEditorRenderer
 
     private int AbsX => _target.Frame.X;
     private int AbsY => _target.Frame.Y;
-    private int Width => _target.Frame.Width;
-    private int Height => _target.Frame.Height;
+    
+    // Reserve 1 column for vertical scrollbar, 1 row for horizontal scrollbar
+    private int Width => Math.Max(0, _target.Frame.Width - 1);
+    private int Height => Math.Max(0, _target.Frame.Height - 1);
 
     public void BeginFrame(EditorViewModel viewModel)
     {
