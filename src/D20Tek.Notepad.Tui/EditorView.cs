@@ -269,7 +269,7 @@ public sealed class EditorView : View, IDisposable
         var viewportCols = _viewModel.ViewportWidth;
         int maxPosition = Math.Max(0, maxLineLength - viewportCols);
 
-        _hScrollBar.Size = Math.Max(1, maxLineLength);
+        _hScrollBar.Size = Math.Max(1, maxLineLength + 1);
         _hScrollBar.Position = Math.Clamp(_viewModel.Viewport.HorizontalOffset, 0, maxPosition);
         _hScrollBar.Visible = maxLineLength > viewportCols;
         _hScrollBar.SetNeedsDisplay();
