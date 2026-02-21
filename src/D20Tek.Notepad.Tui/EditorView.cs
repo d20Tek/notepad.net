@@ -7,6 +7,7 @@ public sealed class EditorView : View, IDisposable
 {
     private readonly EditorViewModel _viewModel;
     private readonly TerminalGuiRenderer _renderer;
+
     private ScrollBarView? _vScrollBar;
     private ScrollBarView? _hScrollBar;
     private bool _scrollBarsInitialized;
@@ -23,11 +24,10 @@ public sealed class EditorView : View, IDisposable
 
         Added += OnAddedToSuperView;
         Resized += OnViewResized;
-        
-        // Subscribe to ViewModel events
-        _viewModel.ViewChanged += OnViewChanged;
-        _viewModel.CaretMoved += OnCaretMoved;
-        _viewModel.SelectionChanged += OnSelectionChanged;
+
+        _viewModel.ViewChanged += OnViewModelChanged;
+        _viewModel.CaretMoved += OnViewModelChanged;
+        _viewModel.SelectionChanged += OnViewModelChanged;
     }
 
     public new void Dispose()
@@ -35,60 +35,36 @@ public sealed class EditorView : View, IDisposable
         if (_disposed) return;
         _disposed = true;
 
-        // Unsubscribe from ScrollBar events
-        if (_vScrollBar != null) _vScrollBar.ChangedPosition -= OnVerticalScrollChanged;
-        if (_hScrollBar != null) _hScrollBar.ChangedPosition -= OnHorizontalScrollChanged;
+        UnsubscribeScrollBarEvents();
 
-        // Unsubscribe from ViewModel events to prevent memory leaks
-        _viewModel.ViewChanged -= OnViewChanged;
-        _viewModel.CaretMoved -= OnCaretMoved;
-        _viewModel.SelectionChanged -= OnSelectionChanged;
+        _viewModel.ViewChanged -= OnViewModelChanged;
+        _viewModel.CaretMoved -= OnViewModelChanged;
+        _viewModel.SelectionChanged -= OnViewModelChanged;
 
         Resized -= OnViewResized;
         Added -= OnAddedToSuperView;
     }
 
-    private void OnViewChanged() => RedrawEditor();
-    private void OnCaretMoved(ViewPosition _) => RedrawEditor();
-    private void OnSelectionChanged(SelectionViewRange? _) => RedrawEditor();
-
-    private void RedrawEditor()
-    {
-        // Terminal.Gui will call Redraw(), but we can force it when needed
-        SetNeedsDisplay();
-    }
-
     public override void Redraw(Rect bounds)
     {
-        // Update viewport dimensions based on current view size
         UpdateViewportSize();
-        UpdateScrollBars();
+        SyncScrollBarState();
 
-        // Render editor content FIRST
         _viewModel.RenderFrame(_renderer);
-
-        // Then let base.Redraw draw child views (scrollbars) ON TOP
         base.Redraw(bounds);
+    }
+
+    public override void LayoutSubviews()
+    {
+        base.LayoutSubviews();
+        UpdateScrollBarLayout();
     }
 
     public override void PositionCursor()
     {
-        var caretLine = _viewModel.Session.Caret.Line;
-        var caretCol = _viewModel.Session.Caret.Column;
-        var verticalOffset = _viewModel.Viewport.FirstVisibleLine;
-        var viewportHeight = _viewModel.Viewport.VisibleLineCount;
-
-        bool caretVisible =
-            caretLine >= verticalOffset &&
-            caretLine < verticalOffset + viewportHeight &&
-            caretCol >= _viewModel.Viewport.HorizontalOffset &&
-            caretCol < _viewModel.Viewport.HorizontalOffset + _viewModel.ViewportWidth;
-
-        if (HasFocus && caretVisible)
+        if (HasFocus && IsCaretVisible())
         {
-            int screenX = caretCol - _viewModel.Viewport.HorizontalOffset + Frame.X;
-            int screenY = caretLine - verticalOffset + Frame.Y;
-
+            var (screenX, screenY) = GetCaretScreenPosition();
             Application.Driver.SetCursorVisibility(CursorVisibility.Default);
             Application.Driver.Move(screenX, screenY);
         }
@@ -98,40 +74,10 @@ public sealed class EditorView : View, IDisposable
         }
     }
 
-    private void UpdateViewportSize()
-    {
-        // Set viewport dimensions based on the view's bounds
-        if (Bounds.Height != _viewModel.Viewport.VisibleLineCount)
-        {
-            _viewModel.SetViewportHeight(Bounds.Height);
-        }
-
-        // Optionally set width for horizontal scrolling
-        if (Bounds.Width > 0)
-        {
-            _viewModel.SetViewportWidth(Bounds.Width);
-        }
-    }
-
-    private void OnViewResized(ResizedEventArgs args)
-    {
-        _viewModel.SetViewportWidth(Frame.Width);
-        _viewModel.SetViewportHeight(Frame.Height);
-        _viewModel.EnsureCaretVisible();
-
-        UpdateScrollBars();
-        SetNeedsDisplay();
-    }
-
     public override bool MouseEvent(MouseEvent me)
     {
-        // Check if click is in the scrollbar area - let children handle it
-        bool inVerticalScrollbar = me.X >= Bounds.Width - 1;
-        bool inHorizontalScrollbar = me.Y >= Bounds.Height - 1;
-        
-        if (inVerticalScrollbar || inHorizontalScrollbar)
+        if (IsInScrollBarArea(me.X, me.Y))
         {
-            // Don't handle - let it propagate to child scrollbars
             return base.MouseEvent(me);
         }
 
@@ -147,47 +93,37 @@ public sealed class EditorView : View, IDisposable
     public override bool ProcessKey(KeyEvent keyEvent) =>
         KeyBindings.TryExecute(_viewModel, keyEvent) || base.ProcessKey(keyEvent);
 
+    private void OnViewModelChanged() => SetNeedsDisplay();
+    private void OnViewModelChanged(ViewPosition _) => SetNeedsDisplay();
+    private void OnViewModelChanged(SelectionViewRange? _) => SetNeedsDisplay();
+
+    private void OnViewResized(ResizedEventArgs args)
+    {
+        // Initial resize - scrollbars may not exist yet, so use full dimensions
+        // UpdateViewportSize in Redraw will adjust once scrollbar visibility is known
+        _viewModel.SetViewportWidth(Frame.Width);
+        _viewModel.SetViewportHeight(Frame.Height);
+        _viewModel.EnsureCaretVisible();
+
+        SyncScrollBarState();
+        SetNeedsDisplay();
+    }
+
     private void OnAddedToSuperView(View superView)
     {
         if (_scrollBarsInitialized) return;
         _scrollBarsInitialized = true;
 
-        _vScrollBar = new ScrollBarView(this, true)
-        {
-            Visible = true,
-            AutoHideScrollBars = false,
-            Size = 1
-        };
-
-        _hScrollBar = new ScrollBarView(this, false)
-        {
-            Visible = true,
-            AutoHideScrollBars = false,
-            Size = 1
-        };
-
-        // Link them (v1.19 uses this for some internal logic)
-        _vScrollBar.OtherScrollBarView = _hScrollBar;
-        _hScrollBar.OtherScrollBarView = _vScrollBar;
-
-        // Subscribe to scroll position changes
-        _vScrollBar.ChangedPosition += OnVerticalScrollChanged;
-        _hScrollBar.ChangedPosition += OnHorizontalScrollChanged;
-
-        // Add as children of THIS view (not superview)
-        Add(_vScrollBar);
-        Add(_hScrollBar);
-
-        UpdateScrollBarFrames();
-        UpdateScrollBars();
+        InitializeScrollBars();
+        UpdateScrollBarLayout();
+        SyncScrollBarState();
     }
 
     private void OnVerticalScrollChanged()
     {
-        if (_vScrollBar == null) return;
-        
-        int newFirstLine = _vScrollBar.Position;
-        int delta = newFirstLine - _viewModel.Viewport.FirstVisibleLine;
+        if (_vScrollBar is null) return;
+
+        int delta = _vScrollBar.Position - _viewModel.Viewport.FirstVisibleLine;
         if (delta != 0)
         {
             _viewModel.ScrollLines(delta);
@@ -196,31 +132,102 @@ public sealed class EditorView : View, IDisposable
 
     private void OnHorizontalScrollChanged()
     {
-        if (_hScrollBar == null) return;
-        
-        int newOffset = _hScrollBar.Position;
-        int delta = newOffset - _viewModel.Viewport.HorizontalOffset;
+        if (_hScrollBar is null) return;
+
+        int delta = _hScrollBar.Position - _viewModel.Viewport.HorizontalOffset;
         if (delta != 0)
         {
             _viewModel.ScrollColumns(delta);
         }
     }
 
-    public override void LayoutSubviews()
+    private void UpdateViewportSize()
     {
-        base.LayoutSubviews();
-        UpdateScrollBarFrames();
+        // Account for scrollbar space when calculating effective viewport dimensions
+        int effectiveHeight = Bounds.Height;
+        int effectiveWidth = Bounds.Width;
+
+        // Reserve space for horizontal scrollbar if it will be visible
+        if (_hScrollBar?.Visible == true)
+        {
+            effectiveHeight = Math.Max(0, effectiveHeight - 1);
+        }
+
+        // Reserve space for vertical scrollbar if it will be visible
+        if (_vScrollBar?.Visible == true)
+        {
+            effectiveWidth = Math.Max(0, effectiveWidth - 1);
+        }
+
+        if (effectiveHeight != _viewModel.Viewport.VisibleLineCount)
+        {
+            _viewModel.SetViewportHeight(effectiveHeight);
+        }
+
+        if (effectiveWidth > 0)
+        {
+            _viewModel.SetViewportWidth(effectiveWidth);
+        }
     }
 
-    private void UpdateScrollBarFrames()
+    private bool IsCaretVisible()
     {
-        if (_vScrollBar == null || _hScrollBar == null) return;
-        
-        // Guard against zero-sized bounds during early initialization
+        var caret = _viewModel.Session.Caret;
+        var viewport = _viewModel.Viewport;
+
+        return caret.Line >= viewport.FirstVisibleLine &&
+               caret.Line < viewport.FirstVisibleLine + viewport.VisibleLineCount &&
+               caret.Column >= viewport.HorizontalOffset &&
+               caret.Column < viewport.HorizontalOffset + _viewModel.ViewportWidth;
+    }
+
+    private (int X, int Y) GetCaretScreenPosition()
+    {
+        var caret = _viewModel.Session.Caret;
+        var viewport = _viewModel.Viewport;
+
+        int screenX = caret.Column - viewport.HorizontalOffset + Frame.X;
+        int screenY = caret.Line - viewport.FirstVisibleLine + Frame.Y;
+
+        return (screenX, screenY);
+    }
+
+    private void InitializeScrollBars()
+    {
+        _vScrollBar = CreateScrollBar(isVertical: true);
+        _hScrollBar = CreateScrollBar(isVertical: false);
+
+        _vScrollBar.OtherScrollBarView = _hScrollBar;
+        _hScrollBar.OtherScrollBarView = _vScrollBar;
+
+        _vScrollBar.ChangedPosition += OnVerticalScrollChanged;
+        _hScrollBar.ChangedPosition += OnHorizontalScrollChanged;
+
+        Add(_vScrollBar);
+        Add(_hScrollBar);
+    }
+
+    private ScrollBarView CreateScrollBar(bool isVertical) => new(this, isVertical)
+    {
+        Visible = true,
+        AutoHideScrollBars = false,
+        Size = 1
+    };
+
+    private void UnsubscribeScrollBarEvents()
+    {
+        if (_vScrollBar is not null)
+            _vScrollBar.ChangedPosition -= OnVerticalScrollChanged;
+
+        if (_hScrollBar is not null)
+            _hScrollBar.ChangedPosition -= OnHorizontalScrollChanged;
+    }
+
+    private void UpdateScrollBarLayout()
+    {
+        if (_vScrollBar is null || _hScrollBar is null) return;
         if (Bounds.Width <= 0 || Bounds.Height <= 0) return;
 
-        // Use Bounds-relative coordinates since scrollbars are children
-        // Set X/Y explicitly to override any host-based positioning from ScrollBarView
         _vScrollBar.X = Bounds.Width - 1;
         _vScrollBar.Y = 0;
         _vScrollBar.Width = 1;
@@ -232,33 +239,42 @@ public sealed class EditorView : View, IDisposable
         _hScrollBar.Height = 1;
     }
 
-    private void UpdateScrollBars()
+    private void SyncScrollBarState()
     {
-        // Guard against updates before layout is complete
         if (Bounds.Width <= 0 || Bounds.Height <= 0) return;
 
-        if (_vScrollBar != null)
-        {
-            var lineCount = _viewModel.Session.Document.LineCount;
-            var viewportLines = _viewModel.Viewport.VisibleLineCount;
-
-            // Ensure Size is at least 1 to prevent divide-by-zero in ScrollBarView
-            _vScrollBar.Size = Math.Max(1, lineCount);
-            _vScrollBar.Position = Math.Clamp(_viewModel.Viewport.FirstVisibleLine, 0, Math.Max(0, lineCount - 1));
-            _vScrollBar.Visible = lineCount > viewportLines;
-            _vScrollBar.SetNeedsDisplay();
-        }
-
-        if (_hScrollBar != null)
-        {
-            var maxLineLength = _viewModel.GetMaxLineLength();
-            var viewportCols = _viewModel.ViewportWidth;
-
-            // Ensure Size is at least 1 to prevent divide-by-zero in ScrollBarView
-            _hScrollBar.Size = Math.Max(1, maxLineLength);
-            _hScrollBar.Position = Math.Clamp(_viewModel.Viewport.HorizontalOffset, 0, Math.Max(0, maxLineLength - 1));
-            _hScrollBar.Visible = maxLineLength > viewportCols;
-            _hScrollBar.SetNeedsDisplay();
-        }
+        SyncVerticalScrollBar();
+        SyncHorizontalScrollBar();
     }
+
+    private void SyncVerticalScrollBar()
+    {
+        if (_vScrollBar is null) return;
+
+        var lineCount = _viewModel.Session.Document.LineCount;
+        var viewportLines = _viewModel.Viewport.VisibleLineCount;
+        int maxPosition = Math.Max(0, lineCount - viewportLines);
+
+        _vScrollBar.Size = Math.Max(1, lineCount);
+        _vScrollBar.Position = Math.Clamp(_viewModel.Viewport.FirstVisibleLine, 0, maxPosition);
+        _vScrollBar.Visible = lineCount > viewportLines;
+        _vScrollBar.SetNeedsDisplay();
+    }
+
+    private void SyncHorizontalScrollBar()
+    {
+        if (_hScrollBar is null) return;
+
+        var maxLineLength = _viewModel.GetMaxLineLength();
+        var viewportCols = _viewModel.ViewportWidth;
+        int maxPosition = Math.Max(0, maxLineLength - viewportCols);
+
+        _hScrollBar.Size = Math.Max(1, maxLineLength);
+        _hScrollBar.Position = Math.Clamp(_viewModel.Viewport.HorizontalOffset, 0, maxPosition);
+        _hScrollBar.Visible = maxLineLength > viewportCols;
+        _hScrollBar.SetNeedsDisplay();
+    }
+
+    private bool IsInScrollBarArea(int x, int y) =>
+        x >= Bounds.Width - 1 || y >= Bounds.Height - 1;
 }
