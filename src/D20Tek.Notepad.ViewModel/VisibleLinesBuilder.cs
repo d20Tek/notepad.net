@@ -45,8 +45,7 @@ internal static class VisibleLinesBuilder
     {
         if (!viewModel.Session.HasSelection) return null;
 
-        var raw = ViewMapping.DocumentSelectionToView(
-            viewModel.Session.Anchor,
+        var raw = viewModel.Session.Anchor.ToViewSelectionRange(
             viewModel.Session.Caret,
             viewModel.Viewport.FirstVisibleLine,
             viewModel.Viewport.VisibleLineCount);

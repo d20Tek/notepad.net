@@ -1,11 +1,13 @@
-﻿using static Terminal.Gui.Application;
+﻿using D20Tek.Notepad.Tui.Input;
+using static Terminal.Gui.Application;
 
 namespace D20Tek.Notepad.Tui;
 
-public sealed class EditorView : View
+public sealed class EditorView : View, IDisposable
 {
     private readonly EditorViewModel _viewModel;
     private readonly TerminalGuiRenderer _renderer;
+    private bool _disposed;
 
     public EditorView(EditorViewModel viewModel)
     {
@@ -16,11 +18,29 @@ public sealed class EditorView : View
         WantMousePositionReports = true;
 
         Resized += OnViewResized;
+        
         // Subscribe to ViewModel events
-        _viewModel.ViewChanged += () => RedrawEditor();
-        _viewModel.CaretMoved += _ => RedrawEditor();
-        _viewModel.SelectionChanged += _ => RedrawEditor();
+        _viewModel.ViewChanged += OnViewChanged;
+        _viewModel.CaretMoved += OnCaretMoved;
+        _viewModel.SelectionChanged += OnSelectionChanged;
     }
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+
+        // Unsubscribe from ViewModel events to prevent memory leaks
+        _viewModel.ViewChanged -= OnViewChanged;
+        _viewModel.CaretMoved -= OnCaretMoved;
+        _viewModel.SelectionChanged -= OnSelectionChanged;
+
+        Resized -= OnViewResized;
+    }
+
+    private void OnViewChanged() => RedrawEditor();
+    private void OnCaretMoved(ViewPosition _) => RedrawEditor();
+    private void OnSelectionChanged(SelectionViewRange? _) => RedrawEditor();
 
     private void RedrawEditor()
     {
@@ -92,7 +112,7 @@ public sealed class EditorView : View
 
     public override bool MouseEvent(MouseEvent me)
     {
-        if (MouseHandler.ProcessMouse(_viewModel, me))
+        if (MouseBindings.TryExecute(_viewModel, me))
         {
             SetNeedsDisplay();
             return true;
