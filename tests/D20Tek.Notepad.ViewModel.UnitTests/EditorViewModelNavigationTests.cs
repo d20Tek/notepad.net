@@ -5,10 +5,7 @@ public class EditorViewModelNavigationTests
 {
     private static readonly DocumentFactory _docFactory = new();
 
-    // ============================================================
     // Movement Tests
-    // ============================================================
-
     [TestMethod]
     public void MoveLeft_MovesCaretAndEnsuresVisible()
     {
@@ -169,10 +166,7 @@ public class EditorViewModelNavigationTests
         Assert.AreEqual(new TextPosition(2, 4), session.Caret);
     }
 
-    // ============================================================
     // Selection Extension Tests
-    // ============================================================
-
     [TestMethod]
     public void ExtendLeft_ExtendsSelectionLeft()
     {
@@ -345,9 +339,128 @@ public class EditorViewModelNavigationTests
         Assert.AreEqual(new TextPosition(1, 3), session.Anchor);
     }
 
-    // ============================================================
-    // Helper Methods
-    // ============================================================
+    // GetLineLength Tests
+    [TestMethod]
+    public void GetLineLength_WithValidLineIndex_ReturnsCorrectLength()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel(["Hello", "World"]);
+
+        // act
+        var length = viewModel.GetLineLength(0);
+
+        // assert
+        Assert.AreEqual(5, length);
+    }
+
+    [TestMethod]
+    public void GetLineLength_WithNegativeIndex_ReturnsZero()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel(["Hello"]);
+
+        // act
+        var length = viewModel.GetLineLength(-1);
+
+        // assert
+        Assert.AreEqual(0, length);
+    }
+
+    [TestMethod]
+    public void GetLineLength_WithIndexExceedingLineCount_ReturnsZero()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel(["Hello", "World"]);
+
+        // act
+        var length = viewModel.GetLineLength(10);
+
+        // assert
+        Assert.AreEqual(0, length);
+    }
+
+    // SetAnchorToCaret Tests
+    [TestMethod]
+    public void SetAnchorToCaret_SetsAnchorToCurrentCaretPosition()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello", "World"]);
+        session.Caret = new TextPosition(1, 3);
+        session.Anchor = new TextPosition(0, 0);
+
+        // act
+        viewModel.SetAnchorToCaret();
+
+        // assert
+        Assert.AreEqual(new TextPosition(1, 3), session.Anchor);
+    }
+
+    // MoveCaretTo Tests
+    [TestMethod]
+    public void MoveCaretTo_WithValidPosition_MovesCaretAndAnchor()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello", "World", "Test"]);
+
+        // act
+        viewModel.MoveCaretTo(1, 3);
+
+        // assert
+        Assert.AreEqual(new TextPosition(1, 3), session.Caret);
+        Assert.AreEqual(new TextPosition(1, 3), session.Anchor);
+    }
+
+    [TestMethod]
+    public void MoveCaretTo_WithLineExceedingDocument_ClampsToLastLine()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello", "World"]);
+
+        // act
+        viewModel.MoveCaretTo(100, 2);
+
+        // assert
+        Assert.AreEqual(1, session.Caret.Line);
+    }
+
+    [TestMethod]
+    public void MoveCaretTo_WithNegativeLine_ClampsToZero()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello", "World"]);
+
+        // act
+        viewModel.MoveCaretTo(-5, 2);
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Line);
+    }
+
+    [TestMethod]
+    public void MoveCaretTo_WithColumnExceedingLineLength_ClampsToLineEnd()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello"]);
+
+        // act
+        viewModel.MoveCaretTo(0, 100);
+
+        // assert
+        Assert.AreEqual(5, session.Caret.Column);
+    }
+
+    [TestMethod]
+    public void MoveCaretTo_WithNegativeColumn_ClampsToZero()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello"]);
+
+        // act
+        viewModel.MoveCaretTo(0, -10);
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Column);
+    }
 
     private static (EditorViewModel viewModel, EditorSession session) CreateViewModel(string[] lines)
     {
