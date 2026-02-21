@@ -117,6 +117,61 @@ public class ViewportTests
         Assert.AreEqual(0, viewport.VisibleLineCount);
     }
 
+    // SetVerticalOffset tests
+    [TestMethod]
+    public void SetVerticalOffset_WithValidOffset_UpdatesFirstVisibleLine()
+    {
+        // arrange
+        var viewport = new Viewport(0, 10);
+
+        // act
+        viewport.SetVerticalOffset(15);
+
+        // assert
+        Assert.AreEqual(15, viewport.FirstVisibleLine);
+    }
+
+    [TestMethod]
+    public void SetVerticalOffset_WithZero_SetsFirstVisibleLineToZero()
+    {
+        // arrange
+        var viewport = new Viewport(10, 10);
+
+        // act
+        viewport.SetVerticalOffset(0);
+
+        // assert
+        Assert.AreEqual(0, viewport.FirstVisibleLine);
+    }
+
+    // SetHorizontalOffset tests
+    [TestMethod]
+    public void SetHorizontalOffset_WithValidOffset_UpdatesHorizontalOffset()
+    {
+        // arrange
+        var viewport = new Viewport();
+
+        // act
+        viewport.SetHorizontalOffset(25);
+
+        // assert
+        Assert.AreEqual(25, viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void SetHorizontalOffset_WithZero_SetsHorizontalOffsetToZero()
+    {
+        // arrange
+        var viewport = new Viewport();
+        viewport.ScrollColumns(20);
+
+        // act
+        viewport.SetHorizontalOffset(0);
+
+        // assert
+        Assert.AreEqual(0, viewport.HorizontalOffset);
+    }
+
     // ScrollLines tests
     [TestMethod]
     public void ScrollLines_WithPositiveDelta_ScrollsDown()

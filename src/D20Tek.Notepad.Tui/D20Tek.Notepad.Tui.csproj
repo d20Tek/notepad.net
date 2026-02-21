@@ -6,7 +6,23 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>notepad.tui</AssemblyName>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Notepad TUI</Title>
+    <Authors>DarthPedro</Authors>
+    <Company>d20Tek</Company>
+    <Description>An implementation of the classic Notepad app in .NET focused on fast, easy text viewing and editing with no frills (and no integrated AI). A simple console application that lets you quickly load text based files.</Description>
+    <Copyright>Copyright (c) d20Tek.  All rights reserved.</Copyright>
+    <PackageReadmeFile>alpha-doc.md</PackageReadmeFile>
+    <PackageTags>notepad; terminal text viewer; text editor; terminal; text viewer</PackageTags>
+    <PackAsTool>True</PackAsTool>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\alpha-doc.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Terminal.Gui" />

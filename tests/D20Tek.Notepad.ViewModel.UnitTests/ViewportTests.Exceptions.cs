@@ -40,4 +40,26 @@ public class ViewportExceptionsTests
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(
             [ExcludeFromCodeCoverage] () => viewport.ScrollLines(5, -1));
     }
+
+    [TestMethod]
+    public void SetVerticalOffset_WithNegativeOffset_ThrowsArgumentOutOfRangeException()
+    {
+        // arrange
+        var viewport = new Viewport(0, 10);
+
+        // act & assert
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+            [ExcludeFromCodeCoverage] () => viewport.SetVerticalOffset(-1));
+    }
+
+    [TestMethod]
+    public void SetHorizontalOffset_WithNegativeOffset_ThrowsArgumentOutOfRangeException()
+    {
+        // arrange
+        var viewport = new Viewport();
+
+        // act & assert
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+            [ExcludeFromCodeCoverage] () => viewport.SetHorizontalOffset(-1));
+    }
 }

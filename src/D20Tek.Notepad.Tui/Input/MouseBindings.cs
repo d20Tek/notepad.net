@@ -62,7 +62,6 @@ internal static class MouseBindings
         vm.SetAnchorToCaret();
         var (line, col) = ToDocumentPosition(vm, me);
         vm.MoveCaretTo(line, col);
-        vm.EnsureCaretVisible();
     }
 
     private static void BeginSelection(EditorViewModel vm, MouseEvent me)
@@ -70,7 +69,6 @@ internal static class MouseBindings
         var (line, col) = ToDocumentPosition(vm, me);
         vm.SetAnchorToCaret();
         vm.MoveCaretTo(line, col);
-        vm.EnsureCaretVisible();
     }
 
     private static void DragSelection(EditorViewModel vm, MouseEvent me)
@@ -86,7 +84,6 @@ internal static class MouseBindings
     {
         var (line, col) = ToDocumentPosition(vm, me);
         vm.ExtendSelectionTo(line, col);
-        vm.EnsureCaretVisible();
     }
 
     // Edge Scrolling

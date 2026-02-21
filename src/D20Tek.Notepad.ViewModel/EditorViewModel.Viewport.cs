@@ -1,13 +1,8 @@
-using System.Reflection.Metadata;
-
 namespace D20Tek.Notepad.ViewModel;
 
 public sealed partial class EditorViewModel
 {
-    public int GetMaxLineLength() => 
-        Session.Document.Lines.Count > 0 
-            ? Session.Document.Lines.Max(l => l.Content.Length) 
-            : 0;
+    public int GetMaxLineLength() => Session.Document.Lines.Max(l => l.Content.Length);
 
     public void SetViewportHeight(int visibleLineCount) => SetWithRefresh(() =>
         Viewport.SetVisibleLineCount(visibleLineCount));
