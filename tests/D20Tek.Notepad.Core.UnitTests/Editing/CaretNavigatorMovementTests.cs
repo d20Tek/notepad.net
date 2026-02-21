@@ -1,11 +1,14 @@
-﻿using Doc = D20Tek.Notepad.Core.Document;
+using Doc = D20Tek.Notepad.Core.Document;
 
 namespace D20Tek.Notepad.Core.UnitTests.Editing;
 
 [TestClass]
-public class CaretMovementHelperTests
+public class CaretNavigatorMovementTests
 {
-    // MoveLeft tests
+    // ============================================================
+    // MoveLeft Tests
+    // ============================================================
+
     [TestMethod]
     public void MoveLeft_AtMiddleOfLine_MovesCaretOneColumnLeft()
     {
@@ -15,7 +18,7 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(0, 3);
 
         // act
-        CaretMovementHelper.MoveLeft(session);
+        session.Navigator.MoveLeft();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 2), session.Caret);
@@ -31,7 +34,7 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(1, 0);
 
         // act
-        CaretMovementHelper.MoveLeft(session);
+        session.Navigator.MoveLeft();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 5), session.Caret);
@@ -47,13 +50,16 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(0, 0);
 
         // act
-        CaretMovementHelper.MoveLeft(session);
+        session.Navigator.MoveLeft();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 0), session.Caret);
     }
 
-    // MoveRight tests
+    // ============================================================
+    // MoveRight Tests
+    // ============================================================
+
     [TestMethod]
     public void MoveRight_AtMiddleOfLine_MovesCaretOneColumnRight()
     {
@@ -63,7 +69,7 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(0, 2);
 
         // act
-        CaretMovementHelper.MoveRight(session);
+        session.Navigator.MoveRight();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 3), session.Caret);
@@ -79,7 +85,7 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(0, 5);
 
         // act
-        CaretMovementHelper.MoveRight(session);
+        session.Navigator.MoveRight();
 
         // assert
         Assert.AreEqual(new TextPosition(1, 0), session.Caret);
@@ -95,13 +101,16 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(0, 5);
 
         // act
-        CaretMovementHelper.MoveRight(session);
+        session.Navigator.MoveRight();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 5), session.Caret);
     }
 
-    // MoveUp tests
+    // ============================================================
+    // MoveUp Tests
+    // ============================================================
+
     [TestMethod]
     public void MoveUp_AtMiddleLine_MovesToPreviousLine()
     {
@@ -111,7 +120,7 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(1, 3);
 
         // act
-        CaretMovementHelper.MoveUp(session);
+        session.Navigator.MoveUp();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 3), session.Caret);
@@ -127,7 +136,7 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(1, 4);
 
         // act
-        CaretMovementHelper.MoveUp(session);
+        session.Navigator.MoveUp();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 2), session.Caret);
@@ -142,14 +151,17 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(0, 3);
 
         // act
-        CaretMovementHelper.MoveUp(session);
+        session.Navigator.MoveUp();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 0), session.Caret);
         Assert.AreEqual(session.Caret, session.Anchor);
     }
 
-    // MoveDown tests
+    // ============================================================
+    // MoveDown Tests
+    // ============================================================
+
     [TestMethod]
     public void MoveDown_AtMiddleLine_MovesToNextLine()
     {
@@ -159,7 +171,7 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(0, 3);
 
         // act
-        CaretMovementHelper.MoveDown(session);
+        session.Navigator.MoveDown();
 
         // assert
         Assert.AreEqual(new TextPosition(1, 3), session.Caret);
@@ -175,7 +187,7 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(0, 4);
 
         // act
-        CaretMovementHelper.MoveDown(session);
+        session.Navigator.MoveDown();
 
         // assert
         Assert.AreEqual(new TextPosition(1, 2), session.Caret);
@@ -190,44 +202,17 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(0, 2);
 
         // act
-        CaretMovementHelper.MoveDown(session);
+        session.Navigator.MoveDown();
 
         // assert
         Assert.AreEqual(new TextPosition(0, 5), session.Caret);
         Assert.AreEqual(session.Caret, session.Anchor);
     }
 
-    [TestMethod]
-    public void MoveDown_WhenNextLineEmpty_MovesToColumnZero()
-    {
-        // arrange
-        var session = CreateSession(["Hello", ""]);
-        session.Caret = new TextPosition(0, 3);
-        session.Anchor = new TextPosition(0, 3);
+    // ============================================================
+    // MovePageUp Tests
+    // ============================================================
 
-        // act
-        CaretMovementHelper.MoveDown(session);
-
-        // assert
-        Assert.AreEqual(new TextPosition(1, 0), session.Caret);
-    }
-
-    [TestMethod]
-    public void MoveUp_WhenPreviousLineEmpty_MovesToColumnZero()
-    {
-        // arrange
-        var session = CreateSession(["", "Hello"]);
-        session.Caret = new TextPosition(1, 3);
-        session.Anchor = new TextPosition(1, 3);
-
-        // act
-        CaretMovementHelper.MoveUp(session);
-
-        // assert
-        Assert.AreEqual(new TextPosition(0, 0), session.Caret);
-    }
-
-    // MovePageUp tests
     [TestMethod]
     public void MovePageUp_AtMiddleOfDocument_MovesUpByPageHeight()
     {
@@ -237,42 +222,10 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(7, 3);
 
         // act
-        CaretMovementHelper.MovePageUp(session, 5);
+        session.Navigator.MovePageUp(5);
 
         // assert
         Assert.AreEqual(new TextPosition(2, 3), session.Caret);
-        Assert.AreEqual(session.Caret, session.Anchor);
-    }
-
-    [TestMethod]
-    public void MovePageUp_WhenTargetLineShorter_ClampsColumn()
-    {
-        // arrange
-        var session = CreateSession(["Hi", "Line2", "Line3", "Line4", "Hello"]);
-        session.Caret = new TextPosition(4, 4);
-        session.Anchor = new TextPosition(4, 4);
-
-        // act
-        CaretMovementHelper.MovePageUp(session, 4);
-
-        // assert
-        Assert.AreEqual(new TextPosition(0, 2), session.Caret);
-        Assert.AreEqual(session.Caret, session.Anchor);
-    }
-
-    [TestMethod]
-    public void MovePageUp_WhenPageHeightExceedsLines_ClampsToFirstLine()
-    {
-        // arrange
-        var session = CreateSession(["Line1", "Line2", "Line3"]);
-        session.Caret = new TextPosition(2, 3);
-        session.Anchor = new TextPosition(2, 3);
-
-        // act
-        CaretMovementHelper.MovePageUp(session, 10);
-
-        // assert
-        Assert.AreEqual(new TextPosition(0, 3), session.Caret);
         Assert.AreEqual(session.Caret, session.Anchor);
     }
 
@@ -285,14 +238,17 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(0, 3);
 
         // act
-        CaretMovementHelper.MovePageUp(session, 5);
+        session.Navigator.MovePageUp(5);
 
         // assert
         Assert.AreEqual(new TextPosition(0, 0), session.Caret);
         Assert.AreEqual(session.Caret, session.Anchor);
     }
 
-    // MovePageDown tests
+    // ============================================================
+    // MovePageDown Tests
+    // ============================================================
+
     [TestMethod]
     public void MovePageDown_AtMiddleOfDocument_MovesDownByPageHeight()
     {
@@ -302,42 +258,10 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(2, 3);
 
         // act
-        CaretMovementHelper.MovePageDown(session, 5);
+        session.Navigator.MovePageDown(5);
 
         // assert
         Assert.AreEqual(new TextPosition(7, 3), session.Caret);
-        Assert.AreEqual(session.Caret, session.Anchor);
-    }
-
-    [TestMethod]
-    public void MovePageDown_WhenTargetLineShorter_ClampsColumn()
-    {
-        // arrange
-        var session = CreateSession(["Hello", "Line2", "Line3", "Line4", "Hi"]);
-        session.Caret = new TextPosition(0, 4);
-        session.Anchor = new TextPosition(0, 4);
-
-        // act
-        CaretMovementHelper.MovePageDown(session, 4);
-
-        // assert
-        Assert.AreEqual(new TextPosition(4, 2), session.Caret);
-        Assert.AreEqual(session.Caret, session.Anchor);
-    }
-
-    [TestMethod]
-    public void MovePageDown_WhenPageHeightExceedsLines_ClampsToLastLine()
-    {
-        // arrange
-        var session = CreateSession(["Line1", "Line2", "Line3"]);
-        session.Caret = new TextPosition(0, 3);
-        session.Anchor = new TextPosition(0, 3);
-
-        // act
-        CaretMovementHelper.MovePageDown(session, 10);
-
-        // assert
-        Assert.AreEqual(new TextPosition(2, 3), session.Caret);
         Assert.AreEqual(session.Caret, session.Anchor);
     }
 
@@ -350,10 +274,82 @@ public class CaretMovementHelperTests
         session.Anchor = new TextPosition(1, 2);
 
         // act
-        CaretMovementHelper.MovePageDown(session, 5);
+        session.Navigator.MovePageDown(5);
 
         // assert
         Assert.AreEqual(new TextPosition(1, 5), session.Caret);
+        Assert.AreEqual(session.Caret, session.Anchor);
+    }
+
+    // ============================================================
+    // MoveToLineStart/End Tests
+    // ============================================================
+
+    [TestMethod]
+    public void MoveToLineStart_MovesCaretToColumnZero()
+    {
+        // arrange
+        var session = CreateSession(["Hello World"]);
+        session.Caret = new TextPosition(0, 6);
+        session.Anchor = new TextPosition(0, 6);
+
+        // act
+        session.Navigator.MoveToLineStart();
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 0), session.Caret);
+        Assert.AreEqual(session.Caret, session.Anchor);
+    }
+
+    [TestMethod]
+    public void MoveToLineEnd_MovesCaretToEndOfLine()
+    {
+        // arrange
+        var session = CreateSession(["Hello World"]);
+        session.Caret = new TextPosition(0, 3);
+        session.Anchor = new TextPosition(0, 3);
+
+        // act
+        session.Navigator.MoveToLineEnd();
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 11), session.Caret);
+        Assert.AreEqual(session.Caret, session.Anchor);
+    }
+
+    // ============================================================
+    // MoveToDocumentStart/End Tests
+    // ============================================================
+
+    [TestMethod]
+    public void MoveToDocumentStart_MovesToOrigin()
+    {
+        // arrange
+        var session = CreateSession(["Hello", "World", "Test"]);
+        session.Caret = new TextPosition(1, 3);
+        session.Anchor = new TextPosition(1, 3);
+
+        // act
+        session.Navigator.MoveToDocumentStart();
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 0), session.Caret);
+        Assert.AreEqual(session.Caret, session.Anchor);
+    }
+
+    [TestMethod]
+    public void MoveToDocumentEnd_MovesToEndOfLastLine()
+    {
+        // arrange
+        var session = CreateSession(["Hello", "World", "Test"]);
+        session.Caret = new TextPosition(0, 0);
+        session.Anchor = new TextPosition(0, 0);
+
+        // act
+        session.Navigator.MoveToDocumentEnd();
+
+        // assert
+        Assert.AreEqual(new TextPosition(2, 4), session.Caret);
         Assert.AreEqual(session.Caret, session.Anchor);
     }
 

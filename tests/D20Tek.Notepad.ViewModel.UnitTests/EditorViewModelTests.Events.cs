@@ -272,8 +272,7 @@ public class EditorViewModelEventsTests
         var textLines = lines.Select(l => new TextLine(l)).ToList();
         var doc = _docFactory.Create(new(textLines, Encoding.UTF8, LineEndingStyle.CRLF));
         var session = new EditorSession(doc);
-        var navigation = new EditorNavigationService();
-        var commandService = new EditorCommandService(session, navigation);
+        var commandService = new EditorCommandService(session);
         var viewModel = new EditorViewModel(session, commandService);
         return (viewModel, session);
     }

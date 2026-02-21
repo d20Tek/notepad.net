@@ -4,15 +4,23 @@ using D20Tek.Notepad.Core.Primitives;
 
 namespace D20Tek.Notepad.Core.Editing;
 
-public sealed partial class EditorSession(IDocument document)
+public sealed partial class EditorSession
 {
-    public IDocument Document { get; private set; } = document ?? throw new ArgumentNullException(nameof(document));
+    public EditorSession(IDocument document)
+    {
+        Document = document ?? throw new ArgumentNullException(nameof(document));
+        Navigator = new CaretNavigator(this);
+    }
+
+    public IDocument Document { get; private set; }
 
     public TextPosition Caret { get; set; } = new TextPosition(0, 0);
 
     public TextPosition Anchor { get; set; } = new TextPosition(0, 0);
 
     public UndoStack UndoStack { get; } = new();
+
+    public CaretNavigator Navigator { get; }
 
     internal TextPosition ApplyReplaceRange(TextRange range, string replacement)
     {

@@ -10,10 +10,9 @@ public partial class EditorCommandServiceTests
     {
         // arrange
         var session = CreateSession(["Hello"]);
-        var navigation = new EditorNavigationService();
 
         // act
-        var service = new EditorCommandService(session, navigation);
+        var service = new EditorCommandService(session);
 
         // assert
         Assert.IsNotNull(service);
@@ -72,6 +71,23 @@ public partial class EditorCommandServiceTests
         Assert.AreEqual("Hello", session.Document.Lines[0].Content);
     }
 
+    [TestMethod]
+    public void SelectAll_SelectsEntireDocument()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello", "World", "Test"]);
+        session.Caret = new TextPosition(1, 2);
+        session.Anchor = new TextPosition(1, 2);
+
+        // act
+        service.SelectAll();
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 0), session.Anchor);
+        Assert.AreEqual(new TextPosition(2, 4), session.Caret);
+        Assert.IsTrue(session.HasSelection);
+    }
+
     private static EditorSession CreateSession(string[] lines)
     {
         var textLines = lines.Select(l => new TextLine(l)).ToArray();
@@ -82,8 +98,7 @@ public partial class EditorCommandServiceTests
     private static (EditorCommandService service, EditorSession session) CreateService(string[] lines)
     {
         var session = CreateSession(lines);
-        var navigation = new EditorNavigationService();
-        var service = new EditorCommandService(session, navigation);
+        var service = new EditorCommandService(session);
         return (service, session);
     }
 }

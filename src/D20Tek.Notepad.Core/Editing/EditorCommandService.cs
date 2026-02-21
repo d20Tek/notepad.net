@@ -1,9 +1,12 @@
 ﻿namespace D20Tek.Notepad.Core.Editing;
 
-public sealed class EditorCommandService(EditorSession session, EditorNavigationService navigation)
+/// <summary>
+/// Service for editing commands (typing, clipboard, undo/redo).
+/// Navigation is handled directly by EditorSession.Navigator (CaretNavigator).
+/// </summary>
+public sealed class EditorCommandService(EditorSession session)
 {
     private readonly EditorSession _session = session ?? throw new ArgumentNullException(nameof(session));
-    private readonly EditorNavigationService _navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
 
     // Typing & Editing Commands
     public void TypeCharacter(char c) => _session.InsertText(c.ToString());
@@ -32,41 +35,8 @@ public sealed class EditorCommandService(EditorSession session, EditorNavigation
 
     public void Paste(string text) => _session.InsertText(text);
 
-    // Navigation Commands
-    public void MoveLeft() => _navigation.MoveLeft(_session);
-
-    public void MoveRight() => _navigation.MoveRight(_session);
-    
-    public void MoveUp() => _navigation.MoveUp(_session);
-    
-    public void MoveDown() => _navigation.MoveDown(_session);
-
-    public void PageUp(int pageHeight) => _navigation.MovePageUp(_session, pageHeight);
-
-    public void PageDown(int pageHeight) => _navigation.MovePageDown(_session, pageHeight);
-
-    public void MoveToLineStart() => _navigation.MoveToLineStart(_session);
-    
-    public void MoveToLineEnd() => _navigation.MoveToLineEnd(_session);
-
-    public void MoveToDocumentStart() => _navigation.MoveToDocumentStart(_session);
-    
-    public void MoveToDocumentEnd() => _navigation.MoveToDocumentEnd(_session);
-
-    // Selection Movement Commands
-    public void SelectLeft() => _navigation.ExtendLeft(_session);
-
-    public void SelectRight() => _navigation.ExtendRight(_session);
-
-    public void SelectUp() => _navigation.ExtendUp(_session);
-
-    public void SelectDown() => _navigation.ExtendDown(_session);
-
-    public void SelectPageUp(int pageHeight) => _navigation.ExtendPageUp(_session, pageHeight);
-
-    public void SelectPageDown(int pageHeight) => _navigation.ExtendPageDown(_session, pageHeight);
-
-    public void SelectAll() => session.SelectAll();
+    // Selection
+    public void SelectAll() => _session.SelectAll();
 
     // Undo / Redo
     public void Undo() => _session.Undo();
