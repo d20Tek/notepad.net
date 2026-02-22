@@ -11,4 +11,6 @@ public sealed record EditorSettings
     public int HorizontalEdgeScrollAmount { get; init; } = 20;
 
     public int TabSize { get; init; } = 4;
+
+    public bool WordWrapEnabled { get; init; } = false;
 }

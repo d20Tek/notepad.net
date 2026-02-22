@@ -1,0 +1,164 @@
+# Word Wrap Feature Implementation
+
+## Overview
+Implement word wrap capability that behaves like Windows Notepad:
+- When enabled, long lines wrap at the viewport width boundary
+- Horizontal scrolling is disabled when word wrap is on
+- Caret navigation respects wrapped lines visually
+- Toggle via Format > Word Wrap menu item
+
+---
+
+## Task Breakdown
+
+### Phase 1: Core Infrastructure (D20Tek.Notepad.ViewModel)
+
+#### Task 1.1: Add WordWrap Setting to EditorSettings
+- [x] Add `bool WordWrapEnabled { get; init; } = false;` property to `EditorSettings`
+- [x] Update `EditorSettings.Default` if needed (not needed - uses default record initialization)
+
+#### Task 1.2: Create WordWrapCalculator Utility
+- [x] Create new class `WordWrapCalculator` in ViewModel project
+- [x] Implement `WrapLine(string text, int viewportWidth)` method
+  - Returns `List<WrappedSegment>` containing start index, length, and text for each segment
+- [x] Handle edge cases: empty lines, lines shorter than viewport, single words longer than viewport
+- [x] Wrap at word boundaries when possible (like Notepad), fall back to character wrap for long words
+
+#### Task 1.3: Create WrappedLine Model
+- [x] Create `WrappedSegment` record: `(int StartColumn, int Length, string Text)`
+- [x] This maps each visual line segment back to its source column offset
+
+#### Task 1.4: Update VisibleLinesBuilder for Word Wrap
+- [ ] Modify `Build()` method to check `EditorSettings.WordWrapEnabled`
+- [ ] When word wrap enabled:
+  - Iterate document lines within viewport range
+  - Call `WordWrapCalculator.WrapLine()` for each line
+  - Produce multiple `ViewLine` entries per document line as needed
+  - Track document-line-to-view-line mapping
+- [ ] Update `ViewLine` to include `DocumentLineIndex` and `SegmentStartColumn` for mapping
+
+#### Task 1.5: Update Viewport for Word Wrap Mode
+- [ ] Add method `GetWrappedLineCount(IDocument document, int viewportWidth)` to calculate total visual lines
+- [ ] When word wrap enabled, disable horizontal scrolling (`HorizontalOffset` stays 0)
+- [ ] Update `EnsureLineVisible` to account for wrapped lines
+
+---
+
+### Phase 2: Caret & Selection Mapping (D20Tek.Notepad.ViewModel)
+
+#### Task 2.1: Update ViewMapping for Wrapped Lines
+- [ ] Create mapping functions to convert between document position and wrapped view position
+- [ ] `ToWrappedViewPosition(TextPosition docPos, List<ViewLine> wrappedLines)`
+- [ ] `FromWrappedViewPosition(ViewPosition viewPos, List<ViewLine> wrappedLines)`
+
+#### Task 2.2: Update EditorViewModel.Navigation
+- [ ] MoveUp/MoveDown should move by visual (wrapped) lines when word wrap enabled
+- [ ] MoveToLineStart/End should respect wrapped line boundaries OR document line (match Notepad behavior: goes to document line start/end)
+- [ ] Home key behavior: first press goes to wrapped line start, second to document line start
+
+#### Task 2.3: Update Selection Mapping
+- [ ] Modify `GetSelectionSegmentForLine` to handle wrapped segments
+- [ ] Selection should paint correctly across wrapped line segments
+
+---
+
+### Phase 3: Settings & State Management (D20Tek.Notepad.ViewModel)
+
+#### Task 3.1: Add WordWrap Toggle to EditorViewModel
+- [ ] Add `bool IsWordWrapEnabled` property
+- [ ] Add `ToggleWordWrap()` method that:
+  - Toggles the setting
+  - Resets horizontal scroll to 0
+  - Triggers `Refresh()` to rebuild visible lines
+
+#### Task 3.2: Persist Word Wrap Setting (Optional)
+- [ ] Consider persisting setting across sessions (app settings/config)
+
+---
+
+### Phase 4: UI Integration (D20Tek.Notepad.Tui)
+
+#### Task 4.1: Add Format Menu with Word Wrap Toggle
+- [ ] Update `MenuBuilder` to add "Format" menu
+- [ ] Add "Word Wrap" menu item with checkmark indicator
+- [ ] Wire menu item to `EditorViewModel.ToggleWordWrap()`
+- [ ] Menu item should show checked state when word wrap is enabled
+
+#### Task 4.2: Create WordWrapCommand
+- [ ] Create `WordWrapCommand` class implementing the command pattern
+- [ ] Register command in `CommandRegistry`
+
+#### Task 4.3: Update TerminalGuiRenderer (if needed)
+- [ ] Ensure renderer handles variable-length wrapped lines correctly
+- [ ] Verify caret positioning works with wrapped content
+
+#### Task 4.4: Disable Horizontal Scrollbar When Word Wrap Enabled
+- [ ] Hide or disable horizontal scroll indicator in word wrap mode
+
+---
+
+### Phase 5: Unit Tests
+
+#### Task 5.1: WordWrapCalculator Tests
+- [x] Test empty string returns single empty segment
+- [x] Test line shorter than viewport returns single segment
+- [x] Test line exactly viewport width returns single segment
+- [x] Test line longer than viewport wraps at word boundary
+- [x] Test long word exceeding viewport wraps at character boundary
+- [x] Test multiple spaces and whitespace handling
+- [x] Test wrapping with various viewport widths
+
+#### Task 5.1a: EditorSettings.WordWrapEnabled Tests
+- [x] Test default value is false
+- [x] Test constructor with custom WordWrapEnabled value
+
+#### Task 5.1b: WrappedSegment Tests
+- [x] Test constructor sets properties
+- [x] Test with expression creates new instance with updates
+- [x] Test equality with same values
+- [x] Test inequality with different values
+
+#### Task 5.2: VisibleLinesBuilder Word Wrap Tests
+- [ ] Test wrapped lines produced correctly
+- [ ] Test document line mapping preserved
+- [ ] Test viewport scrolling with wrapped content
+
+#### Task 5.3: EditorViewModel Word Wrap Tests
+- [ ] Test `ToggleWordWrap()` changes state
+- [ ] Test horizontal offset resets when word wrap enabled
+- [ ] Test navigation in word wrap mode
+
+#### Task 5.4: Integration Tests
+- [ ] Test end-to-end word wrap toggle via menu
+- [ ] Test caret movement across wrapped lines
+- [ ] Test selection across wrapped lines
+
+---
+
+## Acceptance Criteria
+- [ ] Format > Word Wrap menu item toggles word wrap on/off
+- [ ] Menu item shows checkmark when word wrap is enabled
+- [ ] Long lines wrap at viewport boundary when enabled
+- [ ] Words wrap at word boundaries (spaces) when possible
+- [ ] Horizontal scrollbar is hidden/disabled when word wrap is on
+- [ ] Caret navigation (up/down arrows) moves by visual lines
+- [ ] Home/End keys navigate within document lines (Notepad behavior)
+- [ ] Selection highlighting works correctly across wrapped lines
+- [ ] Performance is acceptable for large documents
+
+---
+
+## Dependencies
+- `EditorSettings` (existing)
+- `VisibleLinesBuilder` (existing - needs modification)
+- `Viewport` (existing - needs modification)
+- `ViewLine` (existing - may need extension)
+- `MenuBuilder` (existing - needs Format menu)
+
+---
+
+## Notes
+- Windows Notepad wraps at word boundaries, not character boundaries
+- When a single word exceeds viewport width, it wraps mid-word
+- Notepad's Home key goes to document line start, not wrapped line start
+- Consider performance impact on large files with many long lines

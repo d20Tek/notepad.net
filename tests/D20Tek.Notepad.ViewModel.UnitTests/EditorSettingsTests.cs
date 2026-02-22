@@ -14,6 +14,7 @@ public class EditorSettingsTests
         Assert.AreEqual(3, settings.EdgeScrollSpeed);
         Assert.AreEqual(20, settings.HorizontalEdgeScrollAmount);
         Assert.AreEqual(4, settings.TabSize);
+        Assert.IsFalse(settings.WordWrapEnabled);
     }
 
     [TestMethod]
@@ -36,7 +37,8 @@ public class EditorSettingsTests
             MouseWheelScrollLines = 5,
             EdgeScrollSpeed = 2,
             HorizontalEdgeScrollAmount = 10,
-            TabSize = 2
+            TabSize = 2,
+            WordWrapEnabled = true
         };
 
         // assert
@@ -44,6 +46,7 @@ public class EditorSettingsTests
         Assert.AreEqual(2, settings.EdgeScrollSpeed);
         Assert.AreEqual(10, settings.HorizontalEdgeScrollAmount);
         Assert.AreEqual(2, settings.TabSize);
+        Assert.IsTrue(settings.WordWrapEnabled);
     }
 
     [TestMethod]

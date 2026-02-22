@@ -10,6 +10,9 @@
     <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>
+  <Folder Name="/.plans/">
+    <File Path="plans/word-wrap-tasks.md" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/D20Tek.Notepad.Core/D20Tek.Notepad.Core.csproj" />
     <Project Path="src/D20Tek.Notepad.Tui/D20Tek.Notepad.Tui.csproj" />

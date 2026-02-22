@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="D20Tek.Notepad.ViewModel.UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\D20Tek.Notepad.Core\D20Tek.Notepad.Core.csproj" />
   </ItemGroup>
 
