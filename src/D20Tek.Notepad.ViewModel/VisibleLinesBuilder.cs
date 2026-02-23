@@ -76,16 +76,33 @@ internal static class VisibleLinesBuilder
             visualLineIndex = nextVisualIndex;
         }
 
+
         return visibleLines;
     }
 
-    public static ViewPosition MapCaret(EditorViewModel viewModel) => new(
-        Math.Max(0, viewModel.Session.Caret.Line - viewModel.Viewport.FirstVisibleLine),
-        Math.Max(0, viewModel.Session.Caret.Column - viewModel.Viewport.HorizontalOffset));
+    public static ViewPosition MapCaret(EditorViewModel viewModel)
+    {
+        if (viewModel.Settings.WordWrapEnabled)
+        {
+            return ViewMappingHelper.ToWrappedViewPosition(
+                viewModel.Session.Caret,
+                viewModel.VisibleLines,
+                viewModel.Viewport.FirstVisibleLine);
+        }
+
+        return new ViewPosition(
+            Math.Max(0, viewModel.Session.Caret.Line - viewModel.Viewport.FirstVisibleLine),
+            Math.Max(0, viewModel.Session.Caret.Column - viewModel.Viewport.HorizontalOffset));
+    }
 
     public static SelectionViewRange? MapSelection(EditorViewModel viewModel)
     {
         if (!viewModel.Session.HasSelection) return null;
+
+        if (viewModel.Settings.WordWrapEnabled)
+        {
+            return MapWrappedSelection(viewModel);
+        }
 
         var raw = viewModel.Session.Anchor.ToViewSelectionRange(
             viewModel.Session.Caret,
@@ -98,5 +115,18 @@ internal static class VisibleLinesBuilder
             new ViewPosition(raw.Value.Start.LineIndex, Math.Max(0, raw.Value.Start.Column - viewModel.Viewport.HorizontalOffset)),
             new ViewPosition(raw.Value.End.LineIndex, Math.Max(0, raw.Value.End.Column - viewModel.Viewport.HorizontalOffset))
             ).Normalize();
+    }
+
+    private static SelectionViewRange? MapWrappedSelection(EditorViewModel viewModel)
+    {
+        var anchor = viewModel.Session.Anchor;
+        var caret = viewModel.Session.Caret;
+        var visibleLines = viewModel.VisibleLines;
+        var firstVisibleLine = viewModel.Viewport.FirstVisibleLine;
+
+        var anchorViewPos = ViewMappingHelper.ToWrappedViewPosition(anchor, visibleLines, firstVisibleLine);
+        var caretViewPos = ViewMappingHelper.ToWrappedViewPosition(caret, visibleLines, firstVisibleLine);
+
+        return new SelectionViewRange(anchorViewPos, caretViewPos).Normalize();
     }
 }

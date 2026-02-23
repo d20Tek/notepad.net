@@ -47,9 +47,9 @@ Implement word wrap capability that behaves like Windows Notepad:
 ### Phase 2: Caret & Selection Mapping (D20Tek.Notepad.ViewModel)
 
 #### Task 2.1: Update ViewMapping for Wrapped Lines
-- [ ] Create mapping functions to convert between document position and wrapped view position
-- [ ] `ToWrappedViewPosition(TextPosition docPos, List<ViewLine> wrappedLines)`
-- [ ] `FromWrappedViewPosition(ViewPosition viewPos, List<ViewLine> wrappedLines)`
+- [x] Create mapping functions to convert between document position and wrapped view position
+- [x] `ToWrappedViewPosition(TextPosition docPos, List<ViewLine> wrappedLines)`
+- [x] `FromWrappedViewPosition(ViewPosition viewPos, List<ViewLine> wrappedLines)`
 
 #### Task 2.2: Update EditorViewModel.Navigation
 - [ ] MoveUp/MoveDown should move by visual (wrapped) lines when word wrap enabled
