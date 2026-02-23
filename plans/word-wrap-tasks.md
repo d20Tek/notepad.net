@@ -65,14 +65,17 @@ Implement word wrap capability that behaves like Windows Notepad:
 ### Phase 3: Settings & State Management (D20Tek.Notepad.ViewModel)
 
 #### Task 3.1: Add WordWrap Toggle to EditorViewModel
-- [ ] Add `bool IsWordWrapEnabled` property
-- [ ] Add `ToggleWordWrap()` method that:
+- [x] Add `bool IsWordWrapEnabled` property
+- [x] Add `ToggleWordWrap()` method that:
   - Toggles the setting
   - Resets horizontal scroll to 0
   - Triggers `Refresh()` to rebuild visible lines
 
 #### Task 3.2: Persist Word Wrap Setting (Optional)
 - [ ] Consider persisting setting across sessions (app settings/config)
+  - Persist file next to the tui exe as json (editor-settings.json) in a SettingsService class
+  - Save and load the full EditorSettings class to that file
+  - Load the EditorSettings on startup
 
 ---
 
@@ -135,9 +138,9 @@ Implement word wrap capability that behaves like Windows Notepad:
 - [x] Test negative SegmentStartColumn throws exception
 
 #### Task 5.3: EditorViewModel Word Wrap Tests
-- [ ] Test `ToggleWordWrap()` changes state
-- [ ] Test horizontal offset resets when word wrap enabled
-- [ ] Test navigation in word wrap mode
+- [x] Test `ToggleWordWrap()` changes state
+- [x] Test horizontal offset resets when word wrap enabled
+- [x] Test navigation in word wrap mode
 
 #### Task 5.4: Integration Tests
 - [ ] Test end-to-end word wrap toggle via menu
