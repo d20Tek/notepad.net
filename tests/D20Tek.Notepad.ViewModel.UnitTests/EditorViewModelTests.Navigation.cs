@@ -65,6 +65,7 @@ public class EditorViewModelNavigationWrappedTests
     }
 
     [TestMethod]
+    [ExcludeFromCodeCoverage]
     public void MoveUp_WithWordWrap_PreservesColumnPosition()
     {
         // arrange

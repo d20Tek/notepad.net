@@ -149,7 +149,7 @@ public class EditorViewModelWordWrapTests
         viewModel.SetViewportHeight(5);
         viewModel.SetViewportWidth(80);
         bool eventFired = false;
-        viewModel.WordWrapChanged += (_) => eventFired = true;
+        viewModel.WordWrapChanged += [ExcludeFromCodeCoverage] (_) => eventFired = true;
 
         // act - already disabled, set to disabled
         viewModel.SetWordWrap(false);

@@ -14,8 +14,14 @@ class Program
         Application.Init();
         var top = Application.Top;
 
+        var settingsService = new SettingsService();
+        var settings = settingsService.Load();
+
         var session = new EditorSession(CommandLineHandler.GetDocumentOrDefault(args));
-        var viewModel = new EditorViewModel(session, new EditorCommandService(session));
+        var viewModel = new EditorViewModel(session, new EditorCommandService(session), settings);
+
+        // Save settings when word wrap changes
+        viewModel.WordWrapChanged += (_) => settingsService.Save(viewModel.Settings);
 
         top.Add(MenuBuilder.Build(viewModel));
         top.Add(new HorizontalDivider(0, 1));
