@@ -321,4 +321,214 @@ public class EditorViewModelSelectionTests
         var viewModel = new EditorViewModel(session, commandService);
         return (viewModel, session);
     }
+
+    private static (EditorViewModel viewModel, EditorSession session) CreateViewModelWithWordWrap(string[] lines)
+    {
+        var textLines = lines.Select(l => new TextLine(l)).ToList();
+        var doc = _docFactory.Create(new(textLines, Encoding.UTF8, LineEndingStyle.CRLF));
+        var session = new EditorSession(doc);
+        var commandService = new EditorCommandService(session);
+        var settings = new EditorSettings { WordWrapEnabled = true };
+        var viewModel = new EditorViewModel(session, commandService, settings);
+        return (viewModel, session);
+    }
+
+    // Word Wrap Selection Tests
+    [TestMethod]
+    public void GetSelectionSegmentForWrappedLine_WithNoSelection_ReturnsNull()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        session.Caret = new TextPosition(0, 3);
+        session.Anchor = new TextPosition(0, 3);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        viewModel.Refresh();
+
+        // act
+        var result = viewModel.GetSelectionSegmentForWrappedLine(0);
+
+        // assert
+        Assert.IsNull(result);
+    }
+
+    [TestMethod]
+    public void GetSelectionSegmentForWrappedLine_WithSelectionInFirstSegment_ReturnsCorrectSegment()
+    {
+        // arrange
+        // "Hello World" wraps to "Hello", "World"
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        session.Anchor = new TextPosition(0, 1);
+        session.Caret = new TextPosition(0, 4);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        viewModel.Refresh();
+
+        // act
+        var result = viewModel.GetSelectionSegmentForWrappedLine(0);
+
+        // assert
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.Value.StartColumn);
+        Assert.AreEqual(4, result.Value.EndColumn);
+    }
+
+    [TestMethod]
+    public void GetSelectionSegmentForWrappedLine_WithSelectionInSecondSegment_ReturnsCorrectSegment()
+    {
+        // arrange
+        // "Hello World" wraps to "Hello", "World"
+        // Selection in "World" segment: columns 7-10 -> local 1-4
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        session.Anchor = new TextPosition(0, 7);
+        session.Caret = new TextPosition(0, 10);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        viewModel.Refresh();
+
+        // act
+        var result = viewModel.GetSelectionSegmentForWrappedLine(1);
+
+        // assert
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.Value.StartColumn); // 7 - 6 = 1
+        Assert.AreEqual(4, result.Value.EndColumn);   // 10 - 6 = 4
+    }
+
+    [TestMethod]
+    public void GetSelectionSegmentForWrappedLine_WithSelectionSpanningSegments_ReturnsPartialSegments()
+    {
+        // arrange
+        // "Hello World" wraps to "Hello", "World"
+        // Selection from column 3 to column 9 spans both segments
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        session.Anchor = new TextPosition(0, 3);
+        session.Caret = new TextPosition(0, 9);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        viewModel.Refresh();
+
+        // act
+        var resultFirst = viewModel.GetSelectionSegmentForWrappedLine(0);
+        var resultSecond = viewModel.GetSelectionSegmentForWrappedLine(1);
+
+        // assert
+        Assert.IsNotNull(resultFirst);
+        Assert.AreEqual(3, resultFirst.Value.StartColumn); // Selection starts at column 3
+        Assert.AreEqual(5, resultFirst.Value.EndColumn);   // "Hello" length
+
+        Assert.IsNotNull(resultSecond);
+        Assert.AreEqual(0, resultSecond.Value.StartColumn); // Start of "World"
+        Assert.AreEqual(3, resultSecond.Value.EndColumn);   // 9 - 6 = 3
+    }
+
+    [TestMethod]
+    public void GetSelectionSegmentForWrappedLine_WithSelectionOnDifferentDocLine_ReturnsNull()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World", "Foo Bar"]);
+        session.Anchor = new TextPosition(1, 0);
+        session.Caret = new TextPosition(1, 3);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        viewModel.Refresh();
+
+        // act - check first doc line segments
+        var result = viewModel.GetSelectionSegmentForWrappedLine(0); // "Hello" segment
+
+        // assert
+        Assert.IsNull(result);
+    }
+
+    [TestMethod]
+    public void GetSelectionSegmentForWrappedLine_WithSelectionBeforeSegment_ReturnsNull()
+    {
+        // arrange
+        // "Hello World" wraps to "Hello", "World"
+        // Selection only in "Hello" segment
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        session.Anchor = new TextPosition(0, 0);
+        session.Caret = new TextPosition(0, 3);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        viewModel.Refresh();
+
+        // act - check "World" segment
+        var result = viewModel.GetSelectionSegmentForWrappedLine(1);
+
+        // assert
+        Assert.IsNull(result);
+    }
+
+    [TestMethod]
+    public void GetSelectionSegmentForWrappedLine_WithSelectionAfterSegment_ReturnsNull()
+    {
+        // arrange
+        // "Hello World" wraps to "Hello", "World"
+        // Selection only in "World" segment
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        session.Anchor = new TextPosition(0, 7);
+        session.Caret = new TextPosition(0, 10);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        viewModel.Refresh();
+
+        // act - check "Hello" segment
+        var result = viewModel.GetSelectionSegmentForWrappedLine(0);
+
+        // assert
+        Assert.IsNull(result);
+    }
+
+    [TestMethod]
+    public void GetSelectionSegmentForWrappedLine_WithInvalidViewLineIndex_ReturnsNull()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        session.Anchor = new TextPosition(0, 0);
+        session.Caret = new TextPosition(0, 5);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        viewModel.Refresh();
+
+        // act
+        var result = viewModel.GetSelectionSegmentForWrappedLine(10);
+
+        // assert
+        Assert.IsNull(result);
+    }
+
+    [TestMethod]
+    public void GetSelectionSegmentForLine_WithInvalidViewLineIndex_ReturnsNull()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello World"]);
+        session.Anchor = new TextPosition(0, 0);
+        session.Caret = new TextPosition(0, 5);
+        viewModel.SetViewportHeight(1);
+        viewModel.Refresh();
+
+        // act
+        var result = viewModel.GetSelectionSegmentForLine(10);
+
+        // assert
+        Assert.IsNull(result);
+    }
+
+    [TestMethod]
+    public void GetSelectionSegmentForLine_WithNegativeViewLineIndex_ReturnsNull()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello World"]);
+        session.Anchor = new TextPosition(0, 0);
+        session.Caret = new TextPosition(0, 5);
+        viewModel.SetViewportHeight(1);
+        viewModel.Refresh();
+
+        // act
+        var result = viewModel.GetSelectionSegmentForLine(-1);
+
+        // assert
+        Assert.IsNull(result);
+    }
 }

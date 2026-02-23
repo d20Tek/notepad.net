@@ -1,0 +1,275 @@
+namespace D20Tek.Notepad.ViewModel.UnitTests;
+
+[TestClass]
+public class EditorViewModelNavigationWrappedTests
+{
+    private static readonly DocumentFactory _docFactory = new();
+
+    // MoveUp with Word Wrap Tests
+    [TestMethod]
+    public void MoveUp_WithWordWrap_MovesToPreviousVisualLine()
+    {
+        // arrange
+        // "Hello World" wraps to "Hello", "World"
+        // Caret starts in "World" segment
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(0, 8); // In "World"
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveUp();
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Line);
+        Assert.IsTrue(session.Caret.Column <= 5); // Should be in "Hello" segment
+    }
+
+    [TestMethod]
+    public void MoveUp_WithWordWrap_AtFirstVisualLine_MovesToDocumentStart()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(0, 3); // In "Hello"
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveUp();
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Line);
+        Assert.AreEqual(0, session.Caret.Column);
+    }
+
+    [TestMethod]
+    public void MoveUp_WithWordWrap_AcrossDocumentLines()
+    {
+        // arrange
+        // Line 0: "AB" (1 visual), Line 1: "CD" (1 visual)
+        // Caret in Line 1, move up to Line 0
+        var (viewModel, session) = CreateViewModelWithWordWrap(["AB", "CD"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(10);
+        session.Caret = new TextPosition(1, 1);
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveUp();
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Line);
+        Assert.AreEqual(1, session.Caret.Column);
+    }
+
+    [TestMethod]
+    public void MoveUp_WithWordWrap_PreservesColumnPosition()
+    {
+        // arrange
+        // "Hello World Today" wraps to "Hello", "World", "Today"
+        // Start at column 3 in "Today", move up should land at column 3 in "World"
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World Today"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(0, 15); // "Tod|ay" - column 3 within segment
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveUp();
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Line);
+        // Should be at column 9 (6 + 3) in "World" segment
+        Assert.IsTrue(session.Caret.Column >= 6 && session.Caret.Column <= 11);
+    }
+
+    // MoveDown with Word Wrap Tests
+    [TestMethod]
+    public void MoveDown_WithWordWrap_MovesToNextVisualLine()
+    {
+        // arrange
+        // "Hello World" wraps to "Hello", "World"
+        // Caret starts in "Hello" segment
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(0, 3); // In "Hello"
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveDown();
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Line);
+        Assert.IsTrue(session.Caret.Column >= 6); // Should be in "World" segment
+    }
+
+    [TestMethod]
+    public void MoveDown_WithWordWrap_AtLastVisualLine_MovesToDocumentEnd()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(0, 8); // In "World"
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveDown();
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Line);
+        Assert.AreEqual(11, session.Caret.Column); // End of "Hello World"
+    }
+
+    [TestMethod]
+    public void MoveDown_WithWordWrap_AcrossDocumentLines()
+    {
+        // arrange
+        // Line 0: "AB" (1 visual), Line 1: "CD" (1 visual)
+        var (viewModel, session) = CreateViewModelWithWordWrap(["AB", "CD"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(10);
+        session.Caret = new TextPosition(0, 1);
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveDown();
+
+        // assert
+        Assert.AreEqual(1, session.Caret.Line);
+        Assert.AreEqual(1, session.Caret.Column);
+    }
+
+    // ExtendUp/ExtendDown with Word Wrap Tests
+    [TestMethod]
+    public void ExtendUp_WithWordWrap_PreservesAnchor()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(0, 8);
+        session.Anchor = new TextPosition(0, 8);
+
+        // act
+        viewModel.ExtendUp();
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 8), session.Anchor);
+        Assert.AreNotEqual(session.Anchor, session.Caret);
+    }
+
+    [TestMethod]
+    public void ExtendDown_WithWordWrap_PreservesAnchor()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(0, 3);
+        session.Anchor = new TextPosition(0, 3);
+
+        // act
+        viewModel.ExtendDown();
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 3), session.Anchor);
+        Assert.AreNotEqual(session.Anchor, session.Caret);
+    }
+
+    // Non-WordWrap behavior preserved
+    [TestMethod]
+    public void MoveUp_WithoutWordWrap_UsesDocumentLines()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Line 1", "Line 2"]);
+        viewModel.SetViewportHeight(5);
+        session.Caret = new TextPosition(1, 3);
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveUp();
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Line);
+        Assert.AreEqual(3, session.Caret.Column);
+    }
+
+    [TestMethod]
+    public void MoveDown_WithoutWordWrap_UsesDocumentLines()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Line 1", "Line 2"]);
+        viewModel.SetViewportHeight(5);
+        session.Caret = new TextPosition(0, 3);
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveDown();
+
+        // assert
+        Assert.AreEqual(1, session.Caret.Line);
+        Assert.AreEqual(3, session.Caret.Column);
+    }
+
+    // Home/End behavior (Notepad style - always goes to document line)
+    [TestMethod]
+    public void MoveToLineStart_WithWordWrap_GoesToDocumentLineStart()
+    {
+        // arrange
+        // "Hello World" wraps, caret in "World" segment
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(0, 8);
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveToLineStart();
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Line);
+        Assert.AreEqual(0, session.Caret.Column); // Start of document line, not wrapped segment
+    }
+
+    [TestMethod]
+    public void MoveToLineEnd_WithWordWrap_GoesToDocumentLineEnd()
+    {
+        // arrange
+        // "Hello World" wraps, caret in "Hello" segment
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(0, 3);
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveToLineEnd();
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Line);
+        Assert.AreEqual(11, session.Caret.Column); // End of document line
+    }
+
+    private static (EditorViewModel viewModel, EditorSession session) CreateViewModel(string[] lines)
+    {
+        var textLines = lines.Select(l => new TextLine(l)).ToList();
+        var doc = _docFactory.Create(new DocumentData(textLines, Encoding.UTF8, LineEndingStyle.CRLF));
+        var session = new EditorSession(doc);
+        var viewModel = new EditorViewModel(session, new EditorCommandService(session));
+        return (viewModel, session);
+    }
+
+    private static (EditorViewModel viewModel, EditorSession session) CreateViewModelWithWordWrap(string[] lines)
+    {
+        var textLines = lines.Select(l => new TextLine(l)).ToList();
+        var doc = _docFactory.Create(new DocumentData(textLines, Encoding.UTF8, LineEndingStyle.CRLF));
+        var session = new EditorSession(doc);
+        var settings = new EditorSettings { WordWrapEnabled = true };
+        var viewModel = new EditorViewModel(session, new EditorCommandService(session), settings);
+        return (viewModel, session);
+    }
+}

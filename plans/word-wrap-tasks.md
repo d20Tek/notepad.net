@@ -52,13 +52,13 @@ Implement word wrap capability that behaves like Windows Notepad:
 - [x] `FromWrappedViewPosition(ViewPosition viewPos, List<ViewLine> wrappedLines)`
 
 #### Task 2.2: Update EditorViewModel.Navigation
-- [ ] MoveUp/MoveDown should move by visual (wrapped) lines when word wrap enabled
-- [ ] MoveToLineStart/End should respect wrapped line boundaries OR document line (match Notepad behavior: goes to document line start/end)
-- [ ] Home key behavior: first press goes to wrapped line start, second to document line start
+- [x] MoveUp/MoveDown should move by visual (wrapped) lines when word wrap enabled
+- [x] MoveToLineStart/End should respect wrapped line boundaries OR document line (match Notepad behavior: goes to document line start/end)
+- [x] Home key behavior: first press goes to wrapped line start, second to document line start
 
 #### Task 2.3: Update Selection Mapping
-- [ ] Modify `GetSelectionSegmentForLine` to handle wrapped segments
-- [ ] Selection should paint correctly across wrapped line segments
+- [x] Modify `GetSelectionSegmentForLine` to handle wrapped segments
+- [x] Selection should paint correctly across wrapped line segments
 
 ---
 
