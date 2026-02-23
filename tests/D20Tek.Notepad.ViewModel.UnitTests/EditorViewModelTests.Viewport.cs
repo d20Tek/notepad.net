@@ -223,6 +223,129 @@ public class EditorViewModelViewportTests
         return (viewModel, session);
     }
 
+    private static (EditorViewModel viewModel, EditorSession session) CreateViewModelWithWordWrap(string[] lines)
+    {
+        var textLines = lines.Select(l => new TextLine(l)).ToList();
+        var doc = _docFactory.Create(new(textLines, Encoding.UTF8, LineEndingStyle.CRLF));
+        var session = new EditorSession(doc);
+        var settings = new EditorSettings { WordWrapEnabled = true };
+        var viewModel = new EditorViewModel(session, new EditorCommandService(session), settings);
+        return (viewModel, session);
+    }
+
     private static string[] GenerateLines(int count) =>
         [.. Enumerable.Range(1, count).Select(i => $"Line {i}")];
+
+    // Word Wrap Viewport Tests
+    [TestMethod]
+    public void GetTotalVisualLineCount_WithoutWordWrap_ReturnsDocumentLineCount()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel(["Hello World", "Foo Bar"]);
+        viewModel.SetViewportHeight(10);
+        viewModel.SetViewportWidth(6);
+
+        // act
+        var result = viewModel.GetTotalVisualLineCount();
+
+        // assert
+        Assert.AreEqual(2, result);
+    }
+
+    [TestMethod]
+    public void GetTotalVisualLineCount_WithWordWrap_ReturnsTotalVisualLines()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModelWithWordWrap(["Hello World", "Foo"]);
+        viewModel.SetViewportHeight(10);
+        viewModel.SetViewportWidth(6);
+
+        // act
+        var result = viewModel.GetTotalVisualLineCount();
+
+        // assert
+        Assert.AreEqual(3, result); // 2 from first line + 1 from second
+    }
+
+    [TestMethod]
+    public void ScrollColumns_WithWordWrapEnabled_DoesNotScroll()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModelWithWordWrap(["Hello World is a long line"]);
+        viewModel.SetViewportHeight(10);
+        viewModel.SetViewportWidth(10);
+
+        // act
+        viewModel.ScrollColumns(5);
+
+        // assert
+        Assert.AreEqual(0, viewModel.Viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void ScrollColumns_WithoutWordWrap_Scrolls()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel(["Hello World is a long line"]);
+        viewModel.SetViewportHeight(10);
+        viewModel.SetViewportWidth(10);
+
+        // act
+        viewModel.ScrollColumns(5);
+
+        // assert
+        Assert.AreEqual(5, viewModel.Viewport.HorizontalOffset);
+    }
+
+    [TestMethod]
+    public void ScrollLines_WithWordWrap_UsesVisualLineCount()
+    {
+        // arrange
+        // "Hello World" wraps to 2 visual lines, "Foo" is 1 visual line = 3 total
+        var (viewModel, _) = CreateViewModelWithWordWrap(["Hello World", "Foo"]);
+        viewModel.SetViewportHeight(2);
+        viewModel.SetViewportWidth(6);
+
+        // act
+        viewModel.ScrollLines(1);
+
+        // assert
+        Assert.AreEqual(1, viewModel.Viewport.FirstVisibleLine);
+    }
+
+    [TestMethod]
+    public void EnsureCaretVisible_WithWordWrap_ScrollsToVisualLine()
+    {
+        // arrange
+        // "Hello World Today" wraps to 3 visual lines
+        // Caret at column 10 (in "Today") should be visual line 2
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World Today"]);
+        viewModel.SetViewportHeight(2);
+        viewModel.SetViewportWidth(6);
+        viewModel.Viewport.SetVerticalOffset(0);
+        session.Caret = new TextPosition(0, 14); // Position in "Today"
+
+        // act
+        viewModel.EnsureCaretVisible();
+
+        // assert
+        // Should have scrolled to make visual line 2 visible
+        Assert.IsTrue(viewModel.Viewport.FirstVisibleLine >= 1);
+    }
+
+    [TestMethod]
+    public void EnsureCaretVisible_WithWordWrap_DoesNotScrollHorizontally()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World Today"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(0, 14);
+
+        // act
+        viewModel.EnsureCaretVisible();
+
+        // assert
+        Assert.AreEqual(0, viewModel.Viewport.HorizontalOffset);
+    }
 }

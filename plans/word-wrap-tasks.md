@@ -38,9 +38,9 @@ Implement word wrap capability that behaves like Windows Notepad:
 - [x] Update `ViewLine` to include `DocumentLineIndex` and `SegmentStartColumn` for mapping
 
 #### Task 1.5: Update Viewport for Word Wrap Mode
-- [ ] Add method `GetWrappedLineCount(IDocument document, int viewportWidth)` to calculate total visual lines
-- [ ] When word wrap enabled, disable horizontal scrolling (`HorizontalOffset` stays 0)
-- [ ] Update `EnsureLineVisible` to account for wrapped lines
+- [x] Add method `GetWrappedLineCount(IDocument document, int viewportWidth)` to calculate total visual lines
+- [x] When word wrap enabled, disable horizontal scrolling (`HorizontalOffset` stays 0)
+- [x] Update `EnsureLineVisible` to account for wrapped lines
 
 ---
 
