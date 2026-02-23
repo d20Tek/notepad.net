@@ -88,4 +88,43 @@ public class ViewLineTests
         // assert
         Assert.AreEqual(string.Empty, result);
     }
+
+    [TestMethod]
+    public void Constructor_WithSegmentStartColumn_SetsAllProperties()
+    {
+        // arrange
+        var lineIndex = 5;
+        var segmentStartColumn = 10;
+        var text = "World";
+
+        // act
+        var viewLine = new ViewLine(lineIndex, segmentStartColumn, text);
+
+        // assert
+        Assert.AreEqual(lineIndex, viewLine.DocumentLineIndex);
+        Assert.AreEqual(segmentStartColumn, viewLine.SegmentStartColumn);
+        Assert.AreEqual(text, viewLine.Text);
+    }
+
+    [TestMethod]
+    public void Constructor_WithoutSegmentStartColumn_DefaultsToZero()
+    {
+        // arrange
+        var lineIndex = 3;
+        var text = "Hello";
+
+        // act
+        var viewLine = new ViewLine(lineIndex, text);
+
+        // assert
+        Assert.AreEqual(0, viewLine.SegmentStartColumn);
+    }
+
+    [TestMethod]
+    public void Constructor_WithNegativeSegmentStartColumn_ThrowsArgumentOutOfRangeException()
+    {
+        // act & assert
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+            [ExcludeFromCodeCoverage] () => new ViewLine(0, -1, "text"));
+    }
 }

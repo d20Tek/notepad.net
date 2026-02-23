@@ -4,6 +4,7 @@
 - First general instruction
 - Second general instruction
 - When completing coding tasks, update the corresponding task status in *-tasks.md files located in the plans folder.
+- Aim to keep code coverage close to 100% block coverage by adding unit tests to cover all possible conditions and branches.
 
 ## Code Style
 - Use specific formatting rules

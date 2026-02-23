@@ -29,13 +29,13 @@ Implement word wrap capability that behaves like Windows Notepad:
 - [x] This maps each visual line segment back to its source column offset
 
 #### Task 1.4: Update VisibleLinesBuilder for Word Wrap
-- [ ] Modify `Build()` method to check `EditorSettings.WordWrapEnabled`
-- [ ] When word wrap enabled:
+- [x] Modify `Build()` method to check `EditorSettings.WordWrapEnabled`
+- [x] When word wrap enabled:
   - Iterate document lines within viewport range
   - Call `WordWrapCalculator.WrapLine()` for each line
   - Produce multiple `ViewLine` entries per document line as needed
   - Track document-line-to-view-line mapping
-- [ ] Update `ViewLine` to include `DocumentLineIndex` and `SegmentStartColumn` for mapping
+- [x] Update `ViewLine` to include `DocumentLineIndex` and `SegmentStartColumn` for mapping
 
 #### Task 1.5: Update Viewport for Word Wrap Mode
 - [ ] Add method `GetWrappedLineCount(IDocument document, int viewportWidth)` to calculate total visual lines
@@ -119,9 +119,20 @@ Implement word wrap capability that behaves like Windows Notepad:
 - [x] Test inequality with different values
 
 #### Task 5.2: VisibleLinesBuilder Word Wrap Tests
-- [ ] Test wrapped lines produced correctly
-- [ ] Test document line mapping preserved
-- [ ] Test viewport scrolling with wrapped content
+- [x] Test wrapped lines produced correctly
+- [x] Test document line mapping preserved
+- [x] Test viewport scrolling with wrapped content
+- [x] Test SegmentStartColumn values correct
+- [x] Test multiple document lines wrap correctly
+- [x] Test viewport height limits wrapped lines
+- [x] Test short lines return single segment
+- [x] Test empty line returns one segment
+- [x] Test zero viewport width returns empty list
+
+#### Task 5.2a: ViewLine Tests
+- [x] Test constructor with SegmentStartColumn sets all properties
+- [x] Test constructor without SegmentStartColumn defaults to zero
+- [x] Test negative SegmentStartColumn throws exception
 
 #### Task 5.3: EditorViewModel Word Wrap Tests
 - [ ] Test `ToggleWordWrap()` changes state
