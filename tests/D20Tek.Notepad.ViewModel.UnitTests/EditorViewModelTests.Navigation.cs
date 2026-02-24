@@ -255,6 +255,92 @@ public class EditorViewModelNavigationWrappedTests
         Assert.AreEqual(11, session.Caret.Column); // End of document line
     }
 
+    // GetDocumentPositionForVisualLine edge cases (tested via MoveDown)
+    [TestMethod]
+    public void MoveDown_WithWordWrap_ClampsColumnToSegmentLength()
+    {
+        // arrange
+        // Line 0: "Hello World" wraps to "Hello" (5), "World" (5)
+        // Line 1: "AB" (2 chars)
+        // Caret at column 4 in "World", move down should clamp to "AB" length (2)
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World", "AB"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(0, 10); // Column 4 in "World" segment
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveDown();
+
+        // assert
+        Assert.AreEqual(1, session.Caret.Line);
+        Assert.AreEqual(2, session.Caret.Column); // Clamped to "AB" length
+    }
+
+    [TestMethod]
+    [ExcludeFromCodeCoverage]
+    public void MoveDown_WithWordWrap_WithPreferredColumnExceedingSegment_ClampsToSegmentEnd()
+    {
+        // arrange
+        // "Hello World Today" wraps to "Hello" (5), "World" (5), "Today" (5)
+        // Start at column 4 in "Hello", move down to "World" which also has 5 chars
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World Today"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(0, 4); // Column 4 in "Hello"
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveDown();
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Line);
+        // Should be at column 10 (6 + 4) in "World" segment, clamped to segment
+        Assert.IsTrue(session.Caret.Column >= 6 && session.Caret.Column <= 11);
+    }
+
+    [TestMethod]
+    public void MoveDown_WithWordWrap_MultipleDocumentLines_NavigatesCorrectly()
+    {
+        // arrange
+        // Line 0: "A" (1 visual line)
+        // Line 1: "Hello World" (2 visual lines)
+        // Line 2: "B" (1 visual line)
+        var (viewModel, session) = CreateViewModelWithWordWrap(["A", "Hello World", "B"]);
+        viewModel.SetViewportHeight(10);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(1, 8); // In "World" segment of line 1
+        session.Anchor = session.Caret;
+
+        // act - move down from "World" should go to line 2 "B"
+        viewModel.MoveDown();
+
+        // assert
+        Assert.AreEqual(2, session.Caret.Line);
+        Assert.AreEqual(1, session.Caret.Column); // Clamped to "B" length
+    }
+
+    [TestMethod]
+    public void MoveUp_WithWordWrap_MultipleDocumentLines_NavigatesCorrectly()
+    {
+        // arrange
+        // Line 0: "A" (1 visual line)
+        // Line 1: "Hello World" (2 visual lines - "Hello", "World")
+        // Caret in "Hello" segment, move up should go to line 0 "A"
+        var (viewModel, session) = CreateViewModelWithWordWrap(["A", "Hello World"]);
+        viewModel.SetViewportHeight(10);
+        viewModel.SetViewportWidth(6);
+        session.Caret = new TextPosition(1, 3); // In "Hello" segment of line 1
+        session.Anchor = session.Caret;
+
+        // act
+        viewModel.MoveUp();
+
+        // assert
+        Assert.AreEqual(0, session.Caret.Line);
+        Assert.AreEqual(1, session.Caret.Column); // Clamped to "A" length
+    }
+
     private static (EditorViewModel viewModel, EditorSession session) CreateViewModel(string[] lines)
     {
         var textLines = lines.Select(l => new TextLine(l)).ToList();

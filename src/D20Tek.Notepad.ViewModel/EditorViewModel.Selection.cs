@@ -41,10 +41,7 @@ public sealed partial class EditorViewModel
         var textLength = viewLine.Text.Length;
 
         // In word wrap mode, we need to check if the document selection intersects this segment
-        if (!Settings.WordWrapEnabled)
-        {
-            return GetSelectionSegmentForLine(viewLineIndex);
-        }
+        if (!Settings.WordWrapEnabled) return GetSelectionSegmentForLine(viewLineIndex);
 
         // Get the document range for this view line segment
         int docLine = viewLine.DocumentLineIndex;
@@ -54,24 +51,14 @@ public sealed partial class EditorViewModel
         // Get document selection range (normalized)
         var anchor = Session.Anchor;
         var caret = Session.Caret;
-        var (selStart, selEnd) = anchor.CompareTo(caret) <= 0
-            ? (anchor, caret)
-            : (caret, anchor);
+        var (selStart, selEnd) = anchor.CompareTo(caret) <= 0 ? (anchor, caret) : (caret, anchor);
 
-        // Check if selection intersects this segment
-        if (selEnd.Line < docLine || selStart.Line > docLine)
-        {
-            return null; // Selection doesn't touch this document line
-        }
+        if (selEnd.Line < docLine || selStart.Line > docLine) return null;  // selection doesn't touch this document line
 
-        // Calculate intersection with segment
         int selStartCol = selStart.Line == docLine ? selStart.Column : 0;
         int selEndCol = selEnd.Line == docLine ? selEnd.Column : int.MaxValue;
 
-        // Selection starts after this segment
         if (selStartCol >= segmentEnd) return null;
-
-        // Selection ends before this segment
         if (selEndCol <= segmentStart) return null;
 
         // Calculate the selection within this segment

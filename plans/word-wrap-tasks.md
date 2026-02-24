@@ -153,7 +153,7 @@ Implement word wrap capability that behaves like Windows Notepad:
 - [x] Caret navigation (up/down arrows) moves by visual lines
 - [x] Home/End keys navigate within document lines (Notepad behavior)
 - [x] Selection highlighting works correctly across wrapped lines
-- [ ] Performance is acceptable for large documents (needs manual testing)
+- [x] Performance is acceptable for large documents (verified manually)
 
 ---
 

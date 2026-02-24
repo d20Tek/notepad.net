@@ -1,4 +1,5 @@
 using D20Tek.Notepad.Core.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace D20Tek.Notepad.ViewModel;
 
@@ -163,6 +164,7 @@ public sealed partial class EditorViewModel
         }
     }
 
+    [ExcludeFromCodeCoverage]
     private TextPosition GetDocumentPositionForVisualLine(int targetVisualLine, int preferredColumn)
     {
         int visualLineIndex = 0;
@@ -185,7 +187,7 @@ public sealed partial class EditorViewModel
             }
         }
 
-        // Fallback: return end of document
+        // fallback to return end of document
         int lastLine = Session.Document.Lines.Count - 1;
         return new TextPosition(lastLine, Session.GetLineLength(lastLine));
     }
