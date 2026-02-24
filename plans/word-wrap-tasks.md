@@ -81,22 +81,22 @@ Implement word wrap capability that behaves like Windows Notepad:
 
 ### Phase 4: UI Integration (D20Tek.Notepad.Tui)
 
-#### Task 4.1: Add Format Menu with Word Wrap Toggle
-- [ ] Update `MenuBuilder` to add "View" menu
-- [ ] Add "Word Wrap" menu item with checkmark indicator
-- [ ] Wire menu item to `EditorViewModel.ToggleWordWrap()`
-- [ ] Menu item should show checked state when word wrap is enabled
+#### Task 4.1: Add View Menu with Word Wrap Toggle
+- [x] Update `MenuBuilder` to add "View" menu
+- [x] Add "Word Wrap" menu item with checkmark indicator
+- [x] Wire menu item to `EditorViewModel.ToggleWordWrap()`
+- [x] Menu item should show checked state when word wrap is enabled
 
 #### Task 4.2: Create WordWrapCommand
-- [ ] Create `WordWrapCommand` class implementing the command pattern
-- [ ] Register command in `CommandRegistry`
+- [x] Create `WordWrapCommand` class implementing the command pattern
+- [x] Register command in `CommandRegistry`
 
 #### Task 4.3: Update TerminalGuiRenderer (if needed)
-- [ ] Ensure renderer handles variable-length wrapped lines correctly
-- [ ] Verify caret positioning works with wrapped content
+- [x] Ensure renderer handles variable-length wrapped lines correctly (verified - already works)
+- [x] Verify caret positioning works with wrapped content (verified - MapCaret handles word wrap)
 
 #### Task 4.4: Disable Horizontal Scrollbar When Word Wrap Enabled
-- [ ] Hide or disable horizontal scroll indicator in word wrap mode
+- [x] Hide or disable horizontal scroll indicator in word wrap mode
 
 ---
 
@@ -145,15 +145,15 @@ Implement word wrap capability that behaves like Windows Notepad:
 ---
 
 ## Acceptance Criteria
-- [ ] Format > Word Wrap menu item toggles word wrap on/off
-- [ ] Menu item shows checkmark when word wrap is enabled
-- [ ] Long lines wrap at viewport boundary when enabled
-- [ ] Words wrap at word boundaries (spaces) when possible
-- [ ] Horizontal scrollbar is hidden/disabled when word wrap is on
-- [ ] Caret navigation (up/down arrows) moves by visual lines
-- [ ] Home/End keys navigate within document lines (Notepad behavior)
-- [ ] Selection highlighting works correctly across wrapped lines
-- [ ] Performance is acceptable for large documents
+- [x] View > Word Wrap menu item toggles word wrap on/off
+- [x] Menu item shows checkmark when word wrap is enabled
+- [x] Long lines wrap at viewport boundary when enabled
+- [x] Words wrap at word boundaries (spaces) when possible
+- [x] Horizontal scrollbar is hidden/disabled when word wrap is on
+- [x] Caret navigation (up/down arrows) moves by visual lines
+- [x] Home/End keys navigate within document lines (Notepad behavior)
+- [x] Selection highlighting works correctly across wrapped lines
+- [ ] Performance is acceptable for large documents (needs manual testing)
 
 ---
 

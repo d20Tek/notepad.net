@@ -96,7 +96,7 @@ internal static class MouseBindings
     private static void EdgeScrollVertical(EditorViewModel vm, MouseEvent me)
     {
         int viewportHeight = vm.Viewport.VisibleLineCount;
-        int totalLines = vm.Session.Document.Lines.Count;
+        int totalLines = vm.GetTotalVisualLineCount();
         int speed = vm.Settings.EdgeScrollSpeed;
 
         if (me.Y <= 0 && vm.Viewport.FirstVisibleLine > 0)
@@ -128,9 +128,39 @@ internal static class MouseBindings
     // Position Conversion
     public static (int line, int column) ToDocumentPosition(EditorViewModel vm, MouseEvent me)
     {
+        if (vm.IsWordWrapEnabled)
+        {
+            return ToDocumentPositionWrapped(vm, me);
+        }
+
         int line = CalculateLine(vm, me.Y);
         int column = CalculateColumn(vm, me.X, line);
         return (line, column);
+    }
+
+    private static (int line, int column) ToDocumentPositionWrapped(EditorViewModel vm, MouseEvent me)
+    {
+        var visibleLines = vm.VisibleLines;
+        int viewLineIndex = Math.Clamp(me.Y, 0, visibleLines.Count - 1);
+
+        if (visibleLines.Count == 0)
+        {
+            return (0, 0);
+        }
+
+        var viewLine = visibleLines[viewLineIndex];
+        int docLine = viewLine.DocumentLineIndex;
+        int segmentStart = viewLine.SegmentStartColumn;
+
+        // Calculate column within the segment, then add segment offset
+        int columnInSegment = Math.Clamp(me.X, 0, viewLine.Text.Length);
+        int docColumn = segmentStart + columnInSegment;
+
+        // Clamp to actual line length
+        int lineLength = vm.GetLineLength(docLine);
+        docColumn = Math.Clamp(docColumn, 0, lineLength);
+
+        return (docLine, docColumn);
     }
 
     private static int CalculateLine(EditorViewModel vm, int mouseY)

@@ -28,6 +28,7 @@ public sealed class EditorView : View, IDisposable
         _viewModel.ViewChanged += OnViewModelChanged;
         _viewModel.CaretMoved += OnViewModelChanged;
         _viewModel.SelectionChanged += OnViewModelChanged;
+        _viewModel.WordWrapChanged += OnWordWrapChanged;
     }
 
     public new void Dispose()
@@ -40,6 +41,7 @@ public sealed class EditorView : View, IDisposable
         _viewModel.ViewChanged -= OnViewModelChanged;
         _viewModel.CaretMoved -= OnViewModelChanged;
         _viewModel.SelectionChanged -= OnViewModelChanged;
+        _viewModel.WordWrapChanged -= OnWordWrapChanged;
 
         Resized -= OnViewResized;
         Added -= OnAddedToSuperView;
@@ -96,6 +98,12 @@ public sealed class EditorView : View, IDisposable
     private void OnViewModelChanged() => SetNeedsDisplay();
     private void OnViewModelChanged(ViewPosition _) => SetNeedsDisplay();
     private void OnViewModelChanged(SelectionViewRange? _) => SetNeedsDisplay();
+
+    private void OnWordWrapChanged(bool _)
+    {
+        SyncScrollBarState();
+        SetNeedsDisplay();
+    }
 
     private void OnViewResized(ResizedEventArgs args)
     {
@@ -172,22 +180,23 @@ public sealed class EditorView : View, IDisposable
 
     private bool IsCaretVisible()
     {
-        var caret = _viewModel.Session.Caret;
+        var caretViewPos = _viewModel.CaretViewPosition;
         var viewport = _viewModel.Viewport;
 
-        return caret.Line >= viewport.FirstVisibleLine &&
-               caret.Line < viewport.FirstVisibleLine + viewport.VisibleLineCount &&
-               caret.Column >= viewport.HorizontalOffset &&
-               caret.Column < viewport.HorizontalOffset + _viewModel.ViewportWidth;
+        // CaretViewPosition is already in view coordinates (relative to visible lines)
+        return caretViewPos.LineIndex >= 0 &&
+               caretViewPos.LineIndex < viewport.VisibleLineCount &&
+               caretViewPos.Column >= 0 &&
+               caretViewPos.Column < _viewModel.ViewportWidth;
     }
 
     private (int X, int Y) GetCaretScreenPosition()
     {
-        var caret = _viewModel.Session.Caret;
-        var viewport = _viewModel.Viewport;
+        var caretViewPos = _viewModel.CaretViewPosition;
 
-        int screenX = caret.Column - viewport.HorizontalOffset + Frame.X;
-        int screenY = caret.Line - viewport.FirstVisibleLine + Frame.Y;
+        // CaretViewPosition is already relative to visible area
+        int screenX = caretViewPos.Column + Frame.X;
+        int screenY = caretViewPos.LineIndex + Frame.Y;
 
         return (screenX, screenY);
     }
@@ -231,7 +240,7 @@ public sealed class EditorView : View, IDisposable
         _vScrollBar.X = Bounds.Width - 1;
         _vScrollBar.Y = 0;
         _vScrollBar.Width = 1;
-        _vScrollBar.Height = Bounds.Height - 1;
+        _vScrollBar.Height = Bounds.Height;
 
         _hScrollBar.X = 0;
         _hScrollBar.Y = Bounds.Height - 1;
@@ -251,19 +260,28 @@ public sealed class EditorView : View, IDisposable
     {
         if (_vScrollBar is null) return;
 
-        var lineCount = _viewModel.Session.Document.LineCount;
+        // In word wrap mode, use visual line count; otherwise use document line count
+        var totalLines = _viewModel.GetTotalVisualLineCount();
         var viewportLines = _viewModel.Viewport.VisibleLineCount;
-        int maxPosition = Math.Max(0, lineCount - viewportLines);
+        int maxPosition = Math.Max(0, totalLines - viewportLines);
 
-        _vScrollBar.Size = Math.Max(1, lineCount);
+        _vScrollBar.Size = Math.Max(1, totalLines);
         _vScrollBar.Position = Math.Clamp(_viewModel.Viewport.FirstVisibleLine, 0, maxPosition);
-        _vScrollBar.Visible = lineCount > viewportLines;
+        _vScrollBar.Visible = totalLines > viewportLines;
         _vScrollBar.SetNeedsDisplay();
     }
 
     private void SyncHorizontalScrollBar()
     {
         if (_hScrollBar is null) return;
+
+        // Hide horizontal scrollbar when word wrap is enabled
+        if (_viewModel.IsWordWrapEnabled)
+        {
+            _hScrollBar.Visible = false;
+            _hScrollBar.SetNeedsDisplay();
+            return;
+        }
 
         var maxLineLength = _viewModel.GetMaxLineLength();
         var viewportCols = _viewModel.ViewportWidth;
