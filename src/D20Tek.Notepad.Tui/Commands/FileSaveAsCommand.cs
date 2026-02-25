@@ -7,6 +7,7 @@ internal static class FileSaveAsCommand
     public static bool Execute(EditorViewModel viewModel)
     {
         ArgumentNullException.ThrowIfNull(viewModel);
+        viewModel.EndTypingGroupIfNeeded();
 
         var dialog = new SaveDialog("Save As", "Select a file to save")
         {

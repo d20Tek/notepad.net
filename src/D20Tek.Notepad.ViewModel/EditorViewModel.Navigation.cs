@@ -6,12 +6,23 @@ namespace D20Tek.Notepad.ViewModel;
 public sealed partial class EditorViewModel
 {
     // Navigation (delegates to CaretNavigator with viewport awareness)
-    public void MoveLeft() { Session.Navigator.MoveLeft(); EnsureCaretVisible(); }
+    public void MoveLeft()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.MoveLeft();
+        EnsureCaretVisible();
+    }
 
-    public void MoveRight() { Session.Navigator.MoveRight(); EnsureCaretVisible(); }
+    public void MoveRight()
+    {
+        EndTypingGroupIfNeeded(); 
+        Session.Navigator.MoveRight(); 
+        EnsureCaretVisible();
+    }
 
     public void MoveUp()
     {
+        EndTypingGroupIfNeeded();
         if (Settings.WordWrapEnabled)
         {
             MoveUpWrapped(resetAnchor: true);
@@ -25,6 +36,7 @@ public sealed partial class EditorViewModel
 
     public void MoveDown()
     {
+        EndTypingGroupIfNeeded();
         if (Settings.WordWrapEnabled)
         {
             MoveDownWrapped(resetAnchor: true);
@@ -36,35 +48,66 @@ public sealed partial class EditorViewModel
         EnsureCaretVisible();
     }
 
-    public void MovePageUp() { Session.Navigator.MovePageUp(Viewport.VisibleLineCount); EnsureCaretVisible(); }
+    public void MovePageUp()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.MovePageUp(Viewport.VisibleLineCount);
+        EnsureCaretVisible();
+    }
 
-    public void MovePageDown() { Session.Navigator.MovePageDown(Viewport.VisibleLineCount); EnsureCaretVisible(); }
+    public void MovePageDown()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.MovePageDown(Viewport.VisibleLineCount);
+        EnsureCaretVisible();
+    }
 
     public void MoveToLineStart()
     {
-        // Notepad behavior: Home always goes to document line start
+        EndTypingGroupIfNeeded();
         Session.Navigator.MoveToLineStart();
         EnsureCaretVisible();
     }
 
     public void MoveToLineEnd()
     {
-        // Notepad behavior: End always goes to document line end
+        EndTypingGroupIfNeeded();
         Session.Navigator.MoveToLineEnd();
         EnsureCaretVisible();
     }
 
-    public void MoveToDocumentStart() { Session.Navigator.MoveToDocumentStart(); EnsureCaretVisible(); }
+    public void MoveToDocumentStart()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.MoveToDocumentStart();
+        EnsureCaretVisible();
+    }
 
-    public void MoveToDocumentEnd() { Session.Navigator.MoveToDocumentEnd(); EnsureCaretVisible(); }
+    public void MoveToDocumentEnd()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.MoveToDocumentEnd();
+        EnsureCaretVisible();
+    }
 
     // Selection Extension (delegates to CaretNavigator with viewport awareness)
-    public void ExtendLeft() { Session.Navigator.ExtendLeft(); EnsureCaretVisible(); }
+    public void ExtendLeft()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.ExtendLeft();
+        EnsureCaretVisible();
+    }
 
-    public void ExtendRight() { Session.Navigator.ExtendRight(); EnsureCaretVisible(); }
+    public void ExtendRight() 
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.ExtendRight();
+        EnsureCaretVisible();
+    }
 
     public void ExtendUp()
     {
+        EndTypingGroupIfNeeded();
         if (Settings.WordWrapEnabled)
         {
             MoveUpWrapped(resetAnchor: false);
@@ -78,6 +121,7 @@ public sealed partial class EditorViewModel
 
     public void ExtendDown()
     {
+        EndTypingGroupIfNeeded();
         if (Settings.WordWrapEnabled)
         {
             MoveDownWrapped(resetAnchor: false);
@@ -89,17 +133,47 @@ public sealed partial class EditorViewModel
         EnsureCaretVisible();
     }
 
-    public void ExtendPageUp() { Session.Navigator.ExtendPageUp(Viewport.VisibleLineCount); EnsureCaretVisible(); }
+    public void ExtendPageUp()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.ExtendPageUp(Viewport.VisibleLineCount);
+        EnsureCaretVisible();
+    }
 
-    public void ExtendPageDown() { Session.Navigator.ExtendPageDown(Viewport.VisibleLineCount); EnsureCaretVisible(); }
+    public void ExtendPageDown()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.ExtendPageDown(Viewport.VisibleLineCount);
+        EnsureCaretVisible();
+    }
 
-    public void ExtendToLineStart() { Session.Navigator.ExtendToLineStart(); EnsureCaretVisible(); }
+    public void ExtendToLineStart()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.ExtendToLineStart();
+        EnsureCaretVisible();
+    }
 
-    public void ExtendToLineEnd() { Session.Navigator.ExtendToLineEnd(); EnsureCaretVisible(); }
+    public void ExtendToLineEnd()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.ExtendToLineEnd();
+        EnsureCaretVisible();
+    }
 
-    public void ExtendToDocumentStart() { Session.Navigator.ExtendToDocumentStart(); EnsureCaretVisible(); }
+    public void ExtendToDocumentStart()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.ExtendToDocumentStart();
+        EnsureCaretVisible();
+    }
 
-    public void ExtendToDocumentEnd() { Session.Navigator.ExtendToDocumentEnd(); EnsureCaretVisible(); }
+    public void ExtendToDocumentEnd()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.ExtendToDocumentEnd();
+        EnsureCaretVisible();
+    }
 
     // Caret Positioning Helpers
     public int GetLineLength(int lineIndex) => Session.GetLineLength(lineIndex);
@@ -108,6 +182,7 @@ public sealed partial class EditorViewModel
 
     public void MoveCaretTo(int line, int column)
     {
+        EndTypingGroupIfNeeded();
         var newPos = Session.ClampToDocument(line, column);
         Session.Caret = newPos;
         Session.Anchor = newPos;

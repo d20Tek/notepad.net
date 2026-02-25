@@ -11,6 +11,7 @@ internal static class UnsavedChangesHelper
     public static PromptResult PromptToSaveIfDirty(EditorViewModel viewModel, string actionDescription)
     {
         ArgumentNullException.ThrowIfNull(viewModel);
+        viewModel.EndTypingGroupIfNeeded();
 
         if (!viewModel.IsDirty)
         {

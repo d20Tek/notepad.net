@@ -42,6 +42,7 @@ class Program
 
         Application.Run();
 
+        viewModel.DisposeTimers();
         titleBarManager.Dispose();
         Application.Shutdown();
     }

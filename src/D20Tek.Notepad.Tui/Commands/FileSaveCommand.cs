@@ -7,6 +7,7 @@ internal static class FileSaveCommand
     public static bool Execute(EditorViewModel viewModel)
     {
         ArgumentNullException.ThrowIfNull(viewModel);
+        viewModel.EndTypingGroupIfNeeded();
 
         // If no file path, fall back to Save As
         if (string.IsNullOrEmpty(viewModel.CurrentFilePath))
