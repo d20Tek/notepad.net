@@ -12,6 +12,7 @@
   </Folder>
   <Folder Name="/.plans/">
     <File Path="plans/editing-tasks.md" />
+    <File Path="plans/features.md" />
     <File Path="plans/word-wrap-tasks.md" />
   </Folder>
   <Folder Name="/src/">

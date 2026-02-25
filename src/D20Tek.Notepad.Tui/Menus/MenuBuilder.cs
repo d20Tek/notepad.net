@@ -78,10 +78,11 @@ internal static class MenuBuilder
         }
 
         var cmd = commands[item.CommandName];
+        var shortcutKey = cmd.Shortcut ?? Key.Null;
 
         if (item.IsCheckable && item.IsChecked != null)
         {
-            var menuItem = new MenuItem(item.Label, "", () => cmd.Execute())
+            var menuItem = new MenuItem(item.Label, "", () => cmd.Execute(), null, null, shortcutKey)
             {
                 CheckType = MenuItemCheckStyle.Checked
             };
@@ -102,13 +103,13 @@ internal static class MenuBuilder
         // Handle CanExecute for enabling/disabling menu items
         if (item.CanExecute != null)
         {
-            var menuItem = new MenuItem(item.Label, "", () => cmd.Execute())
+            var menuItem = new MenuItem(item.Label, "", () => cmd.Execute(), null, null, shortcutKey)
             {
                 CanExecute = item.CanExecute
             };
             return menuItem;
         }
 
-        return new MenuItem(item.Label, "", () => cmd.Execute());
+        return new MenuItem(item.Label, "", () => cmd.Execute(), null, null, shortcutKey);
     }
 }

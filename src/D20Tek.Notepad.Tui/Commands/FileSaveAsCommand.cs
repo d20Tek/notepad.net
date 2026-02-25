@@ -26,5 +26,5 @@ internal static class FileSaveAsCommand
     }
 
     public static UiCommand Create(EditorViewModel viewModel) =>
-        new(CommandName, () => Execute(viewModel), Key.CtrlMask | Key.ShiftMask | Key.S);
+        new(CommandName, () => Execute(viewModel), Key.CtrlMask | Key.ShiftMask | Key.E);
 }

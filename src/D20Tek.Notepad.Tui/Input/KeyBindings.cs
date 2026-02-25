@@ -1,3 +1,5 @@
+using D20Tek.Notepad.Tui.Commands;
+
 namespace D20Tek.Notepad.Tui.Input;
 
 internal static class KeyBindings
@@ -51,6 +53,12 @@ internal static class KeyBindings
 
         // Select All
         [(Key.A, false, true)] = vm => vm.SelectAll(),
+
+        // File commands
+        [(Key.N, false, true)] = vm => FileNewCommand.Execute(vm),
+        [(Key.O, false, true)] = vm => FileOpenCommand.Execute(vm),
+        [(Key.E, false, true)] = vm => FileSaveCommand.Execute(vm),
+        [(Key.E, true, true)] = vm => FileSaveAsCommand.Execute(vm),
     };
 
     public static bool TryExecute(EditorViewModel vm, KeyEvent keyEvent)
