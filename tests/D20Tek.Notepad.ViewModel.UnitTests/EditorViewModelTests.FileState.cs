@@ -204,7 +204,7 @@ public class EditorViewModelFileStateTests
     {
         // arrange
         var (viewModel, _) = CreateViewModel(["Hello"]);
-        viewModel.SetFilePath(@"C:\test\myfile.txt");
+        viewModel.SetFilePath(@"C:/test/myfile.txt");
 
         // act & assert
         Assert.AreEqual("myfile.txt", viewModel.DocumentTitle);
