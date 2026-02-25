@@ -14,9 +14,10 @@ public class EditorSettingsTests
         Assert.AreEqual(3, settings.EdgeScrollSpeed);
         Assert.AreEqual(20, settings.HorizontalEdgeScrollAmount);
         Assert.AreEqual(4, settings.TabSize);
-        Assert.IsFalse(settings.UseSpacesForTab);
+        Assert.IsTrue(settings.UseSpacesForTab);
         Assert.IsFalse(settings.WordWrapEnabled);
     }
+
 
     [TestMethod]
     public void Default_ReturnsSameInstance()

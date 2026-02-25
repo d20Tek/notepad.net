@@ -105,7 +105,7 @@ The `KeyBindings` only handles navigation keys (arrows, Home/End, Page Up/Down).
 - [x] Add `IsDirty` property to EditorViewModel
 - [x] Track modifications (typing, paste, delete, etc.)
 - [x] Reset dirty flag on save
-- [ ] Show modified indicator in title bar (optional)
+- [x] Show modified indicator in title bar
 
 #### Task 3.5: Add Unsaved Changes Prompt
 - [x] Prompt user when closing with unsaved changes

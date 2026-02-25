@@ -17,17 +17,33 @@ class Program
         var settingsService = new SettingsService();
         var settings = settingsService.Load();
 
-        var session = new EditorSession(CommandLineHandler.GetDocumentOrDefault(args));
+        var (document, filePath) = CommandLineHandler.GetDocumentAndPath(args);
+        var session = new EditorSession(document);
         var viewModel = new EditorViewModel(session, new EditorCommandService(session), settings);
+
+        // Set file path if loaded from command line
+        if (!string.IsNullOrEmpty(filePath))
+        {
+            viewModel.SetFilePath(filePath);
+        }
+
+        // Initialize title bar manager (sets Console.Title)
+        var titleBarManager = new TitleBarManager(viewModel);
+
+        // Create editor view - starts at row 1 (below menu bar)
+        var editorView = EditorViewFactory.Create(viewModel);
+        editorView.Y = 1;
 
         // Save settings when word wrap changes
         viewModel.WordWrapChanged += (_) => settingsService.Save(viewModel.Settings);
 
         top.Add(MenuBuilder.Build(viewModel));
-        top.Add(new HorizontalDivider(0, 1));
-        top.Add(EditorViewFactory.Create(viewModel));
+        top.Add(editorView);
 
         Application.Run();
+
+        titleBarManager.Dispose();
         Application.Shutdown();
     }
 }
+
