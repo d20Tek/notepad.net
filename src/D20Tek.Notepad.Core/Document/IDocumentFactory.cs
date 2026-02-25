@@ -7,4 +7,6 @@ public interface IDocumentFactory
     IDocument Empty { get; }
 
     IDocument Load(string filePath);
+
+    public void Save(IDocument document, string filePath);
 }

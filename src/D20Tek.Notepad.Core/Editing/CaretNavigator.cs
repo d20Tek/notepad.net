@@ -52,10 +52,7 @@ public sealed class CaretNavigator(EditorSession session)
     private void Move(Func<TextPosition> computeNewPosition, bool resetAnchor)
     {
         _session.Caret = computeNewPosition();
-        if (resetAnchor)
-        {
-            _session.Anchor = _session.Caret;
-        }
+        if (resetAnchor) _session.Anchor = _session.Caret;
     }
 
     // Position Computation Helpers
@@ -63,16 +60,8 @@ public sealed class CaretNavigator(EditorSession session)
     {
         var caret = _session.Caret;
 
-        if (caret.Column > 0)
-        {
-            return new TextPosition(caret.Line, caret.Column - 1);
-        }
-
-        if (caret.Line > 0)
-        {
-            return new TextPosition(caret.Line - 1, GetLineLength(caret.Line - 1));
-        }
-
+        if (caret.Column > 0) return new TextPosition(caret.Line, caret.Column - 1);
+        if (caret.Line > 0) return new TextPosition(caret.Line - 1, GetLineLength(caret.Line - 1));
         return caret;
     }
 
@@ -80,27 +69,15 @@ public sealed class CaretNavigator(EditorSession session)
     {
         var caret = _session.Caret;
 
-        if (caret.Column < CurrentLineLength)
-        {
-            return new TextPosition(caret.Line, caret.Column + 1);
-        }
-
-        if (caret.Line < LastLineIndex)
-        {
-            return new TextPosition(caret.Line + 1, 0);
-        }
-
+        if (caret.Column < CurrentLineLength) return new TextPosition(caret.Line, caret.Column + 1);
+        if (caret.Line < LastLineIndex) return new TextPosition(caret.Line + 1, 0);
         return caret;
     }
 
     private TextPosition ComputeUp()
     {
         var caret = _session.Caret;
-
-        if (caret.Line == 0)
-        {
-            return new TextPosition(0, 0);
-        }
+        if (caret.Line == 0) return new TextPosition(0, 0);
 
         int newCol = Math.Min(caret.Column, GetLineLength(caret.Line - 1));
         return new TextPosition(caret.Line - 1, newCol);
@@ -109,11 +86,7 @@ public sealed class CaretNavigator(EditorSession session)
     private TextPosition ComputeDown()
     {
         var caret = _session.Caret;
-
-        if (caret.Line == LastLineIndex)
-        {
-            return new TextPosition(caret.Line, CurrentLineLength);
-        }
+        if (caret.Line == LastLineIndex) return new TextPosition(caret.Line, CurrentLineLength);
 
         int newCol = Math.Min(caret.Column, GetLineLength(caret.Line + 1));
         return new TextPosition(caret.Line + 1, newCol);
@@ -122,11 +95,7 @@ public sealed class CaretNavigator(EditorSession session)
     private TextPosition ComputePageUp(int pageHeight)
     {
         var caret = _session.Caret;
-
-        if (caret.Line == 0)
-        {
-            return new TextPosition(0, 0);
-        }
+        if (caret.Line == 0) return new TextPosition(0, 0);
 
         int targetLine = Math.Max(0, caret.Line - pageHeight);
         int newCol = Math.Min(caret.Column, GetLineLength(targetLine));
@@ -136,19 +105,14 @@ public sealed class CaretNavigator(EditorSession session)
     private TextPosition ComputePageDown(int pageHeight)
     {
         var caret = _session.Caret;
-
-        if (caret.Line == LastLineIndex)
-        {
-            return new TextPosition(LastLineIndex, GetLineLength(LastLineIndex));
-        }
+        if (caret.Line == LastLineIndex) return new TextPosition(LastLineIndex, GetLineLength(LastLineIndex));
 
         int targetLine = Math.Min(LastLineIndex, caret.Line + pageHeight);
         int newCol = Math.Min(caret.Column, GetLineLength(targetLine));
         return new TextPosition(targetLine, newCol);
     }
 
-    private TextPosition ComputeDocumentEnd() =>
-        new(LastLineIndex, GetLineLength(LastLineIndex));
+    private TextPosition ComputeDocumentEnd() => new(LastLineIndex, GetLineLength(LastLineIndex));
 
     private int LastLineIndex => _session.Document.Lines.Count - 1;
 

@@ -31,9 +31,7 @@ public sealed partial class EditorSession
 
     public int GetLineLength(int lineIndex)
     {
-        if (lineIndex < 0 || lineIndex >= Document.Lines.Count)
-            return 0;
-
+        if (lineIndex < 0 || lineIndex >= Document.Lines.Count) return 0;
         return Document.Lines[lineIndex].Content.Length;
     }
 

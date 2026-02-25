@@ -11,6 +11,7 @@
 - Follow naming conventions
 - Keep code lines to 120 characters or less. If parameter or argument lists fit within 120 characters, keep them on one line. If they exceed 120 characters, wrap them with each parameter/argument on its own line.
 - Do not use regions (#region / #endregion) in generated code - it's a code smell.
+- Do not add function-level comments (XML doc comments) for code in this solution. Keep code clean without documentation comments on methods unless specifically requested.
 
 ## Unit Testing Guidelines
 - For unit tests, use lowercase comments for arrange/act/assert sections (// arrange, // act, // assert) and always separate the assert section from act, unless asserting an exception.
