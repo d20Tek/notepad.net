@@ -184,7 +184,5 @@ The `KeyBindings` only handles navigation keys (arrows, Home/End, Page Up/Down).
 ---
 
 ## Notes
-- Consider undo grouping for continuous typing (group characters typed within short time)
-- Tab handling should respect `TabSize` setting in `EditorSettings`
 - File operations should handle encoding properly (UTF-8 with/without BOM)
 - Consider showing line/column position in status bar (future enhancement)

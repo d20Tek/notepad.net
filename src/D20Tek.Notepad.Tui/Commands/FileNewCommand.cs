@@ -17,8 +17,9 @@ internal static class FileNewCommand
         var newDoc = DocumentFactory.CreateEmpty();
 
         viewModel.Session.ReplaceDocument(newDoc);
+        viewModel.Session.UndoStack.Clear();
         viewModel.ClearFilePath();
-        viewModel.ClearDirtyFlag();
+        viewModel.ResetCleanVersion();
         viewModel.Viewport.Reset();
         viewModel.Refresh();
     }

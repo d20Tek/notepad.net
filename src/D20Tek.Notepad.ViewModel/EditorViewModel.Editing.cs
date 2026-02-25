@@ -12,7 +12,7 @@ public sealed partial class EditorViewModel
         BeginTypingGroupIfNeeded();
         ResetTypingGroupTimer();
         Commands.TypeCharacter(c);
-        MarkDirty();
+        CheckDirtyStateChanged();
         Refresh();
         EnsureCaretVisible();
     }
@@ -22,7 +22,7 @@ public sealed partial class EditorViewModel
         ArgumentNullException.ThrowIfNull(text);
         EndTypingGroupIfNeeded();
         Commands.InsertText(text);
-        MarkDirty();
+        CheckDirtyStateChanged();
         Refresh();
         EnsureCaretVisible();
     }
@@ -31,7 +31,7 @@ public sealed partial class EditorViewModel
     {
         EndTypingGroupIfNeeded();
         Commands.InsertNewLine();
-        MarkDirty();
+        CheckDirtyStateChanged();
         Refresh();
         EnsureCaretVisible();
     }
@@ -44,7 +44,7 @@ public sealed partial class EditorViewModel
             ? new string(' ', Settings.TabSize)
             : "\t";
         Commands.InsertText(tabContent);
-        MarkDirty();
+        CheckDirtyStateChanged();
         Refresh();
         EnsureCaretVisible();
     }
@@ -54,7 +54,7 @@ public sealed partial class EditorViewModel
     {
         EndTypingGroupIfNeeded();
         Commands.Backspace();
-        MarkDirty();
+        CheckDirtyStateChanged();
         Refresh();
         EnsureCaretVisible();
     }
@@ -63,7 +63,7 @@ public sealed partial class EditorViewModel
     {
         EndTypingGroupIfNeeded();
         Commands.Delete();
-        MarkDirty();
+        CheckDirtyStateChanged();
         Refresh();
         EnsureCaretVisible();
     }
@@ -73,7 +73,7 @@ public sealed partial class EditorViewModel
         if (!Session.HasSelection) return;
         EndTypingGroupIfNeeded();
         Commands.DeleteSelection();
-        MarkDirty();
+        CheckDirtyStateChanged();
         Refresh();
         EnsureCaretVisible();
     }
@@ -84,7 +84,7 @@ public sealed partial class EditorViewModel
         EndTypingGroupIfNeeded();
         if (!CanUndo) return;
         Commands.Undo();
-        MarkDirty();
+        CheckDirtyStateChanged();
         Refresh();
         EnsureCaretVisible();
     }
@@ -94,7 +94,7 @@ public sealed partial class EditorViewModel
         EndTypingGroupIfNeeded();
         if (!CanRedo) return;
         Commands.Redo();
-        MarkDirty();
+        CheckDirtyStateChanged();
         Refresh();
         EnsureCaretVisible();
     }
@@ -102,10 +102,6 @@ public sealed partial class EditorViewModel
     public bool CanUndo => Session.UndoStack.CanUndo;
 
     public bool CanRedo => Session.UndoStack.CanRedo;
-
-    public void BeginTypingGroup() => Commands.BeginTypingGroup();
-
-    public void EndTypingGroup() => Commands.EndTypingGroup();
 
     // Selection Methods
     public void SelectAll()

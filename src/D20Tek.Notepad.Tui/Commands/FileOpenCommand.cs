@@ -31,8 +31,9 @@ internal static class FileOpenCommand
             var newDoc = factory.Load(filePath);
 
             viewModel.Session.ReplaceDocument(newDoc);
+            viewModel.Session.UndoStack.Clear(); 
             viewModel.SetFilePath(Path.GetFullPath(filePath));
-            viewModel.ClearDirtyFlag();
+            viewModel.ResetCleanVersion();
             viewModel.Viewport.Reset();
             viewModel.Refresh();
         }

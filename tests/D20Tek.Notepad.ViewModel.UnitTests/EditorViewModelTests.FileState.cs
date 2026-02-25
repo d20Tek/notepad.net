@@ -50,14 +50,68 @@ public class EditorViewModelFileStateTests
     }
 
     [TestMethod]
-    public void MarkDirty_SetsIsDirtyToTrue()
+    public void Undo_ToCleanState_ClearsIsDirty()
     {
         // arrange
         var (viewModel, _) = CreateViewModel(["Hello"]);
+        viewModel.SetViewportHeight(5);
+
+        // Start clean, then make changes
+        Assert.IsFalse(viewModel.IsDirty);
+        viewModel.TypeCharacter('!');
+        Assert.IsTrue(viewModel.IsDirty);
+
+        // act - undo back to clean state
+        viewModel.Undo();
+
+        // assert - should be clean again
+        Assert.IsFalse(viewModel.IsDirty);
+    }
+
+    [TestMethod]
+    public void UndoAndRedo_MaintainsCorrectDirtyState()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello"]);
+        session.Caret = new TextPosition(0, 5);
+        session.Anchor = session.Caret;
+        viewModel.SetViewportHeight(5);
+
+        // Start clean
+        Assert.IsFalse(viewModel.IsDirty);
+
+        // Type, then save (mark as clean)
+        viewModel.TypeCharacter('!');
+        viewModel.ClearDirtyFlag();
+        Assert.IsFalse(viewModel.IsDirty);
+
+        // Type more - now dirty
+        viewModel.TypeCharacter('?');
+        Assert.IsTrue(viewModel.IsDirty);
+
+        // Undo the '?' - back to saved state, clean
+        viewModel.Undo();
+        Assert.IsFalse(viewModel.IsDirty);
+
+        // Undo the '!' - before saved state, dirty again
+        viewModel.Undo();
+        Assert.IsTrue(viewModel.IsDirty);
+
+        // Redo the '!' - back to saved state, clean
+        viewModel.Redo();
+        Assert.IsFalse(viewModel.IsDirty);
+    }
+
+    [TestMethod]
+    public void Typing_SetsIsDirtyToTrue()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel(["Hello"]);
+        viewModel.SetViewportHeight(5);
         Assert.IsFalse(viewModel.IsDirty);
 
         // act
-        viewModel.MarkDirty();
+        viewModel.TypeCharacter('!');
 
         // assert
         Assert.IsTrue(viewModel.IsDirty);
@@ -183,8 +237,8 @@ public class EditorViewModelFileStateTests
         int fireCount = 0;
         viewModel.DirtyStateChanged += [ExcludeFromCodeCoverage](_) => fireCount++;
 
-        // act - mark dirty again (already dirty)
-        viewModel.MarkDirty();
+        // act - type more (already dirty, should not fire again)
+        viewModel.TypeCharacter('?');
 
         // assert
         Assert.AreEqual(0, fireCount);

@@ -385,4 +385,190 @@ public partial class UndoStackTests
         // assert
         Assert.IsFalse(stack.CanRedo);
     }
+
+    // Clear Tests
+    [TestMethod]
+    public void Clear_ClearsUndoStack()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (session, op) = CreateTestOperation("Hello", " World");
+        stack.Push(op);
+        Assert.IsTrue(stack.CanUndo);
+
+        // act
+        stack.Clear();
+
+        // assert
+        Assert.IsFalse(stack.CanUndo);
+    }
+
+    [TestMethod]
+    public void Clear_ClearsRedoStack()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (session, op) = CreateTestOperation("Hello", " World");
+        op.Redo(session);
+        stack.Push(op);
+        stack.Undo(session);
+        Assert.IsTrue(stack.CanRedo);
+
+        // act
+        stack.Clear();
+
+        // assert
+        Assert.IsFalse(stack.CanRedo);
+    }
+
+    [TestMethod]
+    public void Clear_ResetsVersionToZero()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (session, op) = CreateTestOperation("Hello", " World");
+        stack.Push(op);
+        Assert.AreEqual(1, stack.Version);
+
+        // act
+        stack.Clear();
+
+        // assert
+        Assert.AreEqual(0, stack.Version);
+    }
+
+    [TestMethod]
+    public void Clear_ClearsActiveGroup()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (_, op) = CreateTestOperation("Hello", " World");
+        stack.BeginGroup();
+        stack.Push(op);
+        Assert.IsTrue(stack.HasPendingGroupOperations);
+
+        // act
+        stack.Clear();
+
+        // assert
+        Assert.IsFalse(stack.HasPendingGroupOperations);
+
+        // Should be able to begin a new group without exception
+        stack.BeginGroup();
+        stack.EndGroup();
+    }
+
+    // Version Tests
+    [TestMethod]
+    public void Version_InitialValue_IsZero()
+    {
+        // arrange
+        var stack = new UndoStack();
+
+        // act & assert
+        Assert.AreEqual(0, stack.Version);
+    }
+
+    [TestMethod]
+    public void Version_IncrementsOnPush()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (_, op1) = CreateTestOperation("Hello", "!");
+        var (_, op2) = CreateTestOperation("Hello", "?");
+
+        // act & assert
+        stack.Push(op1);
+        Assert.AreEqual(1, stack.Version);
+
+        stack.Push(op2);
+        Assert.AreEqual(2, stack.Version);
+    }
+
+    [TestMethod]
+    public void Version_DecrementsOnUndo()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (session, op) = CreateTestOperation("Hello", " World");
+        op.Redo(session);
+        stack.Push(op);
+        Assert.AreEqual(1, stack.Version);
+
+        // act
+        stack.Undo(session);
+
+        // assert
+        Assert.AreEqual(0, stack.Version);
+    }
+
+    [TestMethod]
+    public void Version_IncrementsOnRedo()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (session, op) = CreateTestOperation("Hello", " World");
+        op.Redo(session);
+        stack.Push(op);
+        stack.Undo(session);
+        Assert.AreEqual(0, stack.Version);
+
+        // act
+        stack.Redo(session);
+
+        // assert
+        Assert.AreEqual(1, stack.Version);
+    }
+
+    // HasPendingGroupOperations Tests
+    [TestMethod]
+    public void HasPendingGroupOperations_WithNoGroup_ReturnsFalse()
+    {
+        // arrange
+        var stack = new UndoStack();
+
+        // act & assert
+        Assert.IsFalse(stack.HasPendingGroupOperations);
+    }
+
+    [TestMethod]
+    public void HasPendingGroupOperations_WithEmptyGroup_ReturnsFalse()
+    {
+        // arrange
+        var stack = new UndoStack();
+        stack.BeginGroup();
+
+        // act & assert
+        Assert.IsFalse(stack.HasPendingGroupOperations);
+    }
+
+    [TestMethod]
+    public void HasPendingGroupOperations_WithOperationsInGroup_ReturnsTrue()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (_, op) = CreateTestOperation("Hello", "!");
+        stack.BeginGroup();
+        stack.Push(op);
+
+        // act & assert
+        Assert.IsTrue(stack.HasPendingGroupOperations);
+    }
+
+    [TestMethod]
+    public void HasPendingGroupOperations_AfterEndGroup_ReturnsFalse()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (_, op) = CreateTestOperation("Hello", "!");
+        stack.BeginGroup();
+        stack.Push(op);
+        Assert.IsTrue(stack.HasPendingGroupOperations);
+
+        // act
+        stack.EndGroup();
+
+        // assert
+        Assert.IsFalse(stack.HasPendingGroupOperations);
+    }
 }

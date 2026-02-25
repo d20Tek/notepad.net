@@ -3,7 +3,8 @@ namespace D20Tek.Notepad.ViewModel;
 public sealed partial class EditorViewModel
 {
     private string? _currentFilePath;
-    private bool _isDirty;
+    private int _cleanVersion; 
+    private bool _lastDirtyState; 
 
     public event Action<bool>? DirtyStateChanged;
     public event Action<string?>? FilePathChanged;
@@ -21,18 +22,8 @@ public sealed partial class EditorViewModel
         }
     }
 
-    public bool IsDirty
-    {
-        get => _isDirty;
-        private set
-        {
-            if (_isDirty != value)
-            {
-                _isDirty = value;
-                DirtyStateChanged?.Invoke(value);
-            }
-        }
-    }
+    public bool IsDirty => Session.UndoStack.Version != _cleanVersion || 
+                           Session.UndoStack.HasPendingGroupOperations;
 
     public string DocumentTitle => string.IsNullOrEmpty(CurrentFilePath) ? "Untitled" : Path.GetFileName(CurrentFilePath);
 
@@ -44,7 +35,26 @@ public sealed partial class EditorViewModel
 
     public void ClearFilePath() => CurrentFilePath = null;
 
-    public void MarkDirty() => IsDirty = true;
+    internal void CheckDirtyStateChanged()
+    {
+        bool currentDirty = IsDirty;
+        if (_lastDirtyState != currentDirty)
+        {
+            _lastDirtyState = currentDirty;
+            DirtyStateChanged?.Invoke(currentDirty);
+        }
+    }
 
-    public void ClearDirtyFlag() => IsDirty = false;
+    public void ClearDirtyFlag()
+    {
+        EndTypingGroupIfNeeded(); // Ensure any pending typing is committed
+        _cleanVersion = Session.UndoStack.Version;
+        CheckDirtyStateChanged();
+    }
+
+    public void ResetCleanVersion()
+    {
+        _cleanVersion = 0;
+        _lastDirtyState = false;
+    }
 }

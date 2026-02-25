@@ -12,6 +12,10 @@ public sealed class UndoStack
 
     public bool CanRedo => _redo.Count > 0;
 
+    public bool HasPendingGroupOperations => _currentGroup != null && _currentGroup.Count > 0;
+
+    public int Version { get; private set; }
+
     public void Push(IUndoableOperation op)
     {
         ArgumentNullException.ThrowIfNull(op);
@@ -24,6 +28,7 @@ public sealed class UndoStack
         }
 
         _undo.Push(op);
+        Version++;
 
         // new edits invalidate redo history
         _redo.Clear();
@@ -36,6 +41,7 @@ public sealed class UndoStack
         var op = _undo.Pop();
         op.Undo(session);
         _redo.Push(op);
+        Version--;
     }
 
     public void Redo(EditorSession session)
@@ -45,6 +51,7 @@ public sealed class UndoStack
         var op = _redo.Pop();
         op.Redo(session);
         _undo.Push(op);
+        Version++;
     }
 
     public void BeginGroup()
@@ -70,5 +77,13 @@ public sealed class UndoStack
                 Push(new CompositeOperation(group));
                 break;
         }
+    }
+
+    public void Clear()
+    {
+        _undo.Clear();
+        _redo.Clear();
+        _currentGroup = null;
+        Version = 0;
     }
 }
