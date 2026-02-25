@@ -8,34 +8,12 @@ internal static class FileNewCommand
     {
         ArgumentNullException.ThrowIfNull(viewModel);
 
-        // Check for unsaved changes
-        if (viewModel.IsDirty)
+        if (UnsavedChangesHelper.PromptToSaveIfDirty(viewModel, "creating a new file") ==
+            UnsavedChangesHelper.PromptResult.Cancel)
         {
-            int result = MessageBox.Query(
-                "Unsaved Changes",
-                "Do you want to save changes before creating a new file?",
-                "Save",
-                "Don't Save",
-                "Cancel");
-
-            switch (result)
-            {
-                case 0: // Save
-                    if (!FileSaveCommand.Execute(viewModel))
-                    {
-                        return; // Save was cancelled
-                    }
-                    break;
-                case 1: // Don't Save
-                    break;
-                case 2: // Cancel
-                case -1: // Escape
-                    return;
-            }
+            return;
         }
 
-        // Create new empty document
-        var factory = new DocumentFactory();
         var newDoc = DocumentFactory.CreateEmpty();
 
         viewModel.Session.ReplaceDocument(newDoc);

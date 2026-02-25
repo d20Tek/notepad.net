@@ -11,10 +11,10 @@ internal static class MenuBuilder
 
         // File commands
         commands.Register(FileNewCommand.Create(viewModel));
-        commands.Register(new UiCommand("OpenFile", () => FileOpenCommand.Execute(viewModel), Key.CtrlMask | Key.O));
+        commands.Register(FileOpenCommand.Create(viewModel));
         commands.Register(FileSaveCommand.Create(viewModel));
         commands.Register(FileSaveAsCommand.Create(viewModel));
-        commands.Register(new UiCommand("Quit", () => RequestQuit(viewModel)));
+        commands.Register(QuitCommand.Create(viewModel));
 
         // Edit commands
         commands.Register(UndoCommand.Create(viewModel));
@@ -29,11 +29,11 @@ internal static class MenuBuilder
             new MenuDefinition("_File",
                 new MenuItemDefinition("_New", FileNewCommand.CommandName),
                 MenuItemDefinition.Separator,
-                new MenuItemDefinition("_Open...", "OpenFile"),
+                new MenuItemDefinition("_Open...", FileOpenCommand.CommandName),
                 new MenuItemDefinition("_Save", FileSaveCommand.CommandName),
                 new MenuItemDefinition("Save _As...", FileSaveAsCommand.CommandName),
                 MenuItemDefinition.Separator,
-                new MenuItemDefinition("_Quit", "Quit")),
+                new MenuItemDefinition("_Quit", QuitCommand.CommandName)),
             new MenuDefinition("_Edit",
                 new MenuItemDefinition("_Undo", UndoCommand.CommandName, canExecute: () => viewModel.CanUndo),
                 new MenuItemDefinition("_Redo", RedoCommand.CommandName, canExecute: () => viewModel.CanRedo),
@@ -48,36 +48,6 @@ internal static class MenuBuilder
         };
 
         return BuildMenu(menus, commands);
-    }
-
-    private static void RequestQuit(EditorViewModel viewModel)
-    {
-        if (viewModel.IsDirty)
-        {
-            int result = MessageBox.Query(
-                "Unsaved Changes",
-                "Do you want to save changes before exiting?",
-                "Save",
-                "Don't Save",
-                "Cancel");
-
-            switch (result)
-            {
-                case 0: // Save
-                    if (!FileSaveCommand.Execute(viewModel))
-                    {
-                        return; // Save was cancelled
-                    }
-                    break;
-                case 1: // Don't Save
-                    break;
-                case 2: // Cancel
-                case -1: // Escape
-                    return;
-            }
-        }
-
-        Application.RequestStop();
     }
 
     public static MenuBar BuildMenu(IEnumerable<MenuDefinition> menus, CommandRegistry commands)
