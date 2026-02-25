@@ -35,6 +35,22 @@ internal static class KeyBindings
         // Page Up/Down - Selection
         [(Key.PageUp, true, false)] = vm => vm.ExtendPageUp(),
         [(Key.PageDown, true, false)] = vm => vm.ExtendPageDown(),
+
+        // Editing - Deletion
+        [(Key.Backspace, false, false)] = vm => vm.Backspace(),
+        [(Key.DeleteChar, false, false)] = vm => vm.Delete(),
+
+        // Editing - New Line and Tab
+        [(Key.Enter, false, false)] = vm => vm.InsertNewLine(),
+        [(Key.Tab, false, false)] = vm => vm.InsertTab(),
+
+        // Undo/Redo
+        [(Key.Z, false, true)] = vm => vm.Undo(),
+        [(Key.Y, false, true)] = vm => vm.Redo(),
+        [(Key.Z, true, true)] = vm => vm.Redo(),
+
+        // Select All
+        [(Key.A, false, true)] = vm => vm.SelectAll(),
     };
 
     public static bool TryExecute(EditorViewModel vm, KeyEvent keyEvent)
@@ -46,6 +62,27 @@ internal static class KeyBindings
         if (_bindings.TryGetValue((baseKey, shift, ctrl), out var action))
         {
             action(vm);
+            return true;
+        }
+
+        // Handle printable character input
+        if (TryHandleCharacterInput(vm, keyEvent))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryHandleCharacterInput(EditorViewModel vm, KeyEvent keyEvent)
+    {
+        if ((keyEvent.Key & Key.CtrlMask) != 0) return false;
+
+        // Check if it's a printable character (space through tilde, plus extended chars)
+        char c = (char)keyEvent.KeyValue;
+        if (c >= ' ' && c <= '~' || char.IsLetterOrDigit(c) || char.IsPunctuation(c) || char.IsSymbol(c))
+        {
+            vm.TypeCharacter(c);
             return true;
         }
 

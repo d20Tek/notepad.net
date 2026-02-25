@@ -8,6 +8,10 @@ public sealed class UndoStack
     private readonly Stack<IUndoableOperation> _redo = new();
     private List<IUndoableOperation>? _currentGroup = null;
 
+    public bool CanUndo => _undo.Count > 0;
+
+    public bool CanRedo => _redo.Count > 0;
+
     public void Push(IUndoableOperation op)
     {
         ArgumentNullException.ThrowIfNull(op);

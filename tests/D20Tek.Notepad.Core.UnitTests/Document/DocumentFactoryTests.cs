@@ -319,4 +319,176 @@ public class DocumentFactoryTests
             File.Delete(tempFile);
         }
     }
+
+    // CreateEmpty tests
+    [TestMethod]
+    public void CreateEmpty_ReturnsDocumentWithSingleEmptyLine()
+    {
+        // act
+        var result = DocumentFactory.CreateEmpty();
+
+        // assert
+        Assert.AreEqual(1, result.Lines.Count);
+        Assert.AreEqual(string.Empty, result.Lines[0].Content);
+    }
+
+    [TestMethod]
+    public void CreateEmpty_ReturnsNewInstanceEachTime()
+    {
+        // act
+        var result1 = DocumentFactory.CreateEmpty();
+        var result2 = DocumentFactory.CreateEmpty();
+
+        // assert
+        Assert.AreNotSame(result1, result2);
+    }
+
+    [TestMethod]
+    public void CreateEmpty_ReturnsDocumentWithUtf8Encoding()
+    {
+        // act
+        var result = DocumentFactory.CreateEmpty();
+
+        // assert
+        Assert.AreEqual(Encoding.UTF8.CodePage, result.Encoding.CodePage);
+    }
+
+    [TestMethod]
+    public void CreateEmpty_ReturnsDocumentWithCrlfLineEnding()
+    {
+        // act
+        var result = DocumentFactory.CreateEmpty();
+
+        // assert
+        Assert.AreEqual(LineEndingStyle.CRLF, result.LineEndingStyle);
+    }
+
+    // Save tests
+    [TestMethod]
+    public void Save_WithValidDocument_WritesContentToFile()
+    {
+        // arrange
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var lines = new List<TextLine> { new("Hello"), new("World") };
+            var data = new DocumentData(lines, Encoding.UTF8, LineEndingStyle.CRLF);
+            var doc = _factory.Create(data);
+
+            // act
+            _factory.Save(doc, tempFile);
+
+            // assert
+            var content = File.ReadAllText(tempFile);
+            Assert.AreEqual("Hello\r\nWorld", content);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    [TestMethod]
+    [ExcludeFromCodeCoverage]
+    public void Save_WithLfLineEnding_WritesCorrectLineEndings()
+    {
+        // arrange
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var lines = new List<TextLine> { new("Line1"), new("Line2") };
+            var data = new DocumentData(lines, Encoding.UTF8, LineEndingStyle.LF);
+            var doc = _factory.Create(data);
+
+            // act
+            _factory.Save(doc, tempFile);
+
+            // assert
+            var bytes = File.ReadAllBytes(tempFile);
+            var content = Encoding.UTF8.GetString(bytes);
+            Assert.IsTrue(content.Contains("\n") && !content.Contains("\r\n"));
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    [TestMethod]
+    public void Save_WithNullDocument_ThrowsArgumentNullException()
+    {
+        // arrange
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            // act & assert
+            Assert.ThrowsExactly<ArgumentNullException>(
+                [ExcludeFromCodeCoverage] () => _factory.Save(null!, tempFile));
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    [TestMethod]
+    public void Save_WithNullFilePath_ThrowsArgumentException()
+    {
+        // arrange
+        var doc = DocumentFactory.CreateEmpty();
+
+        // act & assert
+        Assert.ThrowsExactly<ArgumentNullException>(
+            [ExcludeFromCodeCoverage] () => _factory.Save(doc, null!));
+    }
+
+    [TestMethod]
+    public void Save_WithEmptyFilePath_ThrowsArgumentException()
+    {
+        // arrange
+        var doc = DocumentFactory.CreateEmpty();
+
+        // act & assert
+        Assert.ThrowsExactly<ArgumentException>(
+            [ExcludeFromCodeCoverage] () => _factory.Save(doc, string.Empty));
+    }
+
+    [TestMethod]
+    public void Save_WithWhitespaceFilePath_ThrowsArgumentException()
+    {
+        // arrange
+        var doc = DocumentFactory.CreateEmpty();
+
+        // act & assert
+        Assert.ThrowsExactly<ArgumentException>(
+            [ExcludeFromCodeCoverage] () => _factory.Save(doc, "   "));
+    }
+
+    [TestMethod]
+    public void Save_ThenLoad_RoundTripsCorrectly()
+    {
+        // arrange
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var lines = new List<TextLine> { new("Test"), new("Round"), new("Trip") };
+            var data = new DocumentData(lines, Encoding.UTF8, LineEndingStyle.CRLF);
+            var original = _factory.Create(data);
+
+            // act
+            _factory.Save(original, tempFile);
+            var loaded = _factory.Load(tempFile);
+
+            // assert
+            Assert.AreEqual(original.Lines.Count, loaded.Lines.Count);
+            for (int i = 0; i < original.Lines.Count; i++)
+            {
+                Assert.AreEqual(original.Lines[i].Content, loaded.Lines[i].Content);
+            }
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
 }

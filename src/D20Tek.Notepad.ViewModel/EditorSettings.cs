@@ -12,5 +12,7 @@ public sealed record EditorSettings
 
     public int TabSize { get; init; } = 4;
 
+    public bool UseSpacesForTab { get; init; } = true;
+
     public bool WordWrapEnabled { get; init; } = false;
 }

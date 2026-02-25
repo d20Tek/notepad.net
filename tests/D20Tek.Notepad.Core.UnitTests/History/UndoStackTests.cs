@@ -273,6 +273,7 @@ public partial class UndoStackTests
         Assert.AreEqual("ABC", document.Lines[0].Content);
     }
 
+
     private static (EditorSession session, InsertTextOperation op) CreateTestOperation(
         string initialText,
         string textToInsert)
@@ -286,5 +287,102 @@ public partial class UndoStackTests
         var op = new InsertTextOperation(position, textToInsert, string.Empty, position);
 
         return (session, op);
+    }
+
+    // CanUndo Tests
+    [TestMethod]
+    public void CanUndo_WithEmptyStack_ReturnsFalse()
+    {
+        // arrange
+        var stack = new UndoStack();
+
+        // act & assert
+        Assert.IsFalse(stack.CanUndo);
+    }
+
+    [TestMethod]
+    public void CanUndo_WithOperationOnStack_ReturnsTrue()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (session, op) = CreateTestOperation("Hello", " World");
+        stack.Push(op);
+
+
+        // act & assert
+        Assert.IsTrue(stack.CanUndo);
+    }
+
+    [TestMethod]
+    public void CanUndo_AfterUndoingAllOperations_ReturnsFalse()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (session, op) = CreateTestOperation("Hello", " World");
+        op.Redo(session); // Apply the operation first
+        stack.Push(op);
+        stack.Undo(session);
+
+        // act & assert
+        Assert.IsFalse(stack.CanUndo);
+    }
+
+    // CanRedo Tests
+    [TestMethod]
+    public void CanRedo_WithEmptyRedoStack_ReturnsFalse()
+    {
+        // arrange
+        var stack = new UndoStack();
+
+        // act & assert
+        Assert.IsFalse(stack.CanRedo);
+    }
+
+    [TestMethod]
+    public void CanRedo_AfterUndo_ReturnsTrue()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (session, op) = CreateTestOperation("Hello", " World");
+        op.Redo(session); // Apply the operation first
+        stack.Push(op);
+        stack.Undo(session);
+
+        // act & assert
+        Assert.IsTrue(stack.CanRedo);
+    }
+
+    [TestMethod]
+    public void CanRedo_AfterRedoingAllOperations_ReturnsFalse()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (session, op) = CreateTestOperation("Hello", " World");
+        op.Redo(session); // Apply the operation first
+        stack.Push(op);
+        stack.Undo(session);
+        stack.Redo(session);
+
+        // act & assert
+        Assert.IsFalse(stack.CanRedo);
+    }
+
+    [TestMethod]
+    public void CanRedo_AfterPushingNewOperation_ReturnsFalse()
+    {
+        // arrange
+        var stack = new UndoStack();
+        var (session, op1) = CreateTestOperation("Hello", " World");
+        op1.Redo(session); // Apply the operation first
+        stack.Push(op1);
+        stack.Undo(session);
+        Assert.IsTrue(stack.CanRedo);
+
+        // act - new push clears redo stack
+        var op2 = new InsertTextOperation(new TextPosition(0, 5), "!", string.Empty, new TextPosition(0, 5));
+        stack.Push(op2);
+
+        // assert
+        Assert.IsFalse(stack.CanRedo);
     }
 }

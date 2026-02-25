@@ -15,6 +15,8 @@ public sealed class DocumentFactory : IDocumentFactory
         return new Document(EnsureTextLines(data), data.Encoding, data.LineEndingStyle);
     }
 
+    public static IDocument CreateEmpty() => new Document([TextLine.Empty], Encoding.UTF8, LineEndingStyle.CRLF);
+
     public IDocument Empty { get; } = new Document([TextLine.Empty], Encoding.UTF8, LineEndingStyle.CRLF);
 
     public IDocument Load(string filePath)
@@ -27,7 +29,16 @@ public sealed class DocumentFactory : IDocumentFactory
         return Create(data);
     }
 
+    public void Save(IDocument document, string filePath)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
+
+        using var stream = File.Create(filePath);
+        var storage = new SimpleTextStorage();
+        storage.Save(stream, document);
+    }
+
     private static List<TextLine> EnsureTextLines(DocumentData data) =>
         data.Lines.Count == 0 ? [TextLine.Empty] : data.Lines;
-
 }
