@@ -28,13 +28,16 @@ internal static class MenuBuilder
         {
             new MenuDefinition("_File",
                 new MenuItemDefinition("_New", FileNewCommand.CommandName),
+                MenuItemDefinition.Separator,
                 new MenuItemDefinition("_Open...", "OpenFile"),
                 new MenuItemDefinition("_Save", FileSaveCommand.CommandName),
                 new MenuItemDefinition("Save _As...", FileSaveAsCommand.CommandName),
+                MenuItemDefinition.Separator,
                 new MenuItemDefinition("_Quit", "Quit")),
             new MenuDefinition("_Edit",
-                new MenuItemDefinition("_Undo", UndoCommand.CommandName),
-                new MenuItemDefinition("_Redo", RedoCommand.CommandName),
+                new MenuItemDefinition("_Undo", UndoCommand.CommandName, canExecute: () => viewModel.CanUndo),
+                new MenuItemDefinition("_Redo", RedoCommand.CommandName, canExecute: () => viewModel.CanRedo),
+                MenuItemDefinition.Separator,
                 new MenuItemDefinition("Select _All", SelectAllCommand.CommandName)),
             new MenuDefinition("_View",
                 new MenuItemDefinition(
@@ -90,13 +93,20 @@ internal static class MenuBuilder
                 Normal = new Attribute(Color.White, Color.Black),
                 Focus = new Attribute(Color.Black, Color.Gray),
                 HotNormal = new Attribute(Color.BrightBlue, Color.Black),
-                HotFocus = new Attribute(Color.BrightBlue, Color.DarkGray)
+                HotFocus = new Attribute(Color.BrightBlue, Color.DarkGray),
+                Disabled = new Attribute(Color.DarkGray, Color.Black)
             }
         };
     }
 
-    private static MenuItem CreateMenuItem(MenuItemDefinition item, CommandRegistry commands)
+    private static MenuItem? CreateMenuItem(MenuItemDefinition item, CommandRegistry commands)
     {
+        // Separator returns null, which Terminal.Gui renders as a horizontal line
+        if (item.IsSeparator)
+        {
+            return null;
+        }
+
         var cmd = commands[item.CommandName];
 
         if (item.IsCheckable && item.IsChecked != null)
@@ -116,6 +126,16 @@ internal static class MenuBuilder
             // Set initial checked state
             menuItem.Checked = item.IsChecked();
 
+            return menuItem;
+        }
+
+        // Handle CanExecute for enabling/disabling menu items
+        if (item.CanExecute != null)
+        {
+            var menuItem = new MenuItem(item.Label, "", () => cmd.Execute())
+            {
+                CanExecute = item.CanExecute
+            };
             return menuItem;
         }
 

@@ -124,7 +124,7 @@ The `KeyBindings` only handles navigation keys (arrows, Home/End, Page Up/Down).
 - [x] Create `UndoCommand`, `RedoCommand` 
 - [x] Create `SelectAllCommand`
 - [x] Register all commands in `CommandRegistry`
-- [ ] Enable/disable Undo/Redo based on availability
+- [x] Enable/disable Undo/Redo based on availability
 
 ---
 
