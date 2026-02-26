@@ -1,4 +1,7 @@
-﻿namespace D20Tek.Notepad.ViewModel;
+﻿using D20Tek.Notepad.Core.Primitives;
+using System.Diagnostics.CodeAnalysis;
+
+namespace D20Tek.Notepad.ViewModel;
 
 public sealed partial class EditorViewModel
 {
@@ -51,9 +54,9 @@ public sealed partial class EditorViewModel
         // Get document selection range (normalized)
         var anchor = Session.Anchor;
         var caret = Session.Caret;
-        var (selStart, selEnd) = anchor.CompareTo(caret) <= 0 ? (anchor, caret) : (caret, anchor);
+        var (selStart, selEnd) = GetSelectionStartEnd(anchor, caret);
 
-        if (selEnd.Line < docLine || selStart.Line > docLine) return null;  // selection doesn't touch this document line
+        if (IsInvalidDocLine(docLine, selStart, selEnd)) return null;  // selection doesn't touch this document line
 
         int selStartCol = selStart.Line == docLine ? selStart.Column : 0;
         int selEndCol = selEnd.Line == docLine ? selEnd.Column : int.MaxValue;
@@ -67,6 +70,14 @@ public sealed partial class EditorViewModel
 
         return new SelectionSegment(localStart, localEnd);
     }
+
+    [ExcludeFromCodeCoverage]
+    private static (TextPosition, TextPosition) GetSelectionStartEnd(TextPosition anchor, TextPosition caret) =>
+        anchor.CompareTo(caret) <= 0 ? (anchor, caret) : (caret, anchor);
+
+    [ExcludeFromCodeCoverage]
+    private static bool IsInvalidDocLine(int docLine, TextPosition selStart, TextPosition selEnd) =>
+        selEnd.Line < docLine || selStart.Line > docLine;
 
     public void ExtendSelectionTo(int line, int column)
     {

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace D20Tek.Notepad.ViewModel;
 
 public sealed partial class EditorViewModel

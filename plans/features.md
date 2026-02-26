@@ -19,18 +19,13 @@
 | Word Wrap | View menu | Toggle |
 | Dirty tracking | - | Version-based, undo-aware |
 | Title bar | - | Shows filename + dirty indicator |
+| Cut | Ctrl+X | Remove selection, copy to clipboard |
+| Copy | Ctrl+C | Copy selection to clipboard |
+| Paste | Ctrl+V | Insert clipboard content |
 
 ---
 
 ## Pending Features
-
-### Critical (Most Expected)
-
-| Feature | Shortcut | Priority | Notes |
-|---------|----------|----------|-------|
-| **Cut** | Ctrl+X | P0 | Remove selection, copy to clipboard |
-| **Copy** | Ctrl+C | P0 | Copy selection to clipboard |
-| **Paste** | Ctrl+V | P0 | Insert clipboard content |
 
 ### Important (Standard Editor Features)
 

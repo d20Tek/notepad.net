@@ -14,6 +14,7 @@
     <File Path="plans/cut-copy-paste-tasks.md" />
     <File Path="plans/editing-tasks.md" />
     <File Path="plans/features.md" />
+    <File Path="plans/find-replace-tasks.md" />
     <File Path="plans/word-wrap-tasks.md" />
   </Folder>
   <Folder Name="/src/">
