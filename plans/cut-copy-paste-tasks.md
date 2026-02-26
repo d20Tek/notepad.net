@@ -69,14 +69,14 @@ The `EditorSession` provides:
 ### Phase 2: Clipboard Service Implementation
 
 #### Task 2.1: Create TerminalGuiClipboardService
-- [ ] Create `TerminalGuiClipboardService` class in Tui project implementing `IClipboardService`
+- [x] Create `TerminalGuiClipboardService` class in Tui project implementing `IClipboardService`
   - `SetText()` ? calls `Terminal.Gui.Clipboard.TrySetClipboardData(text)`
   - `GetText()` ? calls `Terminal.Gui.Clipboard.TryGetClipboardData()` and returns result
   - `ContainsText` ? calls `Terminal.Gui.Clipboard.TryGetClipboardData()` and checks for non-empty
 
 #### Task 2.2: Wire Up Clipboard Service
-- [ ] Update `EditorViewFactory` to create and inject `TerminalGuiClipboardService`
-- [ ] Update `EditorViewModel` constructor to accept optional `IClipboardService`
+- [x] Update `Program.cs` to create and inject `TerminalGuiClipboardService`
+- [x] `EditorViewModel` constructor already accepts optional `IClipboardService` (Phase 1)
 
 ---
 

@@ -318,7 +318,7 @@ public class EditorViewModelSelectionTests
         var doc = _docFactory.Create(new(textLines, Encoding.UTF8, LineEndingStyle.CRLF));
         var session = new EditorSession(doc);
         var commandService = new EditorCommandService(session);
-        var viewModel = new EditorViewModel(session, commandService);
+        var viewModel = new EditorViewModel(session, commandService, EditorSettings.Default, new MockClipboardService());
         return (viewModel, session);
     }
 
@@ -329,7 +329,11 @@ public class EditorViewModelSelectionTests
         var session = new EditorSession(doc);
         var commandService = new EditorCommandService(session);
         var settings = new EditorSettings { WordWrapEnabled = true };
-        var viewModel = new EditorViewModel(session, commandService, settings);
+        var viewModel = new EditorViewModel(
+            session,
+            commandService,
+            settings,
+            new MockClipboardService());
         return (viewModel, session);
     }
 

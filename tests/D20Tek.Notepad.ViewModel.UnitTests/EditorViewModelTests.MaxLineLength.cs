@@ -102,7 +102,7 @@ public class EditorViewModelMaxLineLengthTests
         var textLines = lines.Select(l => new TextLine(l)).ToList();
         var doc = _docFactory.Create(new(textLines, Encoding.UTF8, LineEndingStyle.CRLF));
         var session = new EditorSession(doc);
-        var viewModel = new EditorViewModel(session, new EditorCommandService(session));
+        var viewModel = new EditorViewModel(session, new EditorCommandService(session), EditorSettings.Default, new MockClipboardService());
         return (viewModel, session);
     }
 }

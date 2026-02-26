@@ -346,7 +346,11 @@ public class EditorViewModelNavigationWrappedTests
         var textLines = lines.Select(l => new TextLine(l)).ToList();
         var doc = _docFactory.Create(new DocumentData(textLines, Encoding.UTF8, LineEndingStyle.CRLF));
         var session = new EditorSession(doc);
-        var viewModel = new EditorViewModel(session, new EditorCommandService(session));
+        var viewModel = new EditorViewModel(
+            session,
+            new EditorCommandService(session),
+            EditorSettings.Default,
+            new MockClipboardService());
         return (viewModel, session);
     }
 
@@ -356,7 +360,11 @@ public class EditorViewModelNavigationWrappedTests
         var doc = _docFactory.Create(new DocumentData(textLines, Encoding.UTF8, LineEndingStyle.CRLF));
         var session = new EditorSession(doc);
         var settings = new EditorSettings { WordWrapEnabled = true };
-        var viewModel = new EditorViewModel(session, new EditorCommandService(session), settings);
+        var viewModel = new EditorViewModel(
+            session,
+            new EditorCommandService(session),
+            settings,
+            new MockClipboardService());
         return (viewModel, session);
     }
 }

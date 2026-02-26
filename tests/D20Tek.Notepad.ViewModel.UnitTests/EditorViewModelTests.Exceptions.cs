@@ -10,7 +10,11 @@ public class EditorViewModelExceptionsTests
     {
         // act & assert
         Assert.ThrowsExactly<ArgumentNullException>(
-            [ExcludeFromCodeCoverage] () => new EditorViewModel(null!, null!));
+            [ExcludeFromCodeCoverage] () => new EditorViewModel(
+                null!,
+                null!,
+                EditorSettings.Default,
+                new MockClipboardService()));
     }
 
     [TestMethod]
@@ -21,7 +25,11 @@ public class EditorViewModelExceptionsTests
 
         // act & assert
         Assert.ThrowsExactly<ArgumentNullException>(
-            [ExcludeFromCodeCoverage] () => new EditorViewModel(session, null!));
+            [ExcludeFromCodeCoverage] () => new EditorViewModel(
+                session,
+                null!,
+                EditorSettings.Default,
+                new MockClipboardService()));
     }
 
     [TestMethod]
@@ -33,25 +41,15 @@ public class EditorViewModelExceptionsTests
 
         // act & assert
         Assert.ThrowsExactly<ArgumentNullException>(
-            [ExcludeFromCodeCoverage] () => new EditorViewModel(session, commands, null!));
+            [ExcludeFromCodeCoverage] () => new EditorViewModel(
+                session,
+                commands,
+                null!,
+                new MockClipboardService()));
     }
 
     [TestMethod]
-    public void Constructor_WithDefaultOverload_UsesDefaultSettings()
-    {
-        // arrange
-        var session = CreateSession(["test"]);
-        var commands = new EditorCommandService(session);
-
-        // act
-        var viewModel = new EditorViewModel(session, commands);
-
-        // assert
-        Assert.AreSame(EditorSettings.Default, viewModel.Settings);
-    }
-
-    [TestMethod]
-    public void Constructor_WithCustomSettings_UsesProvidedSettings()
+    public void Constructor_WithValidParameters_UsesProvidedSettings()
     {
         // arrange
         var session = CreateSession(["test"]);
@@ -59,7 +57,7 @@ public class EditorViewModelExceptionsTests
         var customSettings = new EditorSettings { MouseWheelScrollLines = 10 };
 
         // act
-        var viewModel = new EditorViewModel(session, commands, customSettings);
+        var viewModel = new EditorViewModel(session, commands, customSettings, new MockClipboardService());
 
         // assert
         Assert.AreSame(customSettings, viewModel.Settings);

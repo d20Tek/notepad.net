@@ -129,7 +129,7 @@ public class EditorViewModelTests
     }
 
     private static EditorViewModel CreateViewModel(EditorSession session) =>
-        new(session, new EditorCommandService(session));
+        new(session, new EditorCommandService(session), EditorSettings.Default, new MockClipboardService());
 
     private static string[] GenerateLines(int count) => [.. Enumerable.Range(1, count).Select(i => $"Line {i}")];
 }

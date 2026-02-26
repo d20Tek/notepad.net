@@ -345,7 +345,11 @@ public class EditorViewModelEditingTests
         var textLines = lines.Select(l => new TextLine(l)).ToList();
         var doc = _docFactory.Create(new DocumentData(textLines, Encoding.UTF8, LineEndingStyle.CRLF));
         var session = new EditorSession(doc);
-        var viewModel = new EditorViewModel(session, new EditorCommandService(session), settings ?? EditorSettings.Default);
+        var viewModel = new EditorViewModel(
+            session,
+            new EditorCommandService(session),
+            settings ?? EditorSettings.Default,
+            new MockClipboardService());
         return (viewModel, session);
     }
 }

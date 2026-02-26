@@ -19,7 +19,8 @@ class Program
 
         var (document, filePath) = CommandLineHandler.GetDocumentAndPath(args);
         var session = new EditorSession(document);
-        var viewModel = new EditorViewModel(session, new EditorCommandService(session), settings);
+        var clipboardService = new TerminalGuiClipboardService();
+        var viewModel = new EditorViewModel(session, new EditorCommandService(session), settings, clipboardService);
 
         // Set file path if loaded from command line
         if (!string.IsNullOrEmpty(filePath))

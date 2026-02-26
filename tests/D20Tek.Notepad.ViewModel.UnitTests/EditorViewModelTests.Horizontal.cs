@@ -252,5 +252,5 @@ public class EditorViewModelHorizontalTests
     }
 
     private static EditorViewModel CreateViewModel(EditorSession session) =>
-        new(session, new EditorCommandService(session));
+        new(session, new EditorCommandService(session), EditorSettings.Default, new MockClipboardService());
 }
