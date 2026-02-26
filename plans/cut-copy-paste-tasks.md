@@ -83,19 +83,19 @@ The `EditorSession` provides:
 ### Phase 3: UI Commands
 
 #### Task 3.1: Create CutCommand
-- [ ] Create `CutCommand` static class in `Commands` folder
+- [x] Create `CutCommand` static class in `Commands` folder
   - Define `CommandName = "Cut"`
   - `Execute()` calls `viewModel.Cut()`
   - `Create()` returns `UiCommand` with `Key.CtrlMask | Key.X`
 
 #### Task 3.2: Create CopyCommand
-- [ ] Create `CopyCommand` static class in `Commands` folder
+- [x] Create `CopyCommand` static class in `Commands` folder
   - Define `CommandName = "Copy"`
   - `Execute()` calls `viewModel.Copy()`
   - `Create()` returns `UiCommand` with `Key.CtrlMask | Key.C`
 
 #### Task 3.3: Create PasteCommand
-- [ ] Create `PasteCommand` static class in `Commands` folder
+- [x] Create `PasteCommand` static class in `Commands` folder
   - Define `CommandName = "Paste"`
   - `Execute()` calls `viewModel.Paste()`
   - `Create()` returns `UiCommand` with `Key.CtrlMask | Key.V`
@@ -105,18 +105,18 @@ The `EditorSession` provides:
 ### Phase 4: Menu Integration
 
 #### Task 4.1: Register Commands in MenuBuilder
-- [ ] Add `commands.Register(CutCommand.Create(viewModel))`
-- [ ] Add `commands.Register(CopyCommand.Create(viewModel))`
-- [ ] Add `commands.Register(PasteCommand.Create(viewModel))`
+- [x] Add `commands.Register(CutCommand.Create(viewModel))`
+- [x] Add `commands.Register(CopyCommand.Create(viewModel))`
+- [x] Add `commands.Register(PasteCommand.Create(viewModel))`
 
 #### Task 4.2: Add Menu Items to Edit Menu
-- [ ] Add Cut menu item after Redo separator:
+- [x] Add Cut menu item after Redo separator:
   - `new MenuItemDefinition("Cu_t", CutCommand.CommandName, canExecute: () => viewModel.CanCut)`
-- [ ] Add Copy menu item:
+- [x] Add Copy menu item:
   - `new MenuItemDefinition("_Copy", CopyCommand.CommandName, canExecute: () => viewModel.CanCopy)`
-- [ ] Add Paste menu item:
+- [x] Add Paste menu item:
   - `new MenuItemDefinition("_Paste", PasteCommand.CommandName, canExecute: () => viewModel.CanPaste)`
-- [ ] Add separator after Paste, before Select All
+- [x] Add separator after Paste, before Select All
 
 ---
 

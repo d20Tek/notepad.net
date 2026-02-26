@@ -18,6 +18,9 @@ internal static class MenuBuilder
         // Edit commands
         commands.Register(UndoCommand.Create(viewModel));
         commands.Register(RedoCommand.Create(viewModel));
+        commands.Register(CutCommand.Create(viewModel));
+        commands.Register(CopyCommand.Create(viewModel));
+        commands.Register(PasteCommand.Create(viewModel));
         commands.Register(SelectAllCommand.Create(viewModel));
 
         // View commands
@@ -36,6 +39,10 @@ internal static class MenuBuilder
             new MenuDefinition("_Edit",
                 new MenuItemDefinition("_Undo", UndoCommand.CommandName, canExecute: () => viewModel.CanUndo),
                 new MenuItemDefinition("_Redo", RedoCommand.CommandName, canExecute: () => viewModel.CanRedo),
+                MenuItemDefinition.Separator,
+                new MenuItemDefinition("Cu_t", CutCommand.CommandName, canExecute: () => viewModel.CanCut),
+                new MenuItemDefinition("_Copy", CopyCommand.CommandName, canExecute: () => viewModel.CanCopy),
+                new MenuItemDefinition("_Paste", PasteCommand.CommandName, canExecute: () => viewModel.CanPaste),
                 MenuItemDefinition.Separator,
                 new MenuItemDefinition("Select _All", SelectAllCommand.CommandName)),
             new MenuDefinition("_View",

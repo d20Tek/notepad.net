@@ -171,4 +171,52 @@ public partial class EditorCommandServiceTests
         // assert
         Assert.AreEqual("Hello World", session.Document.Lines[0].Content);
     }
+
+    [TestMethod]
+    public void Paste_WithSelection_ReplacesSelectedText()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello World"]);
+        session.Anchor = new TextPosition(0, 6);
+        session.Caret = new TextPosition(0, 11);
+
+        // act
+        service.Paste("Universe");
+
+        // assert
+        Assert.AreEqual("Hello Universe", session.Document.Lines[0].Content);
+    }
+
+    [TestMethod]
+    public void Paste_WithEmptyString_DoesNotChangeDocument()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello"]);
+        session.Caret = new TextPosition(0, 5);
+        session.Anchor = new TextPosition(0, 5);
+
+        // act
+        service.Paste("");
+
+        // assert
+        Assert.AreEqual("Hello", session.Document.Lines[0].Content);
+    }
+
+    [TestMethod]
+    public void Paste_WithMultiLineText_InsertsAllLines()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello"]);
+        session.Caret = new TextPosition(0, 5);
+        session.Anchor = new TextPosition(0, 5);
+
+        // act
+        service.Paste("\nWorld\nTest");
+
+        // assert
+        Assert.AreEqual(3, session.Document.LineCount);
+        Assert.AreEqual("Hello", session.Document.Lines[0].Content);
+        Assert.AreEqual("World", session.Document.Lines[1].Content);
+        Assert.AreEqual("Test", session.Document.Lines[2].Content);
+    }
 }
