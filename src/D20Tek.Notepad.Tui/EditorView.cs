@@ -74,10 +74,10 @@ public sealed partial class EditorView : View, IDisposable
 
     public override bool MouseEvent(MouseEvent me)
     {
-        if (IsInScrollBarArea(me.X, me.Y))
-        {
-            return base.MouseEvent(me);
-        }
+        // Only handle mouse events that are within our bounds
+        if (me.X < 0 || me.Y < 0 || me.X >= Bounds.Width || me.Y >= Bounds.Height) return false;
+
+        if (IsInScrollBarArea(me.X, me.Y)) return base.MouseEvent(me);
 
         if (MouseBindings.TryExecute(_viewModel, me))
         {
