@@ -468,7 +468,7 @@ public class EditorViewModelNavigationTests
         var doc = _docFactory.Create(new(textLines, Encoding.UTF8, LineEndingStyle.CRLF));
         var session = new EditorSession(doc);
         var commandService = new EditorCommandService(session);
-        var viewModel = new EditorViewModel(session, commandService);
+        var viewModel = new EditorViewModel(session, commandService, EditorSettings.Default, new MockClipboardService());
         return (viewModel, session);
     }
 
