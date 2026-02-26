@@ -8,6 +8,7 @@ public sealed partial class EditorViewModel
     private List<ViewLine> _visibleLines = [];
     private int _viewportWidth;
     private EditorSettings _settings;
+    private readonly IClipboardService? _clipboardService;
 
     // Events
     public event Action? ViewChanged;
@@ -16,11 +17,20 @@ public sealed partial class EditorViewModel
     public event Action<bool>? WordWrapChanged;
 
     public EditorViewModel(EditorSession session, EditorCommandService commandService)
-        : this(session, commandService, EditorSettings.Default)
+        : this(session, commandService, EditorSettings.Default, null)
     {
     }
 
     public EditorViewModel(EditorSession session, EditorCommandService commandService, EditorSettings settings)
+        : this(session, commandService, settings, null)
+    {
+    }
+
+    public EditorViewModel(
+        EditorSession session,
+        EditorCommandService commandService,
+        EditorSettings settings,
+        IClipboardService? clipboardService)
     {
         ArgumentNullException.ThrowIfNull(session);
         ArgumentNullException.ThrowIfNull(commandService);
@@ -28,6 +38,7 @@ public sealed partial class EditorViewModel
         Session = session;
         Commands = commandService;
         _settings = settings;
+        _clipboardService = clipboardService;
         Viewport = new Viewport();
     }
 

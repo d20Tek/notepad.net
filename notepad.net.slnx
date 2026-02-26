@@ -11,6 +11,7 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/.plans/">
+    <File Path="plans/cut-copy-paste-tasks.md" />
     <File Path="plans/editing-tasks.md" />
     <File Path="plans/features.md" />
     <File Path="plans/word-wrap-tasks.md" />
