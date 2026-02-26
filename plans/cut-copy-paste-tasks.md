@@ -143,7 +143,11 @@ The `EditorSession` provides:
 - [x] `CopySelection_ReturnsSelectedText` - already tested
 - [x] `CutSelection_ReturnsSelectedTextAndDeletesIt` - already tested
 - [x] `CutSelection_WithNoSelection_ReturnsEmptyString` - already tested
-- [ ] Verify `Paste` tests exist, add if missing
+- [x] `Paste_InsertsTextAtCaret` - already tested
+- [x] `Paste_WithSelection_ReplacesSelectedText` - added
+- [x] `Paste_WithEmptyString_DoesNotChangeDocument` - added
+- [x] `Paste_WithMultiLineText_InsertsAllLines` - added
+- [x] Verify `Paste` tests exist, add if missing
 
 ---
 
@@ -206,27 +210,27 @@ The `MenuItemDefinition.CanExecute` callback is evaluated when the menu is opene
 ## Acceptance Criteria
 
 1. **Cut (Ctrl+X)**
-   - [ ] When selection exists: copies selected text to clipboard and removes from document
-   - [ ] When no selection: does nothing
-   - [ ] Menu item disabled when no selection
+   - [x] When selection exists: copies selected text to clipboard and removes from document
+   - [x] When no selection: does nothing
+   - [x] Menu item disabled when no selection
 
 2. **Copy (Ctrl+C)**
-   - [ ] When selection exists: copies selected text to clipboard
-   - [ ] When no selection: does nothing
-   - [ ] Menu item disabled when no selection
-   - [ ] Document remains unchanged
+   - [x] When selection exists: copies selected text to clipboard
+   - [x] When no selection: does nothing
+   - [x] Menu item disabled when no selection
+   - [x] Document remains unchanged
 
 3. **Paste (Ctrl+V)**
-   - [ ] When clipboard has text: inserts at caret position
-   - [ ] When selection exists: replaces selection with clipboard content
-   - [ ] When clipboard empty: does nothing
-   - [ ] Menu item disabled when clipboard empty
+   - [x] When clipboard has text: inserts at caret position
+   - [x] When selection exists: replaces selection with clipboard content
+   - [x] When clipboard empty: does nothing
+   - [x] Menu item disabled when clipboard empty
 
 4. **Undo/Redo**
-   - [ ] Cut operation can be undone (text restored)
-   - [ ] Paste operation can be undone
+   - [x] Cut operation can be undone (text restored)
+   - [x] Paste operation can be undone
 
 5. **Dirty State**
-   - [ ] Cut marks document as dirty
-   - [ ] Copy does not affect dirty state
-   - [ ] Paste marks document as dirty
+   - [x] Cut marks document as dirty
+   - [x] Copy does not affect dirty state
+   - [x] Paste marks document as dirty
