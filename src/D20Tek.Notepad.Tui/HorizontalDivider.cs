@@ -1,6 +1,4 @@
-﻿using Attribute = Terminal.Gui.Attribute;
-
-namespace D20Tek.Notepad.Tui;
+﻿namespace D20Tek.Notepad.Tui;
 
 internal class HorizontalDivider : View
 {
@@ -10,10 +8,7 @@ internal class HorizontalDivider : View
         Y = y;
         Height = 1;
         Width = Dim.Fill();
-        ColorScheme = new ColorScheme
-        {
-            Normal = new Attribute(Color.DarkGray, Color.Black)
-        };
+        ColorScheme = EditorColorSchemes.Divider;
     }
 
     public override void Redraw(Rect bounds)

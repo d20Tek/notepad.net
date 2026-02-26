@@ -32,7 +32,6 @@ class Program
 
         // Create editor view - starts at row 1 (below menu bar)
         var editorView = EditorViewFactory.Create(viewModel);
-        editorView.Y = 1;
 
         // Save settings when word wrap changes
         viewModel.WordWrapChanged += (_) => settingsService.Save(viewModel.Settings);

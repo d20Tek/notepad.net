@@ -1,5 +1,4 @@
 ﻿using D20Tek.Notepad.Tui.Commands;
-using Attribute = Terminal.Gui.Attribute;
 
 namespace D20Tek.Notepad.Tui.Menus;
 
@@ -53,61 +52,43 @@ internal static class MenuBuilder
     public static MenuBar BuildMenu(IEnumerable<MenuDefinition> menus, CommandRegistry commands)
     {
         var menuBarItems = menus.Select(
-            m => new MenuBarItem(m.Title, m.Items.Select(i => CreateMenuItem(i, commands)).ToArray()))
-            .ToArray();
+            m => new MenuBarItem(m.Title, m.Items.Select(i => CreateMenuItem(i, commands)).ToArray())).ToArray();
 
-        return new MenuBar(menuBarItems)
-        {
-            ColorScheme = new ColorScheme
-            {
-                Normal = new Attribute(Color.White, Color.Black),
-                Focus = new Attribute(Color.Black, Color.Gray),
-                HotNormal = new Attribute(Color.BrightBlue, Color.Black),
-                HotFocus = new Attribute(Color.BrightBlue, Color.DarkGray),
-                Disabled = new Attribute(Color.DarkGray, Color.Black)
-            }
-        };
+        return new MenuBar(menuBarItems) { ColorScheme = EditorColorSchemes.MenuBar };
     }
 
     private static MenuItem? CreateMenuItem(MenuItemDefinition item, CommandRegistry commands)
     {
         // Separator returns null, which Terminal.Gui renders as a horizontal line
-        if (item.IsSeparator)
-        {
-            return null;
-        }
+        if (item.IsSeparator) return null;
 
         var cmd = commands[item.CommandName];
         var shortcutKey = cmd.Shortcut ?? Key.Null;
-
         if (item.IsCheckable && item.IsChecked != null)
         {
-            var menuItem = new MenuItem(item.Label, "", () => cmd.Execute(), null, null, shortcutKey)
+            var menuItem = new MenuItem(item.Label, "", () => cmd.Execute())
             {
+                Shortcut = shortcutKey,
                 CheckType = MenuItemCheckStyle.Checked
             };
 
-            // Update checked state before display
             menuItem.Action = () =>
             {
                 cmd.Execute();
                 menuItem.Checked = item.IsChecked();
             };
 
-            // Set initial checked state
             menuItem.Checked = item.IsChecked();
-
             return menuItem;
         }
 
         // Handle CanExecute for enabling/disabling menu items
         if (item.CanExecute != null)
         {
-            var menuItem = new MenuItem(item.Label, "", () => cmd.Execute(), null, null, shortcutKey)
+            return new MenuItem(item.Label, "", () => cmd.Execute(), null, null, shortcutKey)
             {
                 CanExecute = item.CanExecute
             };
-            return menuItem;
         }
 
         return new MenuItem(item.Label, "", () => cmd.Execute(), null, null, shortcutKey);

@@ -20,7 +20,7 @@ public sealed class EditorView : View, IDisposable
 
         CanFocus = true;
         WantMousePositionReports = true;
-        ColorScheme = Colors.Dialog;
+        ColorScheme = EditorColorSchemes.Editor;
 
         Added += OnAddedToSuperView;
         Resized += OnViewResized;
@@ -96,7 +96,9 @@ public sealed class EditorView : View, IDisposable
         KeyBindings.TryExecute(_viewModel, keyEvent) || base.ProcessKey(keyEvent);
 
     private void OnViewModelChanged() => SetNeedsDisplay();
+
     private void OnViewModelChanged(ViewPosition _) => SetNeedsDisplay();
+
     private void OnViewModelChanged(SelectionViewRange? _) => SetNeedsDisplay();
 
     private void OnWordWrapChanged(bool _)

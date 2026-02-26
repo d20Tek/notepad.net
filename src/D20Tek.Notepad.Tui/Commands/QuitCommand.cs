@@ -7,13 +7,7 @@ internal static class QuitCommand
     public static void Execute(EditorViewModel viewModel)
     {
         ArgumentNullException.ThrowIfNull(viewModel);
-
-        if (UnsavedChangesHelper.PromptToSaveIfDirty(viewModel, "exiting") ==
-            UnsavedChangesHelper.PromptResult.Cancel)
-        {
-            return;
-        }
-
+        UnsavedChangesHelper.PromptToSaveIfDirty(viewModel, "exiting");
         Application.RequestStop();
     }
 

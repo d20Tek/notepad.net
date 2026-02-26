@@ -5,13 +5,17 @@ internal sealed class MenuItemDefinition
     public static readonly MenuItemDefinition Separator = new(isSeparator: true);
 
     public string Label { get; }
+
     public string CommandName { get; }
+
     public bool IsCheckable { get; }
+
     public Func<bool>? IsChecked { get; }
+
     public Func<bool>? CanExecute { get; }
+
     public bool IsSeparator { get; }
 
-    // Standard menu item constructor
     public MenuItemDefinition(
         string label,
         string commandName,
@@ -27,7 +31,6 @@ internal sealed class MenuItemDefinition
         IsSeparator = false;
     }
 
-    // Private constructor for separator
     private MenuItemDefinition(bool isSeparator)
     {
         Label = string.Empty;

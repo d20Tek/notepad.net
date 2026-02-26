@@ -1,6 +1,6 @@
 # Notepad.Tui Feature Roadmap
 
-## Implemented Features ?
+## Implemented Features
 
 | Feature | Shortcut | Notes |
 |---------|----------|-------|

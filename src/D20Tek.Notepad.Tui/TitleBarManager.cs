@@ -1,6 +1,6 @@
 namespace D20Tek.Notepad.Tui;
 
-internal sealed class TitleBarManager
+internal sealed class TitleBarManager : IDisposable
 {
     private const string AppName = "Notepad.Tui";
     private const string NewFileTitle = "[new-file]";
@@ -10,12 +10,9 @@ internal sealed class TitleBarManager
     public TitleBarManager(EditorViewModel viewModel)
     {
         _viewModel = viewModel;
-
-        // Subscribe to events
         _viewModel.DirtyStateChanged += OnDirtyStateChanged;
         _viewModel.FilePathChanged += OnFilePathChanged;
 
-        // Set initial title
         UpdateTitle();
     }
 
@@ -38,14 +35,7 @@ internal sealed class TitleBarManager
         Console.Title = $"{dirtyIndicator}{documentName} - {AppName}";
     }
 
-    private string GetDocumentName()
-    {
-        if (string.IsNullOrEmpty(_viewModel.CurrentFilePath))
-        {
-            return NewFileTitle;
-        }
-
-        return Path.GetFileName(_viewModel.CurrentFilePath);
-    }
+    private string GetDocumentName() =>
+        string.IsNullOrEmpty(_viewModel.CurrentFilePath) ? NewFileTitle : Path.GetFileName(_viewModel.CurrentFilePath);
 }
 
