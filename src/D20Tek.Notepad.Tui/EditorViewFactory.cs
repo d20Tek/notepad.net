@@ -1,6 +1,4 @@
-﻿using Attribute = Terminal.Gui.Attribute;
-
-namespace D20Tek.Notepad.Tui;
+﻿namespace D20Tek.Notepad.Tui;
 
 internal static class EditorViewFactory
 {
