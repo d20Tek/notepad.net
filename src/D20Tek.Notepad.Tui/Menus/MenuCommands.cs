@@ -23,6 +23,13 @@ internal static class MenuCommands
         commands.Register(PasteCommand.Create(viewModel));
         commands.Register(SelectAllCommand.Create(viewModel));
 
+        // Search commands
+        commands.Register(FindCommand.Create(viewModel));
+        commands.Register(FindNextCommand.Create(viewModel));
+        commands.Register(FindPreviousCommand.Create(viewModel));
+        commands.Register(ReplaceCommand.Create(viewModel));
+        commands.Register(GoToLineCommand.Create(viewModel));
+
         // View commands
         commands.Register(WordWrapCommand.Create(viewModel));
 

@@ -23,6 +23,12 @@ internal static class MenuDefinitions
             new MenuItemDefinition("_Copy", CopyCommand.CommandName, canExecute: () => viewModel.CanCopy),
             new MenuItemDefinition("_Paste", PasteCommand.CommandName, canExecute: () => viewModel.CanPaste),
             MenuItemDefinition.Separator,
+            new MenuItemDefinition("_Find...", FindCommand.CommandName),
+            new MenuItemDefinition("Find _Next", FindNextCommand.CommandName, canExecute: () => viewModel.HasLastSearch),
+            new MenuItemDefinition("Find Pre_vious", FindPreviousCommand.CommandName, canExecute: () => viewModel.HasLastSearch),
+            new MenuItemDefinition("_Replace...", ReplaceCommand.CommandName),
+            MenuItemDefinition.Separator,
+            new MenuItemDefinition("_Go to Line...", GoToLineCommand.CommandName),
             new MenuItemDefinition("Select _All", SelectAllCommand.CommandName)),
 
         new MenuDefinition("_View",

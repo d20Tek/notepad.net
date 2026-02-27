@@ -59,6 +59,13 @@ internal static class KeyBindings
         [(Key.O, false, true)] = vm => FileOpenCommand.Execute(vm),
         [(Key.E, false, true)] = vm => FileSaveCommand.Execute(vm),
         [(Key.E, true, true)] = vm => FileSaveAsCommand.Execute(vm),
+
+        // Search commands
+        [(Key.F, false, true)] = vm => FindCommand.Execute(vm),
+        [(Key.H, false, true)] = vm => ReplaceCommand.Execute(vm),
+        [(Key.G, false, true)] = vm => GoToLineCommand.Execute(vm),
+        [(Key.F3, false, false)] = vm => FindNextCommand.Execute(vm),
+        [(Key.F3, true, false)] = vm => FindPreviousCommand.Execute(vm),
     };
 
     public static bool TryExecute(EditorViewModel vm, KeyEvent keyEvent)

@@ -39,7 +39,14 @@ public sealed partial class EditorViewModel
         if (string.IsNullOrEmpty(searchTerm)) return false;
 
         _lastSearchTerm = searchTerm;
-        var result = _searchService.FindPrevious(Session.Document, searchTerm, Session.Caret, _searchOptions);
+
+        // When searching backward, start from the beginning of the current selection
+        // to avoid finding the same match again
+        var searchFrom = Session.HasSelection
+            ? TextPosition.Min(Session.Anchor, Session.Caret)
+            : Session.Caret;
+
+        var result = _searchService.FindPrevious(Session.Document, searchTerm, searchFrom, _searchOptions);
 
         if (!result.Found) return false;
 

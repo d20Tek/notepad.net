@@ -159,6 +159,30 @@ public class EditorViewModelSearchTests
         Assert.IsFalse(result);
     }
 
+    [TestMethod]
+    public void FindPrevious_AfterFindNext_FindsPreviousOccurrence()
+    {
+        // arrange - regression test for FindPrevious not working after FindNext
+        var (viewModel, session) = CreateViewModel(["test one test two test"]);
+        viewModel.SetViewportHeight(5);
+
+        // act - find first two occurrences, then go back
+        viewModel.FindNext("test");
+        Assert.AreEqual(new TextPosition(0, 0), session.Anchor);
+
+        viewModel.FindNext("test");
+        Assert.AreEqual(new TextPosition(0, 9), session.Anchor);
+
+        viewModel.FindNext("test");
+        Assert.AreEqual(new TextPosition(0, 18), session.Anchor);
+
+        var result = viewModel.FindPrevious("test");
+
+        // assert - should find the second occurrence, not the same one
+        Assert.IsTrue(result);
+        Assert.AreEqual(new TextPosition(0, 9), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 13), session.Caret);
+    }
 
     [TestMethod]
     public void FindPreviousFromCurrent_WithNoLastSearch_ReturnsFalse()
@@ -172,6 +196,8 @@ public class EditorViewModelSearchTests
         // assert
         Assert.IsFalse(result);
     }
+
+
 
     [TestMethod]
     public void FindPreviousFromCurrent_UsesLastSearchTerm()

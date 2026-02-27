@@ -1,4 +1,4 @@
-# Find, Replace, and Go to Line Feature Implementation
+﻿# Find, Replace, and Go to Line Feature Implementation
 
 ## Overview
 Implement search and navigation functionality for the Notepad.Tui editor:
@@ -223,29 +223,30 @@ Match highlighting can be added later by tracking all match positions and render
   - Opens `GoToLineDialog`
   - Shortcut: `Ctrl+G`
 
+
 ---
 
 ### Phase 5: Menu and Key Binding Integration
 
 #### Task 5.1: Add Commands to KeyBindings
-- [ ] Add `F3` ? `FindNextCommand.Execute(vm)`
-- [ ] Add `Shift+F3` ? `FindPreviousCommand.Execute(vm)`
-- [ ] Add `Ctrl+F` ? `FindCommand.Execute(vm)` (also in menu)
-- [ ] Add `Ctrl+H` ? `ReplaceCommand.Execute(vm)` (also in menu)
-- [ ] Add `Ctrl+G` ? `GoToLineCommand.Execute(vm)` (also in menu)
+- [x] Add `F3` → `FindNextCommand.Execute(vm)`
+- [x] Add `Shift+F3` → `FindPreviousCommand.Execute(vm)`
+- [x] Add `Ctrl+F` → `FindCommand.Execute(vm)` (also in menu)
+- [x] Add `Ctrl+H` → `ReplaceCommand.Execute(vm)` (also in menu)
+- [x] Add `Ctrl+G` → `GoToLineCommand.Execute(vm)` (also in menu)
 
 #### Task 5.2: Register Commands in MenuBuilder
-- [ ] Register `FindCommand`, `FindNextCommand`, `FindPreviousCommand`
-- [ ] Register `ReplaceCommand`, `GoToLineCommand`
+- [x] Register `FindCommand`, `FindNextCommand`, `FindPreviousCommand`
+- [x] Register `ReplaceCommand`, `GoToLineCommand`
 
 #### Task 5.3: Add Menu Items to Edit Menu
-- [ ] Add separator after Select All
-- [ ] Add "Find..." (Ctrl+F) with `canExecute: always enabled`
-- [ ] Add "Find Next" (F3) with `canExecute: () => viewModel.HasLastSearch`
-- [ ] Add "Find Previous" (Shift+F3) with `canExecute: () => viewModel.HasLastSearch`
-- [ ] Add "Replace..." (Ctrl+H)
-- [ ] Add separator
-- [ ] Add "Go to Line..." (Ctrl+G)
+- [x] Add separator after Select All
+- [x] Add "Find..." (Ctrl+F) with `canExecute: always enabled`
+- [x] Add "Find Next" (F3) with `canExecute: () => viewModel.HasLastSearch`
+- [x] Add "Find Previous" (Shift+F3) with `canExecute: () => viewModel.HasLastSearch`
+- [x] Add "Replace..." (Ctrl+H)
+- [x] Add separator
+- [x] Add "Go to Line..." (Ctrl+G)
 
 ---
 
@@ -342,34 +343,35 @@ Before replacing, verify that current selection exactly matches the search term 
 ## Acceptance Criteria
 
 1. **Find (Ctrl+F)**
-   - [ ] Opens find dialog with search term field
-   - [ ] "Find Next" finds and selects next occurrence
-   - [ ] "Find Previous" finds and selects previous occurrence
-   - [ ] Case sensitivity option works correctly
-   - [ ] Wrap around option works correctly
-   - [ ] Shows message when not found
+   - [x] Opens find dialog with search term field
+   - [x] "Find Next" finds and selects next occurrence
+   - [x] "Find Previous" finds and selects previous occurrence
+   - [x] Case sensitivity option works correctly
+   - [x] Wrap around option works correctly
+   - [x] Shows message when not found
 
 2. **Find Next (F3)**
-   - [ ] Uses last search term
-   - [ ] Disabled when no previous search
-   - [ ] Wraps to beginning when reaching end
+   - [x] Uses last search term
+   - [x] Disabled when no previous search
+   - [x] Wraps to beginning when reaching end
 
 3. **Find Previous (Shift+F3)**
-   - [ ] Uses last search term
-   - [ ] Disabled when no previous search
-   - [ ] Wraps to end when reaching beginning
+   - [x] Uses last search term
+   - [x] Disabled when no previous search
+   - [x] Wraps to end when reaching beginning
 
 4. **Replace (Ctrl+H)**
-   - [ ] Opens replace dialog
-   - [ ] "Replace" replaces current selection if it matches, then finds next
-   - [ ] "Replace All" replaces all occurrences and shows count
-   - [ ] Replace operations are undoable
+   - [x] Opens replace dialog
+   - [x] "Replace" replaces current selection if it matches, then finds next
+   - [x] "Replace All" replaces all occurrences and shows count
+   - [x] Replace operations are undoable
+   - [ ] Replace all operation should be one undo step, not multiple
 
 5. **Go to Line (Ctrl+G)**
-   - [ ] Opens dialog with line number input
-   - [ ] Shows valid range (1 to LineCount)
-   - [ ] Moves caret to specified line
-   - [ ] Invalid input is handled gracefully
+   - [x] Opens dialog with line number input
+   - [x] Shows valid range (1 to LineCount)
+   - [x] Moves caret to specified line
+   - [x] Invalid input is handled gracefully
 
 ---
 
@@ -378,5 +380,3 @@ Before replacing, verify that current selection exactly matches the search term 
 - **Highlight All Matches**: Show all matches with background highlighting
 - **Incremental Search**: Highlight matches as user types in search field
 - **Regex Search**: Support regular expression patterns
-- **Search in Selection**: Limit search to selected text only
-- **Preserve Search History**: Remember recent search terms
