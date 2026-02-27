@@ -87,57 +87,77 @@ Match highlighting can be added later by tracking all match positions and render
 ### Phase 2: ViewModel Search Integration
 
 #### Task 2.1: Add Search State to EditorViewModel
-- [ ] Create `EditorViewModel.Search.cs` partial class
-- [ ] Add search state fields:
+- [x] Create `EditorViewModel.Search.cs` partial class
+- [x] Add search state fields:
   - `string? _lastSearchTerm`
   - `SearchOptions _searchOptions`
-- [ ] Add `SearchService` dependency (injected or created internally)
+- [x] Add `SearchService` dependency (created internally)
 
 #### Task 2.2: Add Find Methods to EditorViewModel
-- [ ] Add `FindNext(string searchTerm)` method
+- [x] Add `FindNext(string searchTerm)` method
   - Calls `SearchService.FindNext()`
   - If found, moves caret to match and selects it
   - Stores search term for F3/Shift+F3
   - Returns bool indicating if found
-- [ ] Add `FindPrevious(string searchTerm)` method
+- [x] Add `FindPrevious(string searchTerm)` method
   - Calls `SearchService.FindPrevious()`
   - If found, moves caret to match and selects it
   - Returns bool indicating if found
-- [ ] Add `FindNextFromCurrent()` method (for F3 - uses last search term)
-- [ ] Add `FindPreviousFromCurrent()` method (for Shift+F3)
+- [x] Add `FindNextFromCurrent()` method (for F3 - uses last search term)
+- [x] Add `FindPreviousFromCurrent()` method (for Shift+F3)
 
 #### Task 2.3: Add Replace Methods to EditorViewModel
-- [ ] Add `Replace(string searchTerm, string replacement)` method
+- [x] Add `Replace(string searchTerm, string replacement)` method
   - If current selection matches search term, replace it
   - Then find next occurrence
-- [ ] Add `ReplaceAll(string searchTerm, string replacement)` method
+- [x] Add `ReplaceAll(string searchTerm, string replacement)` method
   - Replaces all occurrences
   - Returns count of replacements
   - Marks document dirty
 
 #### Task 2.4: Add GoToLine Method to EditorViewModel
-- [ ] Add `GoToLine(int lineNumber)` method
+- [x] Add `GoToLine(int lineNumber)` method
   - Validate line number (1-based input, convert to 0-based)
   - Move caret to start of specified line
   - Ensure caret is visible
   - Clear selection
 
 #### Task 2.5: Add Search Properties to EditorViewModel
-- [ ] Add `LastSearchTerm` property
-- [ ] Add `HasLastSearch` property (for enabling F3/Shift+F3)
-- [ ] Add `SearchOptions` property (get/set for dialog state)
+- [x] Add `LastSearchTerm` property
+- [x] Add `HasLastSearch` property (for enabling F3/Shift+F3)
+- [x] Add `SearchOptions` property (get/set for dialog state)
 
 #### Task 2.6: Unit Tests for EditorViewModel Search
-- [ ] Create `EditorViewModelTests.Search.cs` with tests:
+- [x] Create `EditorViewModelTests.Search.cs` with 29 tests:
   - `FindNext_WithMatch_SelectsMatch`
   - `FindNext_WithNoMatch_ReturnsFalse`
   - `FindNext_StoresLastSearchTerm`
+  - `FindNext_WithEmptyTerm_ReturnsFalse`
+  - `FindNext_WithNullTerm_ThrowsArgumentNullException`
   - `FindNextFromCurrent_UsesLastSearchTerm`
+  - `FindNextFromCurrent_WithNoLastSearch_ReturnsFalse`
   - `FindPrevious_WithMatch_SelectsMatch`
+  - `FindPrevious_WithNoMatch_ReturnsFalse`
+  - `FindPreviousFromCurrent_WithNoLastSearch_ReturnsFalse`
   - `Replace_WithMatchingSelection_ReplacesAndFindsNext`
+  - `Replace_WithNoSelection_FindsNext`
+  - `Replace_WithNonMatchingSelection_FindsNext`
+  - `Replace_WithNullSearchTerm_ThrowsArgumentNullException`
+  - `Replace_WithNullReplacement_ThrowsArgumentNullException`
   - `ReplaceAll_ReplacesAllAndMarksDirty`
+  - `ReplaceAll_WithNoMatches_ReturnsZero`
+  - `ReplaceAll_WithEmptySearchTerm_ReturnsZero`
+  - `ReplaceAll_StoresLastSearchTerm`
   - `GoToLine_ValidLine_MovesCaret`
-  - `GoToLine_InvalidLine_ClampsToValidRange`
+  - `GoToLine_LineTooHigh_ClampsToLastLine`
+  - `GoToLine_LineTooLow_ClampsToFirstLine`
+  - `GoToLine_ClearsSelection`
+  - `SearchOptions_DefaultValue_IsSearchOptionsDefault`
+  - `SearchOptions_CanBeSet`
+  - `SearchOptions_SetToNull_UsesDefault`
+  - `FindNext_CaseSensitive_RespectsOption`
+  - `HasLastSearch_InitiallyFalse`
+  - `HasLastSearch_TrueAfterSearch`
 
 ---
 
