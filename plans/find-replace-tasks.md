@@ -164,59 +164,61 @@ Match highlighting can be added later by tracking all match positions and render
 ### Phase 3: Terminal.Gui Dialogs
 
 #### Task 3.1: Create FindDialog
-- [ ] Create `Dialogs\FindDialog.cs` in Tui project
+- [x] Create `Dialogs\FindDialog.cs` in Tui project
   - TextField for search term
   - CheckBox for "Case sensitive"
   - CheckBox for "Wrap around"  
   - Buttons: "Find Next", "Find Previous", "Close"
-  - Result: search term, options, action taken
-- [ ] Dialog should be non-modal (user can interact with editor)
+  - Result: search term, options, action taken via `FindAction` enum
+- [x] Dialog is modal, captures state and action for caller to process
 
 #### Task 3.2: Create ReplaceDialog
-- [ ] Create `Dialogs\ReplaceDialog.cs` in Tui project
-  - Inherits/contains FindDialog functionality
-  - Additional TextField for replacement text
+- [x] Create `Dialogs\ReplaceDialog.cs` in Tui project
+  - TextField for search term and replacement text
+  - CheckBox for "Case sensitive" and "Wrap around"
   - Buttons: "Find Next", "Replace", "Replace All", "Close"
-  - Result: search term, replacement, options, action taken
+  - Result: search term, replacement, options, action taken via `ReplaceAction` enum
 
 #### Task 3.3: Create GoToLineDialog
-- [ ] Create `Dialogs\GoToLineDialog.cs` in Tui project
-  - TextField for line number (numeric only)
+- [x] Create `Dialogs\GoToLineDialog.cs` in Tui project
+  - TextField for line number
   - Label showing valid range (1 to LineCount)
   - Buttons: "Go To", "Cancel"
   - Validation: must be valid number in range
 
 ---
 
+
 ### Phase 4: UI Commands
 
 #### Task 4.1: Create Find Command
-- [ ] Create `FindCommand` in `Commands` folder
+- [x] Create `FindCommand` in `Commands` folder
   - `CommandName = "Find"`
-  - Opens `FindDialog`
+  - Opens `FindDialog`, processes FindNext/FindPrevious actions
   - Shortcut: `Ctrl+F`
 
 #### Task 4.2: Create FindNext Command
-- [ ] Create `FindNextCommand` in `Commands` folder
+- [x] Create `FindNextCommand` in `Commands` folder
   - `CommandName = "FindNext"`
   - Calls `viewModel.FindNextFromCurrent()`
   - Shortcut: `F3`
   - Shows message if no previous search or not found
 
 #### Task 4.3: Create FindPrevious Command
-- [ ] Create `FindPreviousCommand` in `Commands` folder
+- [x] Create `FindPreviousCommand` in `Commands` folder
   - `CommandName = "FindPrevious"`
   - Calls `viewModel.FindPreviousFromCurrent()`
   - Shortcut: `Shift+F3`
+  - Shows message if no previous search or not found
 
 #### Task 4.4: Create Replace Command
-- [ ] Create `ReplaceCommand` in `Commands` folder
+- [x] Create `ReplaceCommand` in `Commands` folder
   - `CommandName = "Replace"`
-  - Opens `ReplaceDialog`
+  - Opens `ReplaceDialog`, processes FindNext/Replace/ReplaceAll actions
   - Shortcut: `Ctrl+H`
 
 #### Task 4.5: Create GoToLine Command
-- [ ] Create `GoToLineCommand` in `Commands` folder
+- [x] Create `GoToLineCommand` in `Commands` folder
   - `CommandName = "GoToLine"`
   - Opens `GoToLineDialog`
   - Shortcut: `Ctrl+G`
