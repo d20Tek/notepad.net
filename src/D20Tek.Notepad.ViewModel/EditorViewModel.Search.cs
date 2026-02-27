@@ -100,17 +100,31 @@ public sealed partial class EditorViewModel
         int count = 0;
         var startPosition = new TextPosition(0, 0);
 
-        while (true)
+        // Group all replacements into a single undo operation
+        Session.UndoStack.BeginGroup();
+        try
         {
-            var result = _searchService.FindNext(Session.Document, searchTerm, startPosition, _searchOptions with { WrapAround = false });
-            if (!result.Found) break;
+            while (true)
+            {
+                var result = _searchService.FindNext(
+                    Session.Document,
+                    searchTerm,
+                    startPosition,
+                    _searchOptions with { WrapAround = false });
 
-            Session.Anchor = result.Start;
-            Session.Caret = result.End;
-            Commands.ReplaceSelection(replacement);
-            count++;
+                if (!result.Found) break;
 
-            startPosition = new TextPosition(result.Start.Line, result.Start.Column + replacement.Length);
+                Session.Anchor = result.Start;
+                Session.Caret = result.End;
+                Commands.ReplaceSelection(replacement);
+                count++;
+
+                startPosition = new TextPosition(result.Start.Line, result.Start.Column + replacement.Length);
+            }
+        }
+        finally
+        {
+            Session.UndoStack.EndGroup();
         }
 
         if (count > 0)

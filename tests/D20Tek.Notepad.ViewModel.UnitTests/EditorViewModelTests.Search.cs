@@ -345,6 +345,33 @@ public class EditorViewModelSearchTests
     }
 
     [TestMethod]
+    public void ReplaceAll_IsSingleUndoOperation()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["test one test two test"]);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        var count = viewModel.ReplaceAll("test", "X");
+
+        // assert - all 3 replacements happened
+        Assert.AreEqual(3, count);
+        Assert.AreEqual("X one X two X", session.Document.Lines[0].Content);
+
+        // act - single undo should revert all replacements
+        viewModel.Undo();
+
+        // assert - all replacements undone in one step
+        Assert.AreEqual("test one test two test", session.Document.Lines[0].Content);
+
+        // act - single redo should restore all replacements
+        viewModel.Redo();
+
+        // assert - all replacements restored in one step
+        Assert.AreEqual("X one X two X", session.Document.Lines[0].Content);
+    }
+
+    [TestMethod]
     public void ReplaceAll_WithNoMatches_ReturnsZero()
     {
         // arrange

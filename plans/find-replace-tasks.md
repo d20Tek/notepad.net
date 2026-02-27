@@ -361,11 +361,11 @@ Before replacing, verify that current selection exactly matches the search term 
    - [x] Wraps to end when reaching beginning
 
 4. **Replace (Ctrl+H)**
-   - [x] Opens replace dialog
-   - [x] "Replace" replaces current selection if it matches, then finds next
-   - [x] "Replace All" replaces all occurrences and shows count
-   - [x] Replace operations are undoable
-   - [ ] Replace all operation should be one undo step, not multiple
+- [x] Opens replace dialog
+- [x] "Replace" replaces current selection if it matches, then finds next
+- [x] "Replace All" replaces all occurrences and shows count
+- [x] Replace operations are undoable
+- [x] Replace all operation should be one undo step, not multiple
 
 5. **Go to Line (Ctrl+G)**
    - [x] Opens dialog with line number input
