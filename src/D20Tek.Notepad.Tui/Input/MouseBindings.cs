@@ -19,6 +19,13 @@ internal static class MouseBindings
             return true;
         }
 
+        // Double-click: select word (check before single click)
+        if (flags.HasFlag(MouseFlags.Button1DoubleClicked))
+        {
+            DoubleClick(vm, mouseEvent);
+            return true;
+        }
+
         // Mouse drag: extend selection (check BEFORE Button1Pressed alone)
         if (flags.HasFlag(MouseFlags.Button1Pressed) && flags.HasFlag(MouseFlags.ReportMousePosition))
         {
@@ -62,6 +69,12 @@ internal static class MouseBindings
         vm.SetAnchorToCaret();
         var (line, col) = ToDocumentPosition(vm, me);
         vm.MoveCaretTo(line, col);
+    }
+
+    private static void DoubleClick(EditorViewModel vm, MouseEvent me)
+    {
+        var (line, col) = ToDocumentPosition(vm, me);
+        vm.SelectWordAt(line, col);
     }
 
     private static void BeginSelection(EditorViewModel vm, MouseEvent me)

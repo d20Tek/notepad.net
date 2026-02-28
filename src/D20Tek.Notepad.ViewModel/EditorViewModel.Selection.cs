@@ -92,4 +92,45 @@ public sealed partial class EditorViewModel
 
         return !oldSel.Value.Equals(newSel.Value);
     }
+
+    public void SelectWordAt(int line, int column)
+    {
+        if (line < 0 || line >= Session.Document.LineCount) return;
+
+        var content = Session.Document.Lines[line].Content;
+        if (content.Length == 0) return;
+
+        int clampedColumn = Math.Clamp(column, 0, content.Length - 1);
+
+        // Find word boundaries - word is alphanumeric characters
+        int start = clampedColumn;
+        int end = clampedColumn;
+
+        // If we clicked on a non-word character, select just that character
+        if (!IsWordChar(content[clampedColumn]))
+        {
+            Session.Anchor = new TextPosition(line, clampedColumn);
+            Session.Caret = new TextPosition(line, clampedColumn + 1);
+            Refresh();
+            return;
+        }
+
+        // Expand left to find start of word
+        while (start > 0 && IsWordChar(content[start - 1]))
+        {
+            start--;
+        }
+
+        // Expand right to find end of word
+        while (end < content.Length - 1 && IsWordChar(content[end + 1]))
+        {
+            end++;
+        }
+
+        Session.Anchor = new TextPosition(line, start);
+        Session.Caret = new TextPosition(line, end + 1);
+        Refresh();
+    }
+
+    private static bool IsWordChar(char c) => char.IsLetterOrDigit(c) || c == '_';
 }

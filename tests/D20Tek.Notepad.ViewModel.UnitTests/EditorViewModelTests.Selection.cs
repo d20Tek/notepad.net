@@ -636,4 +636,155 @@ public class EditorViewModelSelectionTests
         Assert.AreEqual(2, result.Value.StartColumn);
         Assert.AreEqual(5, result.Value.EndColumn); // To end of "Hello"
     }
+
+    // SelectWordAt Tests
+    [TestMethod]
+    public void SelectWordAt_SelectsWord()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello World"]);
+        viewModel.SetViewportHeight(5);
+
+        // act - click in middle of "World"
+        viewModel.SelectWordAt(0, 8);
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 6), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 11), session.Caret);
+    }
+
+    [TestMethod]
+    public void SelectWordAt_AtWordStart_SelectsEntireWord()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello World"]);
+        viewModel.SetViewportHeight(5);
+
+        // act - click at start of "Hello"
+        viewModel.SelectWordAt(0, 0);
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 0), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 5), session.Caret);
+    }
+
+    [TestMethod]
+    public void SelectWordAt_AtWordEnd_SelectsEntireWord()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello World"]);
+        viewModel.SetViewportHeight(5);
+
+        // act - click at end of "Hello"
+        viewModel.SelectWordAt(0, 4);
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 0), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 5), session.Caret);
+    }
+
+    [TestMethod]
+    public void SelectWordAt_OnNonWordChar_SelectsSingleChar()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello World"]);
+        viewModel.SetViewportHeight(5);
+
+        // act - click on space
+        viewModel.SelectWordAt(0, 5);
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 5), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 6), session.Caret);
+    }
+
+    [TestMethod]
+    public void SelectWordAt_WordWithUnderscore_IncludesUnderscore()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["hello_world test"]);
+        viewModel.SetViewportHeight(5);
+
+        // act - click in middle of "hello_world"
+        viewModel.SelectWordAt(0, 7);
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 0), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 11), session.Caret);
+    }
+
+    [TestMethod]
+    public void SelectWordAt_WithNumbers_IncludesNumbers()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["test123 value"]);
+        viewModel.SetViewportHeight(5);
+
+        // act - click in "test123"
+        viewModel.SelectWordAt(0, 5);
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 0), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 7), session.Caret);
+    }
+
+    [TestMethod]
+    public void SelectWordAt_OnEmptyLine_DoesNothing()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel([""]);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.SelectWordAt(0, 0);
+
+        // assert - no change
+        Assert.AreEqual(new TextPosition(0, 0), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 0), session.Caret);
+    }
+
+    [TestMethod]
+    public void SelectWordAt_InvalidLine_DoesNothing()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello"]);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.SelectWordAt(10, 0);
+
+        // assert - no change
+        Assert.AreEqual(new TextPosition(0, 0), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 0), session.Caret);
+    }
+
+    [TestMethod]
+    public void SelectWordAt_ColumnBeyondLineEnd_ClampsToLastChar()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hi"]);
+        viewModel.SetViewportHeight(5);
+
+        // act - click beyond line end
+        viewModel.SelectWordAt(0, 100);
+
+        // assert - selects last character 'i'
+        Assert.AreEqual(new TextPosition(0, 0), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 2), session.Caret);
+    }
+
+    [TestMethod]
+    public void SelectWordAt_OnPunctuation_SelectsSingleChar()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["x=5"]);
+        viewModel.SetViewportHeight(5);
+
+        // act - click on '='
+        viewModel.SelectWordAt(0, 1);
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 1), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 2), session.Caret);
+    }
 }

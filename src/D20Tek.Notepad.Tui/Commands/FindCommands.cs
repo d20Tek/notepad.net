@@ -10,8 +10,13 @@ internal static class FindCommand
     {
         ArgumentNullException.ThrowIfNull(viewModel);
 
+        // Use selected text if available, otherwise fall back to last search term
+        string initialSearchTerm = viewModel.Session.HasSelection
+            ? viewModel.Session.GetSelectedText()
+            : viewModel.LastSearchTerm ?? string.Empty;
+
         var dialog = FindDialog.Create();
-        dialog.Show(viewModel.LastSearchTerm ?? string.Empty, viewModel.SearchOptions);
+        dialog.Show(initialSearchTerm, viewModel.SearchOptions);
 
         viewModel.SearchOptions = dialog.Options;
 

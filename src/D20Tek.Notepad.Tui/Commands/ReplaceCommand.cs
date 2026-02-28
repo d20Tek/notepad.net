@@ -10,8 +10,13 @@ internal static class ReplaceCommand
     {
         ArgumentNullException.ThrowIfNull(viewModel);
 
+        // Use selected text if available, otherwise fall back to last search term
+        string initialSearchTerm = viewModel.Session.HasSelection
+            ? viewModel.Session.GetSelectedText()
+            : viewModel.LastSearchTerm ?? string.Empty;
+
         var dialog = ReplaceDialog.Create();
-        dialog.Show(viewModel.LastSearchTerm ?? string.Empty, string.Empty, viewModel.SearchOptions);
+        dialog.Show(initialSearchTerm, string.Empty, viewModel.SearchOptions);
 
         viewModel.SearchOptions = dialog.Options;
 
