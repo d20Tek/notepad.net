@@ -120,6 +120,11 @@ public partial class EditorView
         _hScrollBar.SetNeedsDisplay();
     }
 
-    private bool IsInScrollBarArea(int x, int y) =>
-        x >= Bounds.Width - 1 || y >= Bounds.Height - 1;
+    private bool IsInScrollBarArea(int x, int y)
+    {
+        // Only treat as scrollbar area if the scrollbar is actually visible
+        bool inVerticalScrollbar = _vScrollBar?.Visible == true && x >= Bounds.Width - 1;
+        bool inHorizontalScrollbar = _hScrollBar?.Visible == true && y >= Bounds.Height - 1;
+        return inVerticalScrollbar || inHorizontalScrollbar;
+    }
 }

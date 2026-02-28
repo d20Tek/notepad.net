@@ -22,6 +22,12 @@
 | Cut | Ctrl+X | Remove selection, copy to clipboard |
 | Copy | Ctrl+C | Copy selection to clipboard |
 | Paste | Ctrl+V | Insert clipboard content |
+| Find | Ctrl+F | Search dialog |
+| Find Next | F3 | Find next occurrence |
+| Find Previous | Shift+F3 | Find previous occurrence |
+| Replace | Ctrl+H | Search and replace dialog |
+| Go to Line | Ctrl+G | Jump to line number |
+| Double-click select word | | Mouse word selection |
 
 ---
 
@@ -31,11 +37,6 @@
 
 | Feature | Shortcut | Priority | Notes |
 |---------|----------|----------|-------|
-| **Find** | Ctrl+F | P1 | Search dialog |
-| **Find Next** | F3 | P1 | Find next occurrence |
-| **Find Previous** | Shift+F3 | P1 | Find previous occurrence |
-| **Replace** | Ctrl+H | P1 | Search and replace dialog |
-| **Go to Line** | Ctrl+G | P1 | Jump to line number |
 | **Large file support** | | P1 | Load large text files using memory mapped file |
 
 ### Navigation Enhancements
@@ -55,36 +56,25 @@
 |---------|----------|-------|
 | **Status bar** | P3 | Show Ln/Col, encoding, line endings |
 | **Line numbers** | P3 | Optional gutter display |
-| **Double-click select word** | P3 | Mouse word selection |
 | **Triple-click select line** | P3 | Mouse line selection |
 | **Zoom** | P4 | Ctrl+Plus/Minus (TUI limitations) |
 | **Recent files** | P4 | File > Recent submenu |
-| **Print** | P4 | Print document |
+| **Change Encoding** | P3 | Encoding submenu to change document encoding |
 
 ---
 
 ## Implementation Priority
 
-1. **Clipboard (Cut/Copy/Paste)** - Essential for any editor
-2. **Find/Replace** - Users expect this functionality
+1. ~~**Clipboard (Cut/Copy/Paste)** - Essential for any editor~~
+2. ~~**Find/Replace** - Users expect this functionality~~
 3. **Word navigation** - Power user productivity
-4. **Go to Line** - Common for developers
+4. ~~**Go to Line** - Common for developers~~
 5. **Status bar** - Provides context to users
+5. **Large file support** - Provides context to users
 
 ---
 
 ## Technical Considerations
-
-### Clipboard
-- Terminal.Gui has `Clipboard` class for cross-platform clipboard access
-- Need to handle selection state for cut/copy
-- Paste should replace selection if active
-
-### Find/Replace
-- Consider highlight all matches
-- Incremental search (highlight as you type)
-- Case sensitivity option
-- Wrap around option
 
 ### Status Bar
 - Terminal.Gui `StatusBar` view
