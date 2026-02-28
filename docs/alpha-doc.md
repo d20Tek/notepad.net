@@ -1,13 +1,15 @@
-﻿# Notepad.Tui — Alpha Release (v0.1.0)
+﻿# Notepad.Tui — Alpha Release (v0.2.0)
 
 A fast, clean, and modern **terminal-based text viewer** for .NET, inspired by classic tools like Notepad and contemporary editor engines.  
-This alpha focuses on delivering a rock‑solid **read‑only** experience with smooth navigation, precise selection, and a responsive UI built on top of Terminal.Gui.
+This alpha focuses on delivering a rock‑solid view and editing experience with smooth navigation, precise selection, and a responsive UI built on top of Terminal.Gui.
 
-This is the first public preview of the project. It’s intentionally limited in scope, but the foundation is strong and ready for community feedback.
+This is the second public preview of the project. It’s intentionally limited in scope, but the foundation is strong and ready for community feedback. This second release includes editing capabilities, undo/redo, and cut/copy/paste support, and find/replace dialogs.
+
+This update introduced the editing features, but is still in the early stages of development. The core architecture is in place, but there are still new features planned in future releases. Please try out the tool and share any feedback or issues you encounter!
 
 ---
 
-## Features in This Alpha
+## Features in the Alpha
 
 ### ✔️ Smooth, predictable navigation
 - Arrow keys, PageUp/PageDown, Home/End  
@@ -41,20 +43,39 @@ This is the first public preview of the project. It’s intentionally limited in
 - Caret and selection remain consistent after resize  
 - No redraw artifacts or flicker
 
+### ✔️ Word wrap
+- Menu toggle to turn word wrap on/off  
+- Wrap long text lines within the view width
+
+### ✔️ Text editing capabilities
+- Write text, insert, delete, and replace text  
+- Undo/redo support for text changes
+- Save and Save As functionality to write changes back to disk
+
+### ✔️ Find and Replace
+- Ability to search for text within the document (find next/previous)
+- Replace functionality to substitute text with new content
+- Support for case-sensitive and whole-word search options
+- User-friendly dialogs for find and replace operations
+- Highlighting of search results within the document
+- Go to line functionality to quickly navigate to specific lines in the document
+
 ---
 
 ## What’s *Not* Included Yet (By Design)
 
-This alpha is **read‑only**. The following features are planned for future phases:
+We don't provide the full set of features yet. The following features are planned for future phases:
 
-- Editing (insert, delete, replace)
-- Undo/redo
-- Saving files
-- Word wrap
-- Search / find
-- Status bar and line/column indicators
+- Status bar with line/column indicators
+- Line number column in the editor view
+- Further navigation enchancements
+- Change file encoding
+- Triple-click selection for lines
+- Large file support using memory-mapped files
+- Recent files submenu
+- Zoom? (TUI limitations may apply)
 
-The goal of this release is to validate the **interaction model**, **viewport engine**, and **rendering pipeline** before layering on editing semantics.
+The goal of this release is to validate the **interaction model**, **viewport engine**, and **editing capabilities**.
 
 ---
 
