@@ -19,15 +19,24 @@
 | Word Wrap | View menu | Toggle |
 | Dirty tracking | - | Version-based, undo-aware |
 | Title bar | - | Shows filename + dirty indicator |
+| **Cut/Copy/Paste** |
 | Cut | Ctrl+X | Remove selection, copy to clipboard |
 | Copy | Ctrl+C | Copy selection to clipboard |
 | Paste | Ctrl+V | Insert clipboard content |
+| **Find/Replace** |
 | Find | Ctrl+F | Search dialog |
 | Find Next | F3 | Find next occurrence |
 | Find Previous | Shift+F3 | Find previous occurrence |
 | Replace | Ctrl+H | Search and replace dialog |
 | Go to Line | Ctrl+G | Jump to line number |
 | Double-click select word | | Mouse word selection |
+| **Enhance navigation** |
+| Word navigation left | Ctrl+Left | Move caret by word |
+| Word navigation right | Ctrl+Right | Move caret by word |
+| Word selection left | Ctrl+Shift+Left | Extend selection by word |
+| Word selection right | Ctrl+Shift+Right | Extend selection by word |
+| Delete word left | Ctrl+Backspace | Delete to previous word boundary |
+| Delete word right | Ctrl+Delete | Delete to next word boundary |
 
 ---
 
@@ -38,17 +47,6 @@
 | Feature | Shortcut | Priority | Notes |
 |---------|----------|----------|-------|
 | **Large file support** | | P1 | Load large text files using memory mapped file |
-
-### Navigation Enhancements
-
-| Feature | Shortcut | Priority | Notes |
-|---------|----------|----------|-------|
-| Word navigation left | Ctrl+Left | P2 | Move caret by word |
-| Word navigation right | Ctrl+Right | P2 | Move caret by word |
-| Word selection left | Ctrl+Shift+Left | P2 | Extend selection by word |
-| Word selection right | Ctrl+Shift+Right | P2 | Extend selection by word |
-| Delete word left | Ctrl+Backspace | P2 | Delete previous word |
-| Delete word right | Ctrl+Delete | P2 | Delete next word |
 
 ### Nice to Have
 
@@ -67,7 +65,7 @@
 
 1. ~~**Clipboard (Cut/Copy/Paste)** - Essential for any editor~~
 2. ~~**Find/Replace** - Users expect this functionality~~
-3. **Word navigation** - Power user productivity
+3. ~~**Word navigation** - Power user productivity~~
 4. ~~**Go to Line** - Common for developers~~
 5. **Status bar** - Provides context to users
 5. **Large file support** - Provides context to users

@@ -144,7 +144,7 @@ A word boundary is the transition between word characters and non-word character
 ### Phase 4: Key Binding Integration
 
 #### Task 4.1: Add Key Bindings
-- [ ] Add to `KeyBindings.cs`:
+- [x] Add to `KeyBindings.cs`:
   - `Ctrl+Left` ? `vm.MoveWordLeft()`
   - `Ctrl+Right` ? `vm.MoveWordRight()`
   - `Ctrl+Shift+Left` ? `vm.ExtendWordLeft()`
@@ -153,9 +153,9 @@ A word boundary is the transition between word characters and non-word character
   - `Ctrl+Delete` ? `vm.DeleteWordRight()`
 
 #### Task 4.2: Build and Verify
-- [ ] Build solution
-- [ ] Run all tests
-- [ ] Update features.md with completed items
+- [x] Build solution
+- [x] Run all tests
+- [x] Update features.md with completed items
 
 ---
 
@@ -245,31 +245,31 @@ word boundary logic. This is the same behavior as regular Backspace/Delete with 
 ## Acceptance Criteria
 
 1. **Word Navigation Left (Ctrl+Left)**
-   - [ ] Moves caret to start of current word
-   - [ ] Skips punctuation and whitespace
-   - [ ] Crosses line boundaries
-   - [ ] Stops at document start
+   - [x] Moves caret to start of current word
+   - [x] Skips punctuation and whitespace
+   - [x] Crosses line boundaries
+   - [x] Stops at document start
 
 2. **Word Navigation Right (Ctrl+Right)**
-   - [ ] Moves caret to start of next word
-   - [ ] Skips punctuation and whitespace
-   - [ ] Crosses line boundaries
-   - [ ] Stops at document end
+   - [x] Moves caret to start of next word
+   - [x] Skips punctuation and whitespace
+   - [x] Crosses line boundaries
+   - [x] Stops at document end
 
 3. **Word Selection Left (Ctrl+Shift+Left)**
-   - [ ] Extends selection to previous word boundary
-   - [ ] Preserves anchor position
+   - [x] Extends selection to previous word boundary
+   - [x] Preserves anchor position
 
 4. **Word Selection Right (Ctrl+Shift+Right)**
-   - [ ] Extends selection to next word boundary
-   - [ ] Preserves anchor position
+   - [x] Extends selection to next word boundary
+   - [x] Preserves anchor position
 
 5. **Delete Word Left (Ctrl+Backspace)**
-   - [ ] Deletes from caret to previous word boundary
-   - [ ] With selection, deletes selection only
-   - [ ] Undoable
+   - [x] Deletes from caret to previous word boundary
+   - [x] With selection, deletes selection only
+   - [x] Undoable
 
 6. **Delete Word Right (Ctrl+Delete)**
-   - [ ] Deletes from caret to next word boundary
-   - [ ] With selection, deletes selection only
-   - [ ] Undoable
+   - [x] Deletes from caret to next word boundary
+   - [x] With selection, deletes selection only
+   - [x] Undoable

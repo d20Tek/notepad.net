@@ -12,11 +12,19 @@ internal static class KeyBindings
         [(Key.CursorUp, false, false)] = vm => vm.MoveUp(),
         [(Key.CursorDown, false, false)] = vm => vm.MoveDown(),
 
+        // Arrow keys - Word Navigation (Ctrl)
+        [(Key.CursorLeft, false, true)] = vm => vm.MoveWordLeft(),
+        [(Key.CursorRight, false, true)] = vm => vm.MoveWordRight(),
+
         // Arrow keys - Selection
         [(Key.CursorLeft, true, false)] = vm => vm.ExtendLeft(),
         [(Key.CursorRight, true, false)] = vm => vm.ExtendRight(),
         [(Key.CursorUp, true, false)] = vm => vm.ExtendUp(),
         [(Key.CursorDown, true, false)] = vm => vm.ExtendDown(),
+
+        // Arrow keys - Word Selection (Ctrl+Shift)
+        [(Key.CursorLeft, true, true)] = vm => vm.ExtendWordLeft(),
+        [(Key.CursorRight, true, true)] = vm => vm.ExtendWordRight(),
 
         // Home/End - Line
         [(Key.Home, false, false)] = vm => vm.MoveToLineStart(),
@@ -41,6 +49,10 @@ internal static class KeyBindings
         // Editing - Deletion
         [(Key.Backspace, false, false)] = vm => vm.Backspace(),
         [(Key.DeleteChar, false, false)] = vm => vm.Delete(),
+
+        // Editing - Delete Word (Ctrl)
+        [(Key.Backspace, false, true)] = vm => vm.DeleteWordLeft(),
+        [(Key.DeleteChar, false, true)] = vm => vm.DeleteWordRight(),
 
         // Editing - New Line and Tab
         [(Key.Enter, false, false)] = vm => vm.InsertNewLine(),
