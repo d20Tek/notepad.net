@@ -27,6 +27,11 @@ public sealed class CaretNavigator(EditorSession session)
 
     public void MoveToDocumentEnd() => Move(ComputeDocumentEnd, resetAnchor: true);
 
+    // Word Navigation (resets selection)
+    public void MoveWordLeft() => Move(ComputeWordLeft, resetAnchor: true);
+
+    public void MoveWordRight() => Move(ComputeWordRight, resetAnchor: true);
+
     // Selection Extension (preserves anchor)
     public void ExtendLeft() => Move(ComputeLeft, resetAnchor: false);
 
@@ -47,6 +52,11 @@ public sealed class CaretNavigator(EditorSession session)
     public void ExtendToDocumentStart() => Move(() => new TextPosition(0, 0), resetAnchor: false);
 
     public void ExtendToDocumentEnd() => Move(ComputeDocumentEnd, resetAnchor: false);
+
+    // Word Selection Extension (preserves anchor)
+    public void ExtendWordLeft() => Move(ComputeWordLeft, resetAnchor: false);
+
+    public void ExtendWordRight() => Move(ComputeWordRight, resetAnchor: false);
 
     // Core Movement Logic
     private void Move(Func<TextPosition> computeNewPosition, bool resetAnchor)
@@ -113,6 +123,67 @@ public sealed class CaretNavigator(EditorSession session)
     }
 
     private TextPosition ComputeDocumentEnd() => new(LastLineIndex, GetLineLength(LastLineIndex));
+
+    private TextPosition ComputeWordLeft()
+    {
+        var caret = _session.Caret;
+        int line = caret.Line;
+        int col = caret.Column;
+
+        // At start of line, move to end of previous line
+        if (col == 0)
+        {
+            if (line == 0) return caret;
+            return new TextPosition(line - 1, GetLineLength(line - 1));
+        }
+
+        string content = _session.Document.Lines[line].Content;
+
+        // Skip non-word characters backward
+        while (col > 0 && !IsWordChar(content[col - 1]))
+        {
+            col--;
+        }
+
+        // Skip word characters backward
+        while (col > 0 && IsWordChar(content[col - 1]))
+        {
+            col--;
+        }
+
+        return new TextPosition(line, col);
+    }
+
+    private TextPosition ComputeWordRight()
+    {
+        var caret = _session.Caret;
+        int line = caret.Line;
+        int col = caret.Column;
+        string content = _session.Document.Lines[line].Content;
+
+        // At end of line, move to start of next line
+        if (col >= content.Length)
+        {
+            if (line >= LastLineIndex) return caret;
+            return new TextPosition(line + 1, 0);
+        }
+
+        // Skip word characters forward
+        while (col < content.Length && IsWordChar(content[col]))
+        {
+            col++;
+        }
+
+        // Skip non-word characters forward
+        while (col < content.Length && !IsWordChar(content[col]))
+        {
+            col++;
+        }
+
+        return new TextPosition(line, col);
+    }
+
+    private static bool IsWordChar(char c) => char.IsLetterOrDigit(c) || c == '_';
 
     private int LastLineIndex => _session.Document.Lines.Count - 1;
 
