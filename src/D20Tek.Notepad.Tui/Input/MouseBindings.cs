@@ -19,6 +19,13 @@ internal static class MouseBindings
             return true;
         }
 
+        // Triple-click: select line (check before double-click)
+        if (flags.HasFlag(MouseFlags.Button1TripleClicked))
+        {
+            TripleClick(vm, mouseEvent);
+            return true;
+        }
+
         // Double-click: select word (check before single click)
         if (flags.HasFlag(MouseFlags.Button1DoubleClicked))
         {
@@ -69,6 +76,12 @@ internal static class MouseBindings
         vm.SetAnchorToCaret();
         var (line, col) = ToDocumentPosition(vm, me);
         vm.MoveCaretTo(line, col);
+    }
+
+    private static void TripleClick(EditorViewModel vm, MouseEvent me)
+    {
+        var (line, _) = ToDocumentPosition(vm, me);
+        vm.SelectLineAt(line);
     }
 
     private static void DoubleClick(EditorViewModel vm, MouseEvent me)

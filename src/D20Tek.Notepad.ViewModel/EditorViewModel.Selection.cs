@@ -132,5 +132,15 @@ public sealed partial class EditorViewModel
         Refresh();
     }
 
+    public void SelectLineAt(int line)
+    {
+        if (line < 0 || line >= Session.Document.LineCount) return;
+
+        int lineLength = Session.Document.Lines[line].Content.Length;
+        Session.Anchor = new TextPosition(line, 0);
+        Session.Caret = new TextPosition(line, lineLength);
+        Refresh();
+    }
+
     private static bool IsWordChar(char c) => char.IsLetterOrDigit(c) || c == '_';
 }

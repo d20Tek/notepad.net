@@ -37,6 +37,7 @@
 | Word selection right | Ctrl+Shift+Right | Extend selection by word |
 | Delete word left | Ctrl+Backspace | Delete to previous word boundary |
 | Delete word right | Ctrl+Delete | Delete to next word boundary |
+| Triple-click select line | | Mouse line selection (works with word wrap) |
 
 ---
 
@@ -54,7 +55,6 @@
 |---------|----------|-------|
 | **Status bar** | P3 | Show Ln/Col, encoding, line endings |
 | **Line numbers** | P3 | Optional gutter display |
-| **Triple-click select line** | P3 | Mouse line selection |
 | **Zoom** | P4 | Ctrl+Plus/Minus (TUI limitations) |
 | **Recent files** | P4 | File > Recent submenu |
 | **Change Encoding** | P3 | Encoding submenu to change document encoding |

@@ -787,4 +787,100 @@ public class EditorViewModelSelectionTests
         Assert.AreEqual(new TextPosition(0, 1), session.Anchor);
         Assert.AreEqual(new TextPosition(0, 2), session.Caret);
     }
+
+    // SelectLineAt Tests
+    [TestMethod]
+    public void SelectLineAt_SelectsEntireLine()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello World"]);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.SelectLineAt(0);
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 0), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 11), session.Caret);
+    }
+
+    [TestMethod]
+    public void SelectLineAt_SelectsCorrectLineInMultiLineDocument()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Line 1", "Line Two", "Line 3"]);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.SelectLineAt(1);
+
+        // assert
+        Assert.AreEqual(new TextPosition(1, 0), session.Anchor);
+        Assert.AreEqual(new TextPosition(1, 8), session.Caret);
+    }
+
+    [TestMethod]
+    public void SelectLineAt_OnEmptyLine_SelectsEmpty()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel([""]);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.SelectLineAt(0);
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 0), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 0), session.Caret);
+    }
+
+    [TestMethod]
+    public void SelectLineAt_WithNegativeLine_DoesNothing()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello"]);
+        session.Caret = new TextPosition(0, 3);
+        session.Anchor = new TextPosition(0, 3);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.SelectLineAt(-1);
+
+        // assert - no change
+        Assert.AreEqual(new TextPosition(0, 3), session.Caret);
+        Assert.AreEqual(new TextPosition(0, 3), session.Anchor);
+    }
+
+    [TestMethod]
+    public void SelectLineAt_WithLineBeyondDocument_DoesNothing()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello"]);
+        session.Caret = new TextPosition(0, 3);
+        session.Anchor = new TextPosition(0, 3);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.SelectLineAt(10);
+
+        // assert - no change
+        Assert.AreEqual(new TextPosition(0, 3), session.Caret);
+        Assert.AreEqual(new TextPosition(0, 3), session.Anchor);
+    }
+
+    [TestMethod]
+    public void SelectLineAt_WithWordWrapEnabled_SelectsFullDocumentLine()
+    {
+        // arrange - long line that wraps across multiple visual lines
+        var (viewModel, session) = CreateViewModelWithWordWrap(["Hello World Test"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.SetViewportWidth(6);
+
+        // act - select line 0 (wraps to "Hello", " ", "World", " ", "Test" visual segments)
+        viewModel.SelectLineAt(0);
+
+        // assert - selects the full document line regardless of wrapping
+        Assert.AreEqual(new TextPosition(0, 0), session.Anchor);
+        Assert.AreEqual(new TextPosition(0, 16), session.Caret);
+    }
 }
