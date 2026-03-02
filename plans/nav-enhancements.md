@@ -87,23 +87,23 @@ A word boundary is the transition between word characters and non-word character
 ### Phase 2: Core Delete Word Operations
 
 #### Task 2.1: Add Delete Word Methods to EditorCommandService
-- [ ] Add `public void DeleteWordLeft()` method
+- [x] Add `public void DeleteWordLeft()` method
   - Compute word-left position from current caret
   - Set anchor to caret, caret to word-left position (or vice versa)
   - Delete the selection
-- [ ] Add `public void DeleteWordRight()` method
+- [x] Add `public void DeleteWordRight()` method
   - Compute word-right position from current caret
   - Set anchor to caret, caret to word-right position (or vice versa)
   - Delete the selection
 
 #### Task 2.2: Unit Tests for Delete Word Operations
-- [ ] Add tests to `EditorCommandServiceTests.cs`:
+- [x] Add tests to `EditorCommandServiceTests.Editing.cs`:
   - `DeleteWordLeft_FromMiddleOfWord_DeletesWordStart`
   - `DeleteWordLeft_FromWordStart_DeletesPreviousWord`
   - `DeleteWordLeft_AtDocumentStart_DoesNothing`
   - `DeleteWordLeft_WithSelection_DeletesSelection`
-  - `DeleteWordRight_FromMiddleOfWord_DeletesWordEnd`
-  - `DeleteWordRight_FromWordEnd_DeletesNextWord`
+  - `DeleteWordRight_FromMiddleOfWord_DeletesToNextWordStart`
+  - `DeleteWordRight_FromWordStart_DeletesCurrentWord`
   - `DeleteWordRight_AtDocumentEnd_DoesNothing`
   - `DeleteWordRight_WithSelection_DeletesSelection`
 

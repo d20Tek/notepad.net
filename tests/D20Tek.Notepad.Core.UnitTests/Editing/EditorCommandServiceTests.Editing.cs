@@ -219,4 +219,128 @@ public partial class EditorCommandServiceTests
         Assert.AreEqual("World", session.Document.Lines[1].Content);
         Assert.AreEqual("Test", session.Document.Lines[2].Content);
     }
+
+    [TestMethod]
+    public void DeleteWordLeft_FromMiddleOfWord_DeletesWordStart()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello World"]);
+        session.Caret = new TextPosition(0, 8);
+        session.Anchor = new TextPosition(0, 8);
+
+        // act
+        service.DeleteWordLeft();
+
+        // assert
+        Assert.AreEqual("Hello rld", session.Document.Lines[0].Content);
+        Assert.AreEqual(new TextPosition(0, 6), session.Caret);
+    }
+
+    [TestMethod]
+    public void DeleteWordLeft_FromWordStart_DeletesPreviousWord()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello World"]);
+        session.Caret = new TextPosition(0, 6);
+        session.Anchor = new TextPosition(0, 6);
+
+        // act
+        service.DeleteWordLeft();
+
+        // assert
+        Assert.AreEqual("World", session.Document.Lines[0].Content);
+        Assert.AreEqual(new TextPosition(0, 0), session.Caret);
+    }
+
+    [TestMethod]
+    public void DeleteWordLeft_AtDocumentStart_DoesNothing()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello"]);
+        session.Caret = new TextPosition(0, 0);
+        session.Anchor = new TextPosition(0, 0);
+
+        // act
+        service.DeleteWordLeft();
+
+        // assert
+        Assert.AreEqual("Hello", session.Document.Lines[0].Content);
+    }
+
+    [TestMethod]
+    public void DeleteWordLeft_WithSelection_DeletesSelection()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello World"]);
+        session.Anchor = new TextPosition(0, 0);
+        session.Caret = new TextPosition(0, 5);
+
+        // act
+        service.DeleteWordLeft();
+
+        // assert
+        Assert.AreEqual(" World", session.Document.Lines[0].Content);
+    }
+
+    [TestMethod]
+    public void DeleteWordRight_FromMiddleOfWord_DeletesToNextWordStart()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello World"]);
+        session.Caret = new TextPosition(0, 2);
+        session.Anchor = new TextPosition(0, 2);
+
+        // act
+        service.DeleteWordRight();
+
+        // assert - deletes "llo " (word chars then non-word chars to next word start)
+        Assert.AreEqual("HeWorld", session.Document.Lines[0].Content);
+        Assert.AreEqual(new TextPosition(0, 2), session.Caret);
+    }
+
+    [TestMethod]
+    public void DeleteWordRight_FromWordStart_DeletesCurrentWord()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello World"]);
+        session.Caret = new TextPosition(0, 6);
+        session.Anchor = new TextPosition(0, 6);
+
+        // act
+        service.DeleteWordRight();
+
+        // assert - deletes "World" (word chars to end of line)
+        Assert.AreEqual("Hello ", session.Document.Lines[0].Content);
+        Assert.AreEqual(new TextPosition(0, 6), session.Caret);
+    }
+
+    [TestMethod]
+    public void DeleteWordRight_AtDocumentEnd_DoesNothing()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello"]);
+        session.Caret = new TextPosition(0, 5);
+        session.Anchor = new TextPosition(0, 5);
+
+        // act
+        service.DeleteWordRight();
+
+        // assert
+        Assert.AreEqual("Hello", session.Document.Lines[0].Content);
+    }
+
+    [TestMethod]
+    public void DeleteWordRight_WithSelection_DeletesSelection()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello World"]);
+        session.Anchor = new TextPosition(0, 6);
+        session.Caret = new TextPosition(0, 11);
+
+        // act
+        service.DeleteWordRight();
+
+        // assert
+        Assert.AreEqual("Hello ", session.Document.Lines[0].Content);
+    }
 }

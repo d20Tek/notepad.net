@@ -19,6 +19,10 @@ public sealed class EditorCommandService(EditorSession session)
 
     public void DeleteSelection() => _session.DeleteSelection();
 
+    public void DeleteWordLeft() => _session.DeleteWordLeft();
+
+    public void DeleteWordRight() => _session.DeleteWordRight();
+
     // Clipboard-like Commands
     public string CopySelection() => _session.GetSelectedText();
 

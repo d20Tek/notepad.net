@@ -99,4 +99,40 @@ public sealed partial class EditorSession
     }
 
     public void InsertNewLine() => InsertText(Environment.NewLine);
+
+    public void DeleteWordLeft()
+    {
+        if (HasSelection)
+        {
+            DeleteSelection();
+            return;
+        }
+
+        var caretBefore = Caret;
+        Navigator.MoveWordLeft();
+        var wordStart = Caret;
+
+        if (wordStart == caretBefore) return;
+
+        Anchor = caretBefore;
+        DeleteSelection();
+    }
+
+    public void DeleteWordRight()
+    {
+        if (HasSelection)
+        {
+            DeleteSelection();
+            return;
+        }
+
+        var caretBefore = Caret;
+        Navigator.MoveWordRight();
+        var wordEnd = Caret;
+
+        if (wordEnd == caretBefore) return;
+
+        Anchor = caretBefore;
+        DeleteSelection();
+    }
 }
