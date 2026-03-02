@@ -68,6 +68,24 @@ public sealed partial class EditorViewModel
         EnsureCaretVisible();
     }
 
+    public void DeleteWordLeft()
+    {
+        EndTypingGroupIfNeeded();
+        Commands.DeleteWordLeft();
+        CheckDirtyStateChanged();
+        Refresh();
+        EnsureCaretVisible();
+    }
+
+    public void DeleteWordRight()
+    {
+        EndTypingGroupIfNeeded();
+        Commands.DeleteWordRight();
+        CheckDirtyStateChanged();
+        Refresh();
+        EnsureCaretVisible();
+    }
+
     public void DeleteSelection()
     {
         if (!Session.HasSelection) return;

@@ -354,6 +354,75 @@ public class EditorViewModelNavigationWrappedTests
         return (viewModel, session);
     }
 
+    // Word Navigation Tests
+    [TestMethod]
+    public void MoveWordLeft_MovesCaretToWordBoundary()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello World"]);
+        session.Caret = new TextPosition(0, 8);
+        session.Anchor = new TextPosition(0, 8);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.MoveWordLeft();
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 6), session.Caret);
+        Assert.AreEqual(session.Caret, session.Anchor);
+    }
+
+    [TestMethod]
+    public void MoveWordRight_MovesCaretToWordBoundary()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello World"]);
+        session.Caret = new TextPosition(0, 2);
+        session.Anchor = new TextPosition(0, 2);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.MoveWordRight();
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 6), session.Caret);
+        Assert.AreEqual(session.Caret, session.Anchor);
+    }
+
+    [TestMethod]
+    public void ExtendWordLeft_ExtendsSelectionToWordBoundary()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello World"]);
+        session.Caret = new TextPosition(0, 8);
+        session.Anchor = new TextPosition(0, 8);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.ExtendWordLeft();
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 6), session.Caret);
+        Assert.AreEqual(new TextPosition(0, 8), session.Anchor);
+    }
+
+    [TestMethod]
+    public void ExtendWordRight_ExtendsSelectionToWordBoundary()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello World"]);
+        session.Caret = new TextPosition(0, 2);
+        session.Anchor = new TextPosition(0, 2);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.ExtendWordRight();
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 6), session.Caret);
+        Assert.AreEqual(new TextPosition(0, 2), session.Anchor);
+    }
+
     private static (EditorViewModel viewModel, EditorSession session) CreateViewModelWithWordWrap(string[] lines)
     {
         var textLines = lines.Select(l => new TextLine(l)).ToList();

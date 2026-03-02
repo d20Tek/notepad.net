@@ -338,6 +338,42 @@ public class EditorViewModelEditingTests
         Assert.AreEqual(new TextPosition(0, 5), session.Caret);
     }
 
+    [TestMethod]
+    public void DeleteWordLeft_DeletesWord()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello World"]);
+        session.Caret = new TextPosition(0, 6);
+        session.Anchor = new TextPosition(0, 6);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.DeleteWordLeft();
+
+        // assert
+        Assert.AreEqual("World", session.Document.Lines[0].Content);
+        Assert.AreEqual(new TextPosition(0, 0), session.Caret);
+        Assert.IsTrue(viewModel.IsDirty);
+    }
+
+    [TestMethod]
+    public void DeleteWordRight_DeletesWord()
+    {
+        // arrange
+        var (viewModel, session) = CreateViewModel(["Hello World"]);
+        session.Caret = new TextPosition(0, 6);
+        session.Anchor = new TextPosition(0, 6);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.DeleteWordRight();
+
+        // assert
+        Assert.AreEqual("Hello ", session.Document.Lines[0].Content);
+        Assert.AreEqual(new TextPosition(0, 6), session.Caret);
+        Assert.IsTrue(viewModel.IsDirty);
+    }
+
     private static (EditorViewModel viewModel, EditorSession session) CreateViewModel(
         string[] lines,
         EditorSettings? settings = null)

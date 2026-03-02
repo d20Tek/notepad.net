@@ -112,30 +112,30 @@ A word boundary is the transition between word characters and non-word character
 ### Phase 3: ViewModel Integration
 
 #### Task 3.1: Add Word Navigation Methods to EditorViewModel
-- [ ] Add to `EditorViewModel.Navigation.cs`:
+- [x] Add to `EditorViewModel.Navigation.cs`:
   - `public void MoveWordLeft()`
   - `public void MoveWordRight()`
   - Each calls `EndTypingGroupIfNeeded()`, delegates to `Session.Navigator`, calls `EnsureCaretVisible()`
 
 #### Task 3.2: Add Word Selection Methods to EditorViewModel
-- [ ] Add to `EditorViewModel.Navigation.cs`:
+- [x] Add to `EditorViewModel.Navigation.cs`:
   - `public void ExtendWordLeft()`
   - `public void ExtendWordRight()`
   - Each calls `EndTypingGroupIfNeeded()`, delegates to `Session.Navigator`, calls `EnsureCaretVisible()`
 
 #### Task 3.3: Add Delete Word Methods to EditorViewModel
-- [ ] Add to `EditorViewModel.Editing.cs`:
+- [x] Add to `EditorViewModel.Editing.cs`:
   - `public void DeleteWordLeft()`
   - `public void DeleteWordRight()`
   - Each calls `EndTypingGroupIfNeeded()`, delegates to `Commands`, calls `CheckDirtyStateChanged()`, `Refresh()`, `EnsureCaretVisible()`
 
 #### Task 3.4: Unit Tests for ViewModel Methods
-- [ ] Add to `EditorViewModelTests.Navigation.cs`:
+- [x] Add to `EditorViewModelTests.Navigation.cs`:
   - `MoveWordLeft_MovesCaretToWordBoundary`
   - `MoveWordRight_MovesCaretToWordBoundary`
   - `ExtendWordLeft_ExtendsSelectionToWordBoundary`
   - `ExtendWordRight_ExtendsSelectionToWordBoundary`
-- [ ] Add to `EditorViewModelTests.Editing.cs`:
+- [x] Add to `EditorViewModelTests.Editing.cs`:
   - `DeleteWordLeft_DeletesWord`
   - `DeleteWordRight_DeletesWord`
 

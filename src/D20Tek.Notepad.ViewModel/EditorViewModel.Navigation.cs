@@ -175,6 +175,35 @@ public sealed partial class EditorViewModel
         EnsureCaretVisible();
     }
 
+    // Word Navigation
+    public void MoveWordLeft()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.MoveWordLeft();
+        EnsureCaretVisible();
+    }
+
+    public void MoveWordRight()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.MoveWordRight();
+        EnsureCaretVisible();
+    }
+
+    public void ExtendWordLeft()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.ExtendWordLeft();
+        EnsureCaretVisible();
+    }
+
+    public void ExtendWordRight()
+    {
+        EndTypingGroupIfNeeded();
+        Session.Navigator.ExtendWordRight();
+        EnsureCaretVisible();
+    }
+
     // Caret Positioning Helpers
     public int GetLineLength(int lineIndex) => Session.GetLineLength(lineIndex);
 
