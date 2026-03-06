@@ -210,4 +210,94 @@ public class EditorViewModelStatusTests
             new MockClipboardService());
         return (viewModel, session);
     }
+
+    [TestMethod]
+    public void EmptyDocument_ShowsLineOneColumnOne()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel([""]);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.Refresh();
+
+        // assert
+        Assert.AreEqual(1, viewModel.CurrentStatus.CurrentLine);
+        Assert.AreEqual(1, viewModel.CurrentStatus.CurrentColumn);
+        Assert.AreEqual(0, viewModel.CurrentStatus.TotalCharacters);
+    }
+
+    [TestMethod]
+    public void TotalCharacters_VeryLongLine_ReturnsAccurateCount()
+    {
+        // arrange - 500 chars on line 0, "end" on line 1, plus 1 line ending = 504
+        var longLine = new string('A', 500);
+        var (viewModel, _) = CreateViewModel([longLine, "end"]);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.Refresh();
+
+        // assert
+        Assert.AreEqual(504, viewModel.CurrentStatus.TotalCharacters);
+    }
+
+    [TestMethod]
+    public void CurrentColumn_VeryLongLine_ReturnsAccurateColumnNumber()
+    {
+        // arrange
+        var longLine = new string('A', 500);
+        var (viewModel, session) = CreateViewModel([longLine]);
+        session.Caret = new TextPosition(0, 499);
+        session.Anchor = session.Caret;
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.Refresh();
+
+        // assert
+        Assert.AreEqual(500, viewModel.CurrentStatus.CurrentColumn);
+    }
+
+    [TestMethod]
+    public void TotalCharacters_AfterCaretMoveOnly_ReturnsSameAccurateCount()
+    {
+        // arrange - verify cached count stays accurate when only caret moves
+        var (viewModel, session) = CreateViewModel(["Hello", "World"]);
+        viewModel.SetViewportHeight(5);
+        viewModel.Refresh();
+
+        // act - move caret without editing
+        session.Caret = new TextPosition(1, 3);
+        session.Anchor = session.Caret;
+        viewModel.Refresh();
+
+        // assert
+        Assert.AreEqual(11, viewModel.CurrentStatus.TotalCharacters);
+    }
+
+    [TestMethod]
+    public void DocumentEncoding_EmptyWebName_ReturnsUnknownFallback()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel(["test"], new EmptyWebNameEncoding());
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.Refresh();
+
+        // assert
+        Assert.AreEqual("Unknown", viewModel.CurrentStatus.DocumentEncoding);
+    }
+
+    private sealed class EmptyWebNameEncoding : Encoding
+    {
+        public override string WebName => string.Empty;
+        public override int GetByteCount(char[] chars, int index, int count) => 0;
+        public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex) => 0;
+        public override int GetCharCount(byte[] bytes, int index, int count) => 0;
+        public override int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex) => 0;
+        public override int GetMaxByteCount(int charCount) => 0;
+        public override int GetMaxCharCount(int byteCount) => 0;
+    }
 }

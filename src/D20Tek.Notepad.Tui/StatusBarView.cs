@@ -2,9 +2,12 @@ namespace D20Tek.Notepad.Tui;
 
 internal sealed class StatusBarView : View, IDisposable
 {
+    private const int DebounceMilliseconds = 50;
+
     private readonly EditorViewModel _viewModel;
     private StatusDetails _status;
     private bool _disposed;
+    private bool _pendingRedraw;
 
     public StatusBarView(EditorViewModel viewModel)
     {
@@ -67,7 +70,16 @@ internal sealed class StatusBarView : View, IDisposable
     private void OnStatusChanged(StatusDetails status)
     {
         _status = status;
-        SetNeedsDisplay();
+
+        if (_pendingRedraw) return;
+
+        _pendingRedraw = true;
+        Application.MainLoop?.AddTimeout(TimeSpan.FromMilliseconds(DebounceMilliseconds), _ =>
+        {
+            _pendingRedraw = false;
+            if (!_disposed) SetNeedsDisplay();
+            return false;
+        });
     }
 
     private static string FormatPosition(StatusDetails s) => $"Ln {s.CurrentLine}, Col {s.CurrentColumn}";

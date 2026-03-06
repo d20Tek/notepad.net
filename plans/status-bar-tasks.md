@@ -87,13 +87,13 @@ The status bar needs real-time updates from the EditorViewModel:
 ### Phase 3: Integration
 
 #### Task 3.1: Update MainWindow
-- [ ] Add `StatusBarView` to `MainWindow`
-- [ ] Position status bar at bottom of window
-- [ ] Ensure status bar doesn't overlap with editor content
+- [x] Add `StatusBarView` to the `Program`
+- [x] Position status bar at bottom of the terminal
+- [x] Ensure status bar doesn't overlap with editor view
 
 #### Task 3.2: Wire Up Events
-- [ ] Connect `EditorViewModel.StatusChanged` to status bar refresh
-- [ ] Ensure status bar updates on:
+- [x] Connect `EditorViewModel.StatusChanged` to status bar refresh
+- [x] Ensure status bar updates on:
   - Application startup
   - Caret movement
   - Text editing
@@ -101,24 +101,23 @@ The status bar needs real-time updates from the EditorViewModel:
   - File new
 
 #### Task 3.3: Adjust Editor Layout
-- [ ] Reduce editor height by 1 to accommodate status bar
-- [ ] Ensure scrollbar calculations account for status bar
-- [ ] Test with various window sizes
+- [x] Reduce editor height by 1 to accommodate status bar
+- [x] Ensure scrollbar calculations account for status bar
+- [x] Test with various window sizes
 
 ---
 
 ### Phase 4: Polish and Edge Cases
 
 #### Task 4.1: Performance Optimization
-- [ ] Debounce status updates during rapid typing
-- [ ] Only recalculate total characters when document changes
-- [ ] Cache encoding and line ending (only update on document load)
+- [x] Debounce status updates during rapid typing
+- [x] Only recalculate total characters when document changes
+- [x] Cache encoding and line ending (only update on document load)
 
 #### Task 4.2: Edge Cases
-- [ ] Handle empty document (show Ln 1, Col 1)
-- [ ] Handle very long lines (column count accuracy)
-- [ ] Handle unknown encoding gracefully
-- [ ] Test with large documents
+- [x] Handle empty document (show Ln 1, Col 1)
+- [x] Handle very long lines (column count accuracy)
+- [x] Handle unknown encoding gracefully
 
 ---
 

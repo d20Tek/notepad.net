@@ -103,7 +103,7 @@ public sealed partial class EditorViewModel
         if (!CaretViewPosition.Equals(oldCaret)) CaretMoved?.Invoke(CaretViewPosition);
         if (SelectionChangedNeeded(oldSelection, SelectionViewRange)) SelectionChanged?.Invoke(SelectionViewRange);
 
-        var newStatus = StatusDetails.From(Session.Caret.Line, Session.Caret.Column, Session.Document);
+        var newStatus = BuildStatus();
         if (newStatus != _currentStatus)
         {
             _currentStatus = newStatus;
