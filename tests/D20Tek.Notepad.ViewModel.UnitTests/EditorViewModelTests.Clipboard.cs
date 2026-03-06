@@ -352,7 +352,7 @@ public class EditorViewModelClipboardTests
             session,
             new EditorCommandService(session),
             settings ?? EditorSettings.Default,
-            clipboardService);
+            clipboardService!);
         return (viewModel, session);
     }
 }

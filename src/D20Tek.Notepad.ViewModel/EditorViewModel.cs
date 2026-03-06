@@ -9,12 +9,14 @@ public sealed partial class EditorViewModel
     private int _viewportWidth;
     private EditorSettings _settings;
     private readonly IClipboardService _clipboardService;
+    private StatusDetails _currentStatus = StatusDetails.Empty;
 
     // Events
     public event Action? ViewChanged;
     public event Action<ViewPosition>? CaretMoved;
     public event Action<SelectionViewRange?>? SelectionChanged;
     public event Action<bool>? WordWrapChanged;
+    public event Action<StatusDetails>? StatusChanged;
 
     public EditorViewModel(
         EditorSession session,
@@ -50,6 +52,8 @@ public sealed partial class EditorViewModel
     public ViewPosition CaretViewPosition { get; private set; }
 
     public SelectionViewRange? SelectionViewRange { get; set; }
+
+    public StatusDetails CurrentStatus => _currentStatus;
 
     // Word Wrap Toggle
     public void ToggleWordWrap()
@@ -98,6 +102,13 @@ public sealed partial class EditorViewModel
         ViewChanged?.Invoke();
         if (!CaretViewPosition.Equals(oldCaret)) CaretMoved?.Invoke(CaretViewPosition);
         if (SelectionChangedNeeded(oldSelection, SelectionViewRange)) SelectionChanged?.Invoke(SelectionViewRange);
+
+        var newStatus = StatusDetails.From(Session.Caret.Line, Session.Caret.Column, Session.Document);
+        if (newStatus != _currentStatus)
+        {
+            _currentStatus = newStatus;
+            StatusChanged?.Invoke(_currentStatus);
+        }
     }
 
     private void SetWithRefresh(Action setAction)

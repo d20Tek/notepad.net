@@ -29,22 +29,24 @@ The status bar needs real-time updates from the EditorViewModel:
 ### Phase 1: ViewModel Status Properties
 
 #### Task 1.1: Create Status Properties in EditorViewModel
-- [ ] Create `StatusDetails.cs` class with a property in EdiorViewModel.cs
-- [ ] Add `CurrentLine` property (1-based line number)
-- [ ] Add `CurrentColumn` property (1-based column number)
-- [ ] Add `TotalLines` property
-- [ ] Add `TotalCharacters` property
-- [ ] Add `DocumentEncoding` property (returns encoding name string)
-- [ ] Add `LineEndingStyle` property (returns "CRLF", "LF", or "CR")
+- [x] Create `StatusDetails.cs` record with all status properties
+- [x] Add `CurrentLine` property (1-based line number)
+- [x] Add `CurrentColumn` property (1-based column number)
+- [x] Add `TotalLines` property
+- [x] Add `TotalCharacters` property
+- [x] Add `DocumentEncoding` property (returns encoding name string)
+- [x] Add `LineEndingStyle` property (returns "CRLF", "LF", or "CR")
 
 #### Task 1.2: Add Status Changed Event
-- [ ] Add `StatusChanged` event to EditorViewModel that passes `StatusDetails` argument
-- [ ] Fire event when caret moves
-- [ ] Fire event when document content changes
-- [ ] Fire event when document is loaded/replaced
+- [x] Add `StatusChanged` event to EditorViewModel that passes `StatusDetails` argument
+- [x] Add `CurrentStatus` property exposing the cached status value
+- [x] Fire event when caret moves
+- [x] Fire event when document content changes
+- [x] Fire event when document is loaded/replaced
 
 #### Task 1.3: Unit Tests for Status Properties
-- [ ] Create `StatusDetails.cs` with tests:
+- [x] Create `StatusDetailsTests.cs` with record type tests (Constructor, With, Equality, Empty)
+- [x] Create `EditorViewModelTests.Status.cs` with tests:
   - `CurrentLine_ReturnsOneBasedLineNumber`
   - `CurrentColumn_ReturnsOneBasedColumnNumber`
   - `CurrentLine_UpdatesOnCaretMove`

@@ -58,6 +58,7 @@
 | **Zoom** | P4 | Ctrl+Plus/Minus (TUI limitations) |
 | **Recent files** | P4 | File > Recent submenu |
 | **Change Encoding** | P3 | Encoding submenu to change document encoding |
+| **Insert/Overwrite mode** | P3 | Insert key toggle insert-overwrite mode |
 
 ---
 
