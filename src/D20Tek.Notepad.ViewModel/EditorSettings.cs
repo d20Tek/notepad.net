@@ -15,4 +15,6 @@ public sealed record EditorSettings
     public bool UseSpacesForTab { get; init; } = true;
 
     public bool WordWrapEnabled { get; init; } = false;
+
+    public bool StatusBarEnabled { get; init; } = false;
 }

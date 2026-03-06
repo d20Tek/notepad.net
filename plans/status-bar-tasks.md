@@ -121,6 +121,18 @@ The status bar needs real-time updates from the EditorViewModel:
 
 ---
 
+### Phase 5: View > Status bar menu item
+
+#### Task 5.1: Add View > Status bar menu item
+- [x] Add "Status bar" toggle menu item under View menu
+- [x] Default to disabled (hidden)
+- [x] Add StatusBarEnabled property to EditorSettings class.
+- [x] Persiste EditorSetting to disk when StatusBar toggle changes.
+- [x] Hide/show status bar view when toggled - update EditorView height as well
+
+
+---
+
 ## File Changes Summary
 
 ### New Files

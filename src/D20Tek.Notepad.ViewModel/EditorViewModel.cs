@@ -16,6 +16,7 @@ public sealed partial class EditorViewModel
     public event Action<ViewPosition>? CaretMoved;
     public event Action<SelectionViewRange?>? SelectionChanged;
     public event Action<bool>? WordWrapChanged;
+    public event Action<bool>? StatusBarChanged;
     public event Action<StatusDetails>? StatusChanged;
 
     public EditorViewModel(
@@ -42,6 +43,8 @@ public sealed partial class EditorViewModel
     public EditorSettings Settings => _settings;
 
     public bool IsWordWrapEnabled => _settings.WordWrapEnabled;
+
+    public bool IsStatusBarEnabled => _settings.StatusBarEnabled;
 
     public Viewport Viewport { get; }
 
@@ -83,6 +86,12 @@ public sealed partial class EditorViewModel
 
         Refresh();
         WordWrapChanged?.Invoke(enabled);
+    }
+
+    public void ToggleStatusBar()
+    {
+        _settings = _settings with { StatusBarEnabled = !_settings.StatusBarEnabled };
+        StatusBarChanged?.Invoke(_settings.StatusBarEnabled);
     }
 
     // Rendering

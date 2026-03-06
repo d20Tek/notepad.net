@@ -32,11 +32,21 @@ class Program
         var titleBarManager = new TitleBarManager(viewModel);
 
         // Create editor and status bar views
-        var editorView = EditorViewFactory.Create(viewModel);
-        var statusBarView = new StatusBarView(viewModel);
+        var editorView = EditorViewFactory.Create(viewModel, settings.StatusBarEnabled);
+        var statusBarView = new StatusBarView(viewModel) { Visible = settings.StatusBarEnabled };
 
         // Save settings when word wrap changes
         viewModel.WordWrapChanged += (_) => settingsService.Save(viewModel.Settings);
+
+        // Show/hide status bar and adjust editor height when toggled; persist setting
+        viewModel.StatusBarChanged += (enabled) =>
+        {
+            statusBarView.Visible = enabled;
+            editorView.Height = enabled ? Dim.Fill() - 1 : Dim.Fill();
+            Application.Top.LayoutSubviews();
+            Application.Top.SetNeedsDisplay();
+            settingsService.Save(viewModel.Settings);
+        };
 
         top.Add(MenuBuilder.Build(viewModel));
         top.Add(editorView);

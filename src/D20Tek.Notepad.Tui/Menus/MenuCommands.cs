@@ -32,6 +32,7 @@ internal static class MenuCommands
 
         // View commands
         commands.Register(WordWrapCommand.Create(viewModel));
+        commands.Register(StatusBarCommand.Create(viewModel));
 
         return commands;
     }

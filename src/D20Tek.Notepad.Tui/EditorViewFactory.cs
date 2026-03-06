@@ -2,12 +2,12 @@
 
 internal static class EditorViewFactory
 {
-    public static EditorView Create(EditorViewModel viewModel) => new(viewModel)
+    public static EditorView Create(EditorViewModel viewModel, bool statusBarEnabled) => new(viewModel)
     {
         X = 0,
         Y = 1,
         Width = Dim.Fill(),
-        Height = Dim.Fill() - 1,
+        Height = statusBarEnabled ? Dim.Fill() - 1 : Dim.Fill(),
         ColorScheme = EditorColorSchemes.Editor
     };
 }

@@ -33,6 +33,11 @@ internal static class MenuDefinitions
 
         new MenuDefinition("_View",
             new MenuItemDefinition(
+                "_Status Bar",
+                StatusBarCommand.CommandName,
+                isCheckable: true,
+                isChecked: () => viewModel.IsStatusBarEnabled),
+            new MenuItemDefinition(
                 "_Word Wrap",
                 WordWrapCommand.CommandName,
                 isCheckable: true,
