@@ -38,6 +38,9 @@
 | Delete word left | Ctrl+Backspace | Delete to previous word boundary |
 | Delete word right | Ctrl+Delete | Delete to next word boundary |
 | Triple-click select line | | Mouse line selection (works with word wrap) |
+| **StatusBar** |
+| **Status bar** | | Show Ln/Col, encoding, line endings |
+| **View > Status bar menu**| | EditorSetting for status bar, toggle menu item to show hide |
 
 ---
 
@@ -53,7 +56,6 @@
 
 | Feature | Priority | Notes |
 |---------|----------|-------|
-| **Status bar** | P3 | Show Ln/Col, encoding, line endings |
 | **Line numbers** | P3 | Optional gutter display |
 | **Zoom** | P4 | Ctrl+Plus/Minus (TUI limitations) |
 | **Recent files** | P4 | File > Recent submenu |
@@ -68,7 +70,7 @@
 2. ~~**Find/Replace** - Users expect this functionality~~
 3. ~~**Word navigation** - Power user productivity~~
 4. ~~**Go to Line** - Common for developers~~
-5. **Status bar** - Provides context to users
+5. ~~**Status bar** - Provides context to users~~
 5. **Large file support** - Provides context to users
 
 ---

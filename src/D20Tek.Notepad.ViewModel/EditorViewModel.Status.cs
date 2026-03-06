@@ -41,7 +41,7 @@ public sealed partial class EditorViewModel
 
     private static string GetEncodingDisplay(Encoding encoding)
     {
-        var webName = encoding?.WebName;
+        var webName = encoding.WebName;
         return string.IsNullOrEmpty(webName) ? "Unknown" : webName.ToUpperInvariant();
     }
 

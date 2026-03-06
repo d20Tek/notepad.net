@@ -290,6 +290,7 @@ public class EditorViewModelStatusTests
         Assert.AreEqual("Unknown", viewModel.CurrentStatus.DocumentEncoding);
     }
 
+    [ExcludeFromCodeCoverage]
     private sealed class EmptyWebNameEncoding : Encoding
     {
         public override string WebName => string.Empty;
