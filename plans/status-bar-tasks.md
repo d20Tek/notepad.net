@@ -65,23 +65,22 @@ The status bar needs real-time updates from the EditorViewModel:
 ### Phase 2: Status Bar UI Component
 
 #### Task 2.1: Create StatusBarView
-- [ ] Create `StatusBarView.cs` in Tui project
-  - Inherits from or wraps Terminal.Gui `StatusBar`
-  - Constructor takes `EditorViewModel`
-  - Subscribes to `StatusChanged` event
-  - Displays formatted status items
+- [x] Create `StatusBarView.cs` in Tui project
+  - Inherits from `View`, implements `IDisposable`
+  - Constructor takes `EditorViewModel`, subscribes to `StatusChanged`
+  - Anchored to bottom of window with `Pos.AnchorEnd(1)`
 
 #### Task 2.2: Define Status Bar Layout
-- [ ] Left section: `Ln X, Col Y`
-- [ ] Center section: `Lines: X | Chars: X`
-- [ ] Right section: `UTF-8 | CRLF`
-- [ ] Use `StatusItem` for each section
+- [x] Left section: `Ln X, Col Y`
+- [x] Center section: `Lines: X | Chars: X`
+- [x] Right section: `UTF-8 CRLF`
+- [x] Custom `Redraw` fills background then paints each section
 
 #### Task 2.3: Status Bar Formatting
-- [ ] Format line/column: `Ln {line}, Col {col}`
-- [ ] Format statistics: `Lines: {total} | Chars: {chars}`
-- [ ] Format encoding: `{encoding} | {lineEnding}`
-- [ ] Handle long values gracefully (abbreviate if needed)
+- [x] Format line/column: `Ln {line}, Col {col}`
+- [x] Format statistics: `Lines: {total:N0} | Chars: {chars:N0}`
+- [x] Format encoding: `{encoding} {lineEnding}`
+- [x] Center section omitted gracefully when window too narrow
 
 ---
 

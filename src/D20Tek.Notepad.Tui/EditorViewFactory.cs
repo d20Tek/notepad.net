@@ -7,7 +7,7 @@ internal static class EditorViewFactory
         X = 0,
         Y = 1,
         Width = Dim.Fill(),
-        Height = Dim.Fill(),
+        Height = Dim.Fill() - 1,
         ColorScheme = EditorColorSchemes.Editor
     };
 }

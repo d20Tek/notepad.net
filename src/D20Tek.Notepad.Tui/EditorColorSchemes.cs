@@ -26,4 +26,13 @@ internal static class EditorColorSchemes
     {
         Normal = new Attribute(Color.DarkGray, Color.Black)
     };
+
+    public static readonly ColorScheme StatusBar = new()
+    {
+        Normal = new Attribute(Color.Black, Color.DarkGray),
+        Focus = new Attribute(Color.Black, Color.DarkGray),
+        HotNormal = new Attribute(Color.Black, Color.DarkGray),
+        HotFocus = new Attribute(Color.Black, Color.DarkGray),
+        Disabled = new Attribute(Color.DarkGray, Color.DarkGray)
+    };
 }

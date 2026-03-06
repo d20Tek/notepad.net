@@ -31,19 +31,23 @@ class Program
         // Initialize title bar manager (sets Console.Title)
         var titleBarManager = new TitleBarManager(viewModel);
 
-        // Create editor view - starts at row 1 (below menu bar)
+        // Create editor and status bar views
         var editorView = EditorViewFactory.Create(viewModel);
+        var statusBarView = new StatusBarView(viewModel);
 
         // Save settings when word wrap changes
         viewModel.WordWrapChanged += (_) => settingsService.Save(viewModel.Settings);
 
         top.Add(MenuBuilder.Build(viewModel));
         top.Add(editorView);
+        top.Add(statusBarView);
 
         Application.Run();
 
         viewModel.DisposeTimers();
         titleBarManager.Dispose();
+        statusBarView.Dispose();
+        editorView.Dispose();
         Application.Shutdown();
     }
 }
