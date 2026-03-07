@@ -21,10 +21,41 @@ internal static class MenuBuilder
     private static MenuItem? BuildItem(MenuEntry entry, CommandRegistry commands) => entry switch
     {
         SeparatorEntry => null,
-        SubMenuEntry sub => new MenuBarItem(sub.Label, BuildItems(sub.Items, commands)),
+        SubMenuEntry sub => BuildSubMenu(sub, commands),
         CommandEntry cmd => BuildCommandItem(cmd, commands),
         _ => throw new UnreachableException($"Unhandled MenuEntry: {entry.GetType().Name}")
     };
+
+    private static MenuBarItem BuildSubMenu(SubMenuEntry sub, CommandRegistry commands)
+    {
+        var checkables = new List<(MenuItem item, Func<bool> isChecked)>();
+
+        var items = sub.Items
+            .Select(e =>
+            {
+                var built = BuildItem(e, commands);
+                if (built is { CheckType: MenuItemCheckStyle.Checked } &&
+                    e is CommandEntry { IsChecked: { } isChecked })
+                {
+                    checkables.Add((built, isChecked));
+                }
+                return built;
+            })
+            .ToArray();
+
+        foreach (var (menuItem, _) in checkables)
+        {
+            var original = menuItem.Action;
+            menuItem.Action = () =>
+            {
+                original?.Invoke();
+                foreach (var (other, otherIsChecked) in checkables)
+                    other.Checked = otherIsChecked();
+            };
+        }
+
+        return new MenuBarItem(sub.Label, items);
+    }
 
     private static MenuItem BuildCommandItem(CommandEntry item, CommandRegistry commands)
     {

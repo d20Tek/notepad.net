@@ -110,7 +110,63 @@ public class EditorViewModelStatusTests
         viewModel.Refresh();
 
         // assert
-        Assert.AreEqual("UTF-8", viewModel.CurrentStatus.DocumentEncoding);
+        Assert.AreEqual("UTF-8 BOM", viewModel.CurrentStatus.DocumentEncoding);
+    }
+
+    [TestMethod]
+    public void DocumentEncoding_Utf8Bom_ReturnsUtf8Bom()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel(["Hello"], new UTF8Encoding(true), LineEndingStyle.CRLF);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.Refresh();
+
+        // assert
+        Assert.AreEqual("UTF-8 BOM", viewModel.CurrentStatus.DocumentEncoding);
+    }
+
+    [TestMethod]
+    public void DocumentEncoding_Unicode_ReturnsUtf16Le()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel(["Hello"], Encoding.Unicode, LineEndingStyle.CRLF);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.Refresh();
+
+        // assert
+        Assert.AreEqual("UTF-16 LE", viewModel.CurrentStatus.DocumentEncoding);
+    }
+
+    [TestMethod]
+    public void DocumentEncoding_BigEndianUnicode_ReturnsUtf16Be()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel(["Hello"], Encoding.BigEndianUnicode, LineEndingStyle.CRLF);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.Refresh();
+
+        // assert
+        Assert.AreEqual("UTF-16 BE", viewModel.CurrentStatus.DocumentEncoding);
+    }
+
+    [TestMethod]
+    public void DocumentEncoding_OtherEncoding_ReturnsWebNameUppercase()
+    {
+        // arrange - Encoding.Latin1 has WebName "iso-8859-1", not matched by any specific case
+        var (viewModel, _) = CreateViewModel(["Hello"], Encoding.Latin1, LineEndingStyle.CRLF);
+        viewModel.SetViewportHeight(5);
+
+        // act
+        viewModel.Refresh();
+
+        // assert
+        Assert.AreEqual("ISO-8859-1", viewModel.CurrentStatus.DocumentEncoding);
     }
 
     [TestMethod]

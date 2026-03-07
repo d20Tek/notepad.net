@@ -77,7 +77,7 @@ public class EditorViewModelEncodingTests
 
         // assert
         Assert.IsNotNull(received);
-        Assert.AreEqual("UTF-16", received.DocumentEncoding);
+        Assert.AreEqual("UTF-16 LE", received.DocumentEncoding);
     }
 
     [TestMethod]

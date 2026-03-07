@@ -49,8 +49,16 @@ public sealed partial class EditorViewModel
 
     private static string GetEncodingDisplay(Encoding encoding)
     {
-        var webName = encoding.WebName;
-        return string.IsNullOrEmpty(webName) ? "Unknown" : webName.ToUpperInvariant();
+        if (encoding.WebName == "utf-8")
+            return encoding.GetPreamble().Length > 0 ? "UTF-8 BOM" : "UTF-8";
+
+        return encoding.WebName.ToLowerInvariant() switch
+        {
+            "utf-16" => "UTF-16 LE",
+            "utf-16be" => "UTF-16 BE",
+            var name when !string.IsNullOrEmpty(name) => name.ToUpperInvariant(),
+            _ => "Unknown"
+        };
     }
 
     private static string GetLineEndingDisplay(LineEndingStyle style) => style switch
