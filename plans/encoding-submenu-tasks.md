@@ -113,8 +113,8 @@ Replace them with a sealed record hierarchy before adding the `Encoding` submenu
 
 ### Task 2.1: Fix `BuildStatus()` encoding cache invalidation
 File: `src\D20Tek.Notepad.ViewModel\EditorViewModel.Status.cs`
-- [ ] Add `private Encoding? _cachedDocumentEncoding;` field
-- [ ] In `BuildStatus()`, split the existing document-change block into two checks:
+- [x] Add `private Encoding? _cachedDocumentEncoding;` field
+- [x] In `BuildStatus()`, split the existing document-change block into two checks:
 
   ```csharp
   bool documentChanged = !ReferenceEquals(_cachedDocument, Session.Document);
@@ -136,29 +136,29 @@ File: `src\D20Tek.Notepad.ViewModel\EditorViewModel.Status.cs`
 
 ### Task 2.2: Add `ChangeEncoding()` to `EditorViewModel`
 File: `src\D20Tek.Notepad.ViewModel\EditorViewModel.cs`
-- [ ] Add `public void ChangeEncoding(Encoding encoding)` method
+- [x] Add `public void ChangeEncoding(Encoding encoding)` method
   - Calls `Session.Document.SetEncoding(encoding)`
   - Calls `Refresh()` (which invokes `BuildStatus()` → fires `StatusChanged` if encoding changed)
-  [ ] Marks the document as dirty via `SetEncoding()`, so no explicit dirty flag
+  [x] Marks the document as dirty via `SetEncoding()`, so no explicit dirty flag
 
 ### Task 2.3: Add `IsCurrentEncoding()` to `EditorViewModel`
 File: `src\D20Tek.Notepad.ViewModel\EditorViewModel.cs`
-- [ ] Add `public bool IsCurrentEncoding(Encoding encoding)` method
+- [x] Add `public bool IsCurrentEncoding(Encoding encoding)` method
   - Returns `true` when `Document.Encoding.WebName == encoding.WebName`
     AND `Document.Encoding.GetPreamble().SequenceEqual(encoding.GetPreamble())`
   - This correctly separates UTF-8 (no BOM) from UTF-8 with BOM
 
 ### Task 2.4: Unit tests for ViewModel encoding methods
 File: `tests\D20Tek.Notepad.ViewModel.UnitTests\EditorViewModelTests.Encoding.cs`
-- [ ] `ChangeEncoding_Utf8_SetsDocumentEncoding`
-- [ ] `ChangeEncoding_Utf8Bom_SetsDocumentEncoding`
-- [ ] `ChangeEncoding_Unicode_SetsDocumentEncoding`
-- [ ] `ChangeEncoding_BigEndianUnicode_SetsDocumentEncoding`
-- [ ] `ChangeEncoding_FiresStatusChangedWithUpdatedEncoding`
-- [ ] `ChangeEncoding_MarksDocumentDirty`
-- [ ] `IsCurrentEncoding_WhenEncodingMatches_ReturnsTrue`
-- [ ] `IsCurrentEncoding_WhenEncodingDiffers_ReturnsFalse`
-- [ ] `IsCurrentEncoding_Utf8VsUtf8Bom_AreDistinct`
+- [x] `ChangeEncoding_Utf8_SetsDocumentEncoding`
+- [x] `ChangeEncoding_Utf8Bom_SetsDocumentEncoding`
+- [x] `ChangeEncoding_Unicode_SetsDocumentEncoding`
+- [x] `ChangeEncoding_BigEndianUnicode_SetsDocumentEncoding`
+- [x] `ChangeEncoding_FiresStatusChangedWithUpdatedEncoding`
+- [x] `ChangeEncoding_MarksDocumentDirty`
+- [x] `IsCurrentEncoding_WhenEncodingMatches_ReturnsTrue`
+- [x] `IsCurrentEncoding_WhenEncodingDiffers_ReturnsFalse`
+- [x] `IsCurrentEncoding_Utf8VsUtf8Bom_AreDistinct`
 
 ---
 

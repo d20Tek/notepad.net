@@ -1,5 +1,6 @@
 ﻿using D20Tek.Notepad.Core.Editing;
 using D20Tek.Notepad.ViewModel.Rendering;
+using System.Text;
 
 namespace D20Tek.Notepad.ViewModel;
 
@@ -93,6 +94,17 @@ public sealed partial class EditorViewModel
         _settings = _settings with { StatusBarEnabled = !_settings.StatusBarEnabled };
         StatusBarChanged?.Invoke(_settings.StatusBarEnabled);
     }
+
+    public void ChangeEncoding(Encoding encoding)
+    {
+        ArgumentNullException.ThrowIfNull(encoding);
+        Session.Document.SetEncoding(encoding);
+        Refresh();
+    }
+
+    public bool IsCurrentEncoding(Encoding encoding) =>
+        Session.Document.Encoding.WebName == encoding.WebName &&
+        Session.Document.Encoding.GetPreamble().SequenceEqual(encoding.GetPreamble());
 
     // Rendering
     public void RenderFrame(IEditorRenderer renderer) => RendererLoop.RenderFull(this, renderer);
