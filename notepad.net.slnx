@@ -13,6 +13,7 @@
   <Folder Name="/.plans/">
     <File Path="plans/cut-copy-paste-tasks.md" />
     <File Path="plans/editing-tasks.md" />
+    <File Path="plans/encoding-submenu-tasks.md" />
     <File Path="plans/features.md" />
     <File Path="plans/find-replace-tasks.md" />
     <File Path="plans/nav-enhancements.md" />

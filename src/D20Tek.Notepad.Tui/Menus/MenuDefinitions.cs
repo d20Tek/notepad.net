@@ -4,43 +4,44 @@ namespace D20Tek.Notepad.Tui.Menus;
 
 internal static class MenuDefinitions
 {
-    public static MenuDefinition[] Get(EditorViewModel viewModel) =>
+    public static TopLevelMenu[] Get(EditorViewModel viewModel) =>
     [
-        new MenuDefinition("_File",
-            new MenuItemDefinition("_New", FileNewCommand.CommandName),
-            MenuItemDefinition.Separator,
-            new MenuItemDefinition("_Open...", FileOpenCommand.CommandName),
-            new MenuItemDefinition("_Save", FileSaveCommand.CommandName),
-            new MenuItemDefinition("Save _As...", FileSaveAsCommand.CommandName),
-            MenuItemDefinition.Separator,
-            new MenuItemDefinition("_Quit", QuitCommand.CommandName)),
+        new TopLevelMenu("_File",
+            new CommandEntry("_New", FileNewCommand.CommandName),
+            MenuEntry.Separator,
+            new CommandEntry("_Open...", FileOpenCommand.CommandName),
+            new CommandEntry("_Save", FileSaveCommand.CommandName),
+            new CommandEntry("Save _As...", FileSaveAsCommand.CommandName),
+            MenuEntry.Separator,
+            new CommandEntry("_Quit", QuitCommand.CommandName)),
 
-        new MenuDefinition("_Edit",
-            new MenuItemDefinition("_Undo", UndoCommand.CommandName, canExecute: () => viewModel.CanUndo),
-            new MenuItemDefinition("_Redo", RedoCommand.CommandName, canExecute: () => viewModel.CanRedo),
-            MenuItemDefinition.Separator,
-            new MenuItemDefinition("Cu_t", CutCommand.CommandName, canExecute: () => viewModel.CanCut),
-            new MenuItemDefinition("_Copy", CopyCommand.CommandName, canExecute: () => viewModel.CanCopy),
-            new MenuItemDefinition("_Paste", PasteCommand.CommandName, canExecute: () => viewModel.CanPaste),
-            MenuItemDefinition.Separator,
-            new MenuItemDefinition("_Find...", FindCommand.CommandName),
-            new MenuItemDefinition("Find _Next", FindNextCommand.CommandName, canExecute: () => viewModel.HasLastSearch),
-            new MenuItemDefinition("Find Pre_vious", FindPreviousCommand.CommandName, canExecute: () => viewModel.HasLastSearch),
-            new MenuItemDefinition("_Replace...", ReplaceCommand.CommandName),
-            MenuItemDefinition.Separator,
-            new MenuItemDefinition("_Go to Line...", GoToLineCommand.CommandName),
-            new MenuItemDefinition("Select _All", SelectAllCommand.CommandName)),
+        new TopLevelMenu("_Edit",
+            new CommandEntry("_Undo", UndoCommand.CommandName, CanExecute: () => viewModel.CanUndo),
+            new CommandEntry("_Redo", RedoCommand.CommandName, CanExecute: () => viewModel.CanRedo),
+            MenuEntry.Separator,
+            new CommandEntry("Cu_t", CutCommand.CommandName, CanExecute: () => viewModel.CanCut),
+            new CommandEntry("_Copy", CopyCommand.CommandName, CanExecute: () => viewModel.CanCopy),
+            new CommandEntry("_Paste", PasteCommand.CommandName, CanExecute: () => viewModel.CanPaste),
+            MenuEntry.Separator,
+            new CommandEntry("_Find...", FindCommand.CommandName),
+            new CommandEntry("Find _Next", FindNextCommand.CommandName, CanExecute: () => viewModel.HasLastSearch),
+            new CommandEntry("Find Pre_vious", FindPreviousCommand.CommandName, CanExecute: () => viewModel.HasLastSearch),
+            new CommandEntry("_Replace...", ReplaceCommand.CommandName),
+            MenuEntry.Separator,
+            new CommandEntry("_Go to Line...", GoToLineCommand.CommandName),
+            new CommandEntry("Select _All", SelectAllCommand.CommandName)),
 
-        new MenuDefinition("_View",
-            new MenuItemDefinition(
+        new TopLevelMenu("_View",
+            new CommandEntry(
                 "_Status Bar",
                 StatusBarCommand.CommandName,
-                isCheckable: true,
-                isChecked: () => viewModel.IsStatusBarEnabled),
-            new MenuItemDefinition(
+                IsCheckable: true,
+                IsChecked: () => viewModel.IsStatusBarEnabled),
+            new CommandEntry(
                 "_Word Wrap",
                 WordWrapCommand.CommandName,
-                isCheckable: true,
-                isChecked: () => viewModel.IsWordWrapEnabled))
+                IsCheckable: true,
+                IsChecked: () => viewModel.IsWordWrapEnabled))
     ];
 }
+
