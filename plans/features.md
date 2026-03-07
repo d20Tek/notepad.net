@@ -41,6 +41,8 @@
 | **StatusBar** |
 | Status bar view | | Show Ln/Col, encoding, line endings |
 | View > Status bar menu | | EditorSetting for status bar, toggle menu item to show hide |
+| | | |
+| Change File Encoding | | Encoding submenu to change document encoding |
 
 ---
 
@@ -59,7 +61,6 @@
 | **Line numbers** | P3 | Optional gutter display |
 | **Zoom** | P4 | Ctrl+Plus/Minus (TUI limitations) |
 | **Recent files** | P4 | File > Recent submenu |
-| **Change Encoding** | P3 | Encoding submenu to change document encoding |
 | **Insert/Overwrite mode** | P3 | Insert key toggle insert-overwrite mode |
 | **Help>About dialog** | P4 | Basic about dialog with version info |
 | **Help>Getting Started** | P4 | Link to online documentation |

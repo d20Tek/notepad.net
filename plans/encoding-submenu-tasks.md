@@ -229,16 +229,16 @@ File: `src\D20Tek.Notepad.Tui\Commands\ChangeEncodingCommand.cs`
 
 ## Acceptance Criteria
 
-- [ ] File > Encoding submenu is visible in the menu bar
-- [ ] Submenu shows four encoding choices
-- [ ] Active encoding has a checkmark; others do not
-- [ ] Selecting a different encoding updates the checkmark immediately on next menu open
-- [ ] Status bar encoding section updates immediately after selection (if status bar is visible)
-- [ ] Changing encoding marks the document as dirty
-- [ ] Saving after an encoding change writes the file in the new encoding
-- [ ] Opening a UTF-8 with BOM file selects "UTF-8 with BOM" checkmark
-- [ ] Opening a plain UTF-8 file (no BOM) selects "UTF-8" checkmark
-- [ ] All existing menu items (File, Edit, View) continue to work identically after the redesign
+- [x] File > Encoding submenu is visible in the menu bar
+- [x] Submenu shows four encoding choices
+- [x] Active encoding has a checkmark; others do not
+- [x] Selecting a different encoding updates the checkmark immediately on next menu open
+- [x] Status bar encoding section updates immediately after selection (if status bar is visible)
+- [x] Changing encoding marks the document as dirty
+- [x] Saving after an encoding change writes the file in the new encoding
+- [x] Opening a UTF-8 with BOM file selects "UTF-8 with BOM" checkmark
+- [x] Opening a plain UTF-8 file (no BOM) selects "UTF-8" checkmark
+- [x] All existing menu items (File, Edit, View) continue to work identically after the redesign
 
 ---
 
