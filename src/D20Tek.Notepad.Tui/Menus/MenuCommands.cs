@@ -34,6 +34,12 @@ internal static class MenuCommands
         commands.Register(WordWrapCommand.Create(viewModel));
         commands.Register(StatusBarCommand.Create(viewModel));
 
+        // Encoding commands
+        commands.Register(ChangeEncodingCommand.CreateUtf8(viewModel));
+        commands.Register(ChangeEncodingCommand.CreateUtf8Bom(viewModel));
+        commands.Register(ChangeEncodingCommand.CreateUnicode(viewModel));
+        commands.Register(ChangeEncodingCommand.CreateBigEndianUnicode(viewModel));
+
         return commands;
     }
 }

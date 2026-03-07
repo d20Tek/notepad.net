@@ -87,12 +87,51 @@ public class EditorViewModelEncodingTests
         var (viewModel, _) = CreateViewModel(["Hello"], new UTF8Encoding(false));
         viewModel.SetViewportHeight(5);
         Assert.IsFalse(viewModel.Session.Document.IsModified);
+        Assert.IsFalse(viewModel.IsDirty);
 
         // act
         viewModel.ChangeEncoding(Encoding.Unicode);
 
         // assert
         Assert.IsTrue(viewModel.Session.Document.IsModified);
+        Assert.IsTrue(viewModel.IsDirty);
+    }
+
+    [TestMethod]
+    public void ChangeEncoding_FiresDirtyStateChangedEvent()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel(["Hello"], new UTF8Encoding(false));
+        viewModel.SetViewportHeight(5);
+        bool? receivedDirty = null;
+        viewModel.DirtyStateChanged += dirty => receivedDirty = dirty;
+
+        // act
+        viewModel.ChangeEncoding(Encoding.Unicode);
+
+        // assert
+        Assert.IsTrue(receivedDirty);
+    }
+
+    [TestMethod]
+    public void Undo_AfterChangeEncoding_FiresDirtyStateChangedBackToFalse()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel(["Hello"], new UTF8Encoding(false));
+        viewModel.SetViewportHeight(5);
+        viewModel.ChangeEncoding(Encoding.Unicode);
+        Assert.IsTrue(viewModel.IsDirty);
+
+        bool? receivedDirty = null;
+        viewModel.DirtyStateChanged += dirty => receivedDirty = dirty;
+
+        // act
+        viewModel.Undo();
+
+        // assert
+        Assert.IsFalse(receivedDirty);
+        Assert.IsFalse(viewModel.IsDirty);
+        Assert.IsTrue(viewModel.IsCurrentEncoding(new UTF8Encoding(false)));
     }
 
     [TestMethod]

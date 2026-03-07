@@ -1,5 +1,6 @@
 ﻿using D20Tek.Notepad.Core.History;
 using D20Tek.Notepad.Core.Primitives;
+using System.Text;
 
 namespace D20Tek.Notepad.Core.Editing;
 
@@ -134,5 +135,11 @@ public sealed partial class EditorSession
 
         Anchor = caretBefore;
         DeleteSelection();
+    }
+
+    public void ChangeEncoding(Encoding encoding)
+    {
+        ArgumentNullException.ThrowIfNull(encoding);
+        Execute(new ChangeEncodingOperation(Document.Encoding, encoding));
     }
 }

@@ -1,4 +1,5 @@
 ﻿using D20Tek.Notepad.Tui.Commands;
+using System.Text;
 
 namespace D20Tek.Notepad.Tui.Menus;
 
@@ -12,6 +13,28 @@ internal static class MenuDefinitions
             new CommandEntry("_Open...", FileOpenCommand.CommandName),
             new CommandEntry("_Save", FileSaveCommand.CommandName),
             new CommandEntry("Save _As...", FileSaveAsCommand.CommandName),
+            MenuEntry.Separator,
+            new SubMenuEntry("_Encoding",
+                new CommandEntry(
+                    "UTF-_8",
+                    ChangeEncodingCommand.Utf8CommandName,
+                    IsCheckable: true,
+                    IsChecked: () => viewModel.IsCurrentEncoding(new UTF8Encoding(false))),
+                new CommandEntry(
+                    "UTF-8 with _BOM",
+                    ChangeEncodingCommand.Utf8BomCommandName,
+                    IsCheckable: true,
+                    IsChecked: () => viewModel.IsCurrentEncoding(new UTF8Encoding(true))),
+                new CommandEntry(
+                    "_Unicode (UTF-16 LE)",
+                    ChangeEncodingCommand.UnicodeCommandName,
+                    IsCheckable: true,
+                    IsChecked: () => viewModel.IsCurrentEncoding(Encoding.Unicode)),
+                new CommandEntry(
+                    "_BigEndian Unicode (UTF-16 BE)",
+                    ChangeEncodingCommand.BigEndianUnicodeCommandName,
+                    IsCheckable: true,
+                    IsChecked: () => viewModel.IsCurrentEncoding(Encoding.BigEndianUnicode))),
             MenuEntry.Separator,
             new CommandEntry("_Quit", QuitCommand.CommandName)),
 

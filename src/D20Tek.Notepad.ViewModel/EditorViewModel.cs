@@ -98,7 +98,8 @@ public sealed partial class EditorViewModel
     public void ChangeEncoding(Encoding encoding)
     {
         ArgumentNullException.ThrowIfNull(encoding);
-        Session.Document.SetEncoding(encoding);
+        Session.ChangeEncoding(encoding);
+        CheckDirtyStateChanged();
         Refresh();
     }
 

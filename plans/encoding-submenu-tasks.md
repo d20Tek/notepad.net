@@ -155,7 +155,7 @@ File: `tests\D20Tek.Notepad.ViewModel.UnitTests\EditorViewModelTests.Encoding.cs
 - [x] `ChangeEncoding_Unicode_SetsDocumentEncoding`
 - [x] `ChangeEncoding_BigEndianUnicode_SetsDocumentEncoding`
 - [x] `ChangeEncoding_FiresStatusChangedWithUpdatedEncoding`
-- [x] `ChangeEncoding_MarksDocumentDirty`
+- [x] `ChangeEncoding_MarksDocumentDirty` (asserts both `Document.IsModified` and `IsDirty`)
 - [x] `IsCurrentEncoding_WhenEncodingMatches_ReturnsTrue`
 - [x] `IsCurrentEncoding_WhenEncodingDiffers_ReturnsFalse`
 - [x] `IsCurrentEncoding_Utf8VsUtf8Bom_AreDistinct`
@@ -166,22 +166,22 @@ File: `tests\D20Tek.Notepad.ViewModel.UnitTests\EditorViewModelTests.Encoding.cs
 
 ### Task 3.1: Create `ChangeEncodingCommand.cs`
 File: `src\D20Tek.Notepad.Tui\Commands\ChangeEncodingCommand.cs`
-- [ ] Define four `const string` command names:
+- [x] Define four `const string` command names:
   - `Utf8CommandName = "EncodingUtf8"`
   - `Utf8BomCommandName = "EncodingUtf8Bom"`
   - `UnicodeCommandName = "EncodingUnicode"`
   - `BigEndianUnicodeCommandName = "EncodingBigEndianUnicode"`
-- [ ] Add `CreateUtf8(viewModel)` → `new UiCommand(Utf8CommandName, () => viewModel.ChangeEncoding(new UTF8Encoding(false)))`
-- [ ] Add `CreateUtf8Bom(viewModel)` → `new UiCommand(Utf8BomCommandName, () => viewModel.ChangeEncoding(new UTF8Encoding(true)))`
-- [ ] Add `CreateUnicode(viewModel)` → `new UiCommand(UnicodeCommandName, () => viewModel.ChangeEncoding(Encoding.Unicode))`
-- [ ] Add `CreateBigEndianUnicode(viewModel)` → `new UiCommand(BigEndianUnicodeCommandName, () => viewModel.ChangeEncoding(Encoding.BigEndianUnicode))`
+- [x] Add `CreateUtf8(viewModel)` → `new UiCommand(Utf8CommandName, () => viewModel.ChangeEncoding(new UTF8Encoding(false)))`
+- [x] Add `CreateUtf8Bom(viewModel)` → `new UiCommand(Utf8BomCommandName, () => viewModel.ChangeEncoding(new UTF8Encoding(true)))`
+- [x] Add `CreateUnicode(viewModel)` → `new UiCommand(UnicodeCommandName, () => viewModel.ChangeEncoding(Encoding.Unicode))`
+- [x] Add `CreateBigEndianUnicode(viewModel)` → `new UiCommand(BigEndianUnicodeCommandName, () => viewModel.ChangeEncoding(Encoding.BigEndianUnicode))`
 
 ### Task 3.2: Register commands in `MenuCommands.cs`
-- [ ] Add a `// Encoding commands` section in `MenuCommands.Get()`
-- [ ] Register all four `ChangeEncodingCommand.Create*()` commands
+- [x] Add a `// Encoding commands` section in `MenuCommands.Get()`
+- [x] Register all four `ChangeEncodingCommand.Create*()` commands
 
 ### Task 3.3: Add `Encoding` submenu to `MenuDefinitions.cs`
-- [ ] Add a `new SubMenuEntry("_Encoding", ...)` in the `_File` `TopLevelMenu`, between `Save _As...` and `_Quit`:
+- [x] Add a `new SubMenuEntry("_Encoding", ...)` in the `_File` `TopLevelMenu`, between `Save _As...` and `_Quit`:
   ```csharp
   new SubMenuEntry("_Encoding",
       new CommandEntry("UTF-_8", ChangeEncodingCommand.Utf8CommandName,
