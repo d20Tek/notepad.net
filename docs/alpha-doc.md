@@ -1,4 +1,4 @@
-﻿# Notepad.Tui — Alpha Release (v0.2.0)
+﻿# Notepad.Tui — Alpha Release (v0.2.3)
 
 A fast, clean, and modern **terminal-based text viewer** for .NET, inspired by classic tools like Notepad and contemporary editor engines.  
 This alpha focuses on delivering a rock‑solid view and editing experience with smooth navigation, precise selection, and a responsive UI built on top of Terminal.Gui.
@@ -9,7 +9,7 @@ This update introduced the editing features, but is still in the early stages of
 
 ---
 
-## Features in the Alpha
+## Cumulative Features
 
 ### ✔️ Smooth, predictable navigation
 - Arrow keys, PageUp/PageDown, Home/End  
@@ -60,20 +60,38 @@ This update introduced the editing features, but is still in the early stages of
 - Highlighting of search results within the document
 - Go to line functionality to quickly navigate to specific lines in the document
 
+## Features Added this Release
+
+### ✔️ Enhanced Keyboard Navigation
+- Move to next/previous word with Ctrl+Arrow keys  
+- Select next/previous word with Ctrl+Shift+Arrow keys
+- Delete next/previous word with Ctrl+Backspace and Ctrl+Delete
+- Triple-click to select entire line (works with word wrap)
+
+### ✔️ Status Bar
+- Implemented StatusBar view to show line/column, encoding, and line ending information
+- Updates dynamically as the caret moves and document changes
+- View > Status bar menu option to toggle visibility of the status bar
+
+### ✔️ Change File Encoding
+- Added support for changing the file encoding through a menu options
+- Encoding submenu with options for UTF-8, UTF-16 LE/BE, and UTF-8 with BOM
+- Undo/redo operation to change encoding and update the document model accordingly
+- Ensure document IsDirty flag is set when encoding changes
+
 ---
 
 ## What’s *Not* Included Yet (By Design)
 
 We don't provide the full set of features yet. The following features are planned for future phases:
 
-- Status bar with line/column indicators
 - Line number column in the editor view
-- Further navigation enchancements
-- Change file encoding
-- Triple-click selection for lines
 - Large file support using memory-mapped files
 - Recent files submenu
 - Zoom? (TUI limitations may apply)
+- Insert/Overwrite mode toggle
+- Help/About dialog with version info & link to documentation
+- Status bar enhancements like word count and selection length
 
 The goal of this release is to validate the **interaction model**, **viewport engine**, and **editing capabilities**.
 

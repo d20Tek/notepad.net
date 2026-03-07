@@ -208,37 +208,35 @@ public string LineEndingStyleDisplay => Session.Document.LineEndings switch
 ## Acceptance Criteria
 
 1. **Line/Column Display**
-   - [ ] Shows current line number (1-based)
-   - [ ] Shows current column number (1-based)
-   - [ ] Updates immediately on caret movement
-   - [ ] Updates on keyboard navigation
+   - [x] Shows current line number (1-based)
+   - [x] Shows current column number (1-based)
+   - [x] Updates immediately on caret movement
+   - [x] Updates on keyboard navigation
 
 2. **Document Statistics**
-   - [ ] Shows total line count
-   - [ ] Shows total character count
-   - [ ] Updates on text insertion/deletion
+   - [x] Shows total line count
+   - [x] Shows total character count
+   - [x] Updates on text insertion/deletion
 
 3. **Encoding Display**
-   - [ ] Shows document encoding (UTF-8, ASCII, etc.)
-   - [ ] Updates when file is opened
+   - [x] Shows document encoding (UTF-8, ASCII, etc.)
+   - [x] Updates when file is opened
 
 4. **Line Ending Display**
-   - [ ] Shows CRLF, LF, or CR
-   - [ ] Updates when file is opened
+   - [x] Shows CRLF, LF, or CR
+   - [x] Updates when file is opened
 
 5. **Visual Integration**
-   - [ ] Status bar appears at bottom of window
-   - [ ] Does not overlap editor content
-   - [ ] Readable with proper spacing
-   - [ ] Consistent with application color scheme
+   - [x] Status bar appears at bottom of window
+   - [x] Does not overlap editor content
+   - [x] Readable with proper spacing
+   - [x] Consistent with application color scheme
 
 ---
 
 ## Future Enhancements (Out of Scope)
 
 - **Click to Go to Line**: Click on Ln/Col to open Go to Line dialog
-- **Encoding selector**: Click to change encoding
-- **Line ending selector**: Click to change line endings
 - **Word count**: Additional statistic
 - **Selection info**: Show selection length when text is selected
 - **Insert/Overwrite mode indicator**: INS/OVR toggle

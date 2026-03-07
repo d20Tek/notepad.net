@@ -64,6 +64,7 @@
 | **Insert/Overwrite mode** | P3 | Insert key toggle insert-overwrite mode |
 | **Help>About dialog** | P4 | Basic about dialog with version info |
 | **Help>Getting Started** | P4 | Link to online documentation |
+| **Status Bar Enhancements** | P3 | show Word count, Text selection length |
 
 ---
 

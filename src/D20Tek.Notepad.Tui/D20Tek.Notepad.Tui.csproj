@@ -15,6 +15,9 @@
     <PackageReadmeFile>alpha-doc.md</PackageReadmeFile>
     <PackageTags>notepad; terminal text viewer; text editor; terminal; text viewer</PackageTags>
     <PackAsTool>True</PackAsTool>
+    <PackageProjectUrl>https://github.com/d20Tek/notepad.net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/d20Tek/notepad.net</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
