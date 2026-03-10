@@ -17,4 +17,6 @@ public sealed record EditorSettings
     public bool WordWrapEnabled { get; init; } = false;
 
     public bool StatusBarEnabled { get; init; } = false;
+
+    public bool LineNumbersEnabled { get; init; } = false;
 }

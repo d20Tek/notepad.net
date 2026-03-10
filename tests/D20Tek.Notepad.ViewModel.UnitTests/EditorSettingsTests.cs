@@ -16,6 +16,7 @@ public class EditorSettingsTests
         Assert.AreEqual(4, settings.TabSize);
         Assert.IsTrue(settings.UseSpacesForTab);
         Assert.IsFalse(settings.WordWrapEnabled);
+        Assert.IsFalse(settings.LineNumbersEnabled);
     }
 
 
@@ -41,7 +42,8 @@ public class EditorSettingsTests
             HorizontalEdgeScrollAmount = 10,
             TabSize = 2,
             UseSpacesForTab = true,
-            WordWrapEnabled = true
+            WordWrapEnabled = true,
+            LineNumbersEnabled = true
         };
 
         // assert
@@ -51,6 +53,7 @@ public class EditorSettingsTests
         Assert.AreEqual(2, settings.TabSize);
         Assert.IsTrue(settings.UseSpacesForTab);
         Assert.IsTrue(settings.WordWrapEnabled);
+        Assert.IsTrue(settings.LineNumbersEnabled);
     }
 
     [TestMethod]
@@ -82,11 +85,24 @@ public class EditorSettingsTests
         var original = EditorSettings.Default;
 
         // act
-        var modified = original with { MouseWheelScrollLines = 10 };
+        var modified = original with { MouseWheelScrollLines = 10, LineNumbersEnabled = true };
 
         // assert
         Assert.AreEqual(3, original.MouseWheelScrollLines);
         Assert.AreEqual(10, modified.MouseWheelScrollLines);
         Assert.AreEqual(original.EdgeScrollSpeed, modified.EdgeScrollSpeed);
+        Assert.IsFalse(original.LineNumbersEnabled);
+        Assert.IsTrue(modified.LineNumbersEnabled);
+    }
+
+    [TestMethod]
+    public void RecordEquality_WithDifferentLineNumbersEnabled_AreNotEqual()
+    {
+        // arrange
+        var settings1 = new EditorSettings { LineNumbersEnabled = true };
+        var settings2 = new EditorSettings { LineNumbersEnabled = false };
+
+        // assert
+        Assert.AreNotEqual(settings1, settings2);
     }
 }
