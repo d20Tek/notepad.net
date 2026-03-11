@@ -36,12 +36,12 @@ blank space.
 
 ### Rendering Layer
 
-- [ ] **LN-03 — Add gutter color scheme to `EditorColorSchemes`**
+- [x] **LN-03 — Add gutter color scheme to `EditorColorSchemes`**
   - Add a static `Attribute Gutter` (or `ColorScheme Gutter`) property using a muted
     foreground (e.g., `Color.Gray`) on the normal editor background, visually separating
     the gutter from the text area.
 
-- [ ] **LN-04 — Update `TerminalGuiRenderer` to render the gutter**
+- [x] **LN-04 — Update `TerminalGuiRenderer` to render the gutter**
   - Cache `GutterWidth` from the `EditorViewModel` during `BeginFrame`.
   - In `BeginFrame`: paint the gutter column(s) with the gutter color attribute before
     clearing the text area; reduce the effective `Width` by `GutterWidth` and shift the
@@ -58,7 +58,7 @@ blank space.
   - Ensure the clipped text width is also reduced by `GutterWidth` so text does not
     overflow into the scrollbar column.
 
-- [ ] **LN-05 — Update `EditorView` to account for gutter width**
+- [x] **LN-05 — Update `EditorView` to account for gutter width**
 - Subscribe to `_viewModel.LineNumbersChanged` in the constructor; unsubscribe in `Dispose`.
 - In the `LineNumbersChanged` handler call `SetNeedsDisplay()` and update the viewport
   width (call `UpdateViewportSize()` equivalent) so the ViewModel knows the effective
@@ -91,14 +91,14 @@ blank space.
 
 ### Command and Menu Layer
 
-- [ ] **LN-06 — Create `LineNumbersCommand`**
+- [x] **LN-06 — Create `LineNumbersCommand`**
   - Add `src/D20Tek.Notepad.Tui/Commands/LineNumbersCommand.cs` following the same pattern
     as `WordWrapCommand` and `StatusBarCommand`.
   - `CommandName = "ToggleLineNumbers"`.
   - `Execute` calls `viewModel.ToggleLineNumbers()`.
   - `Create` returns a `UiCommand`.
 
-- [ ] **LN-07 — Register command and add View menu entry**
+- [x] **LN-07 — Register command and add View menu entry**
   - In `CommandRegistry` (or wherever commands are registered, e.g., `EditorViewFactory`
     or the application setup code), register `LineNumbersCommand.Create(viewModel)`.
   - In `MenuDefinitions.Get(...)` add a checkable `_Line Numbers` entry to the `_View`
@@ -109,13 +109,13 @@ blank space.
 
 ### Unit Tests
 
-- [ ] **LN-08 — Update `EditorSettingsTests` for the new property**
+- [x] **LN-08 — Update `EditorSettingsTests` for the new property**
   - In `tests/D20Tek.Notepad.ViewModel.UnitTests/EditorSettingsTests.cs` add or update:
     - Constructor test verifies `LineNumbersEnabled` defaults to `false`.
     - `With` test includes `LineNumbersEnabled` in the changed-all-properties assertion.
     - Equality tests cover `LineNumbersEnabled` difference producing non-equal records.
 
-- [ ] **LN-09 — Create `EditorViewModelTests.LineNumbers.cs`**
+- [x] **LN-09 — Create `EditorViewModelTests.LineNumbers.cs`**
   - Add `tests/D20Tek.Notepad.ViewModel.UnitTests/EditorViewModelTests.LineNumbers.cs`.
   - Test `IsLineNumbersEnabled` returns `false` with default settings.
   - Test `IsLineNumbersEnabled` returns `true` when `LineNumbersEnabled = true` in settings.

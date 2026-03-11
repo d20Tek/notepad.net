@@ -33,6 +33,7 @@ internal static class MenuCommands
         // View commands
         commands.Register(WordWrapCommand.Create(viewModel));
         commands.Register(StatusBarCommand.Create(viewModel));
+        commands.Register(LineNumbersCommand.Create(viewModel));
 
         // Encoding commands
         commands.Register(ChangeEncodingCommand.CreateUtf8(viewModel));

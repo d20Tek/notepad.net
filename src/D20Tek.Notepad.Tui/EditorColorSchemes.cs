@@ -35,4 +35,8 @@ internal static class EditorColorSchemes
         HotFocus = new Attribute(Color.Black, Color.DarkGray),
         Disabled = new Attribute(Color.DarkGray, Color.DarkGray)
     };
+
+    public static readonly Attribute GutterNormal = new(Color.DarkGray, Color.Black);
+
+    public static readonly Attribute GutterActive = new(Color.Gray, Color.Black);
 }

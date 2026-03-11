@@ -64,7 +64,12 @@ internal static class MenuDefinitions
                 "_Word Wrap",
                 WordWrapCommand.CommandName,
                 IsCheckable: true,
-                IsChecked: () => viewModel.IsWordWrapEnabled))
+                IsChecked: () => viewModel.IsWordWrapEnabled),
+            new CommandEntry(
+                "_Line Numbers",
+                LineNumbersCommand.CommandName,
+                IsCheckable: true,
+                IsChecked: () => viewModel.IsLineNumbersEnabled))
     ];
 }
 

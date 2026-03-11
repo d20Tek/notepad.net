@@ -25,6 +25,7 @@ public sealed partial class EditorView : View, IDisposable
         _viewModel.CaretMoved += OnViewModelChanged;
         _viewModel.SelectionChanged += OnViewModelChanged;
         _viewModel.WordWrapChanged += OnWordWrapChanged;
+        _viewModel.LineNumbersChanged += OnLineNumbersChanged;
     }
 
     public new void Dispose()
@@ -38,6 +39,7 @@ public sealed partial class EditorView : View, IDisposable
         _viewModel.CaretMoved -= OnViewModelChanged;
         _viewModel.SelectionChanged -= OnViewModelChanged;
         _viewModel.WordWrapChanged -= OnWordWrapChanged;
+        _viewModel.LineNumbersChanged -= OnLineNumbersChanged;
 
         Resized -= OnViewResized;
         Added -= OnAddedToSuperView;
@@ -79,6 +81,10 @@ public sealed partial class EditorView : View, IDisposable
 
         if (IsInScrollBarArea(me.X, me.Y)) return base.MouseEvent(me);
 
+        if (IsGutterEventToConsume(me)) return true;
+
+        me.X -= _viewModel.GutterWidth;
+
         if (MouseBindings.TryExecute(_viewModel, me))
         {
             SetNeedsDisplay();
@@ -86,6 +92,23 @@ public sealed partial class EditorView : View, IDisposable
         }
 
         return base.MouseEvent(me);
+    }
+
+    private bool IsGutterEventToConsume(MouseEvent me)
+    {
+        int gutterWidth = _viewModel.GutterWidth;
+        if (gutterWidth == 0 || me.X >= gutterWidth) return false;
+
+        var flags = me.Flags;
+
+        // Wheel scroll passes through unchanged (ScrollWheel uses no coordinates)
+        if (flags.HasFlag(MouseFlags.WheeledUp) || flags.HasFlag(MouseFlags.WheeledDown)) return false;
+
+        // Drag into gutter passes through; adjusted X will be negative, handled by CalculateColumn's left-edge path
+        if (flags.HasFlag(MouseFlags.Button1Pressed) && flags.HasFlag(MouseFlags.ReportMousePosition)) return false;
+
+        // All other button events in the gutter are consumed without acting
+        return true;
     }
 
     public override bool ProcessKey(KeyEvent keyEvent) =>
@@ -103,11 +126,13 @@ public sealed partial class EditorView : View, IDisposable
         SetNeedsDisplay();
     }
 
+    private void OnLineNumbersChanged(bool _) => SetNeedsDisplay();
+
     private void OnViewResized(ResizedEventArgs args)
     {
         // Initial resize - scrollbars may not exist yet, so use full dimensions
         // UpdateViewportSize in Redraw will adjust once scrollbar visibility is known
-        _viewModel.SetViewportWidth(Frame.Width);
+        _viewModel.SetViewportWidth(Math.Max(0, Frame.Width - _viewModel.GutterWidth));
         _viewModel.SetViewportHeight(Frame.Height);
         _viewModel.EnsureCaretVisible();
 
@@ -150,7 +175,7 @@ public sealed partial class EditorView : View, IDisposable
 
         if (effectiveWidth > 0)
         {
-            _viewModel.SetViewportWidth(effectiveWidth);
+            _viewModel.SetViewportWidth(Math.Max(0, effectiveWidth - _viewModel.GutterWidth));
         }
     }
 
@@ -170,8 +195,8 @@ public sealed partial class EditorView : View, IDisposable
     {
         var caretViewPos = _viewModel.CaretViewPosition;
 
-        // CaretViewPosition is already relative to visible area
-        int screenX = caretViewPos.Column + Frame.X;
+        // CaretViewPosition is already relative to visible area; offset by gutter
+        int screenX = caretViewPos.Column + Frame.X + _viewModel.GutterWidth;
         int screenY = caretViewPos.LineIndex + Frame.Y;
 
         return (screenX, screenY);
