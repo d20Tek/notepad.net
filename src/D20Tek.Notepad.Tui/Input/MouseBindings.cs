@@ -234,4 +234,17 @@ internal static class MouseBindings
 
         return Math.Clamp(column, 0, lineLength);
     }
+
+    public static int CalculateDocumentLine(EditorViewModel vm, int mouseY)
+    {
+        if (vm.IsWordWrapEnabled)
+        {
+            var visibleLines = vm.VisibleLines;
+            if (visibleLines.Count == 0) return 0;
+            int viewLineIndex = Math.Clamp(mouseY, 0, visibleLines.Count - 1);
+            return visibleLines[viewLineIndex].DocumentLineIndex;
+        }
+
+        return CalculateLine(vm, mouseY);
+    }
 }

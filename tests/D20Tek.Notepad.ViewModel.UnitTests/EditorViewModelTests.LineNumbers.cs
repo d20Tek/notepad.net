@@ -94,25 +94,25 @@ public class EditorViewModelLineNumbersTests
     }
 
     [TestMethod]
-    public void GutterWidth_WithSingleDigitLineCount_ReturnsTwo()
+    public void GutterWidth_WithSingleDigitLineCount_ReturnsThree()
     {
         // arrange
         var lines = Enumerable.Repeat("line", 5).ToArray();
         var (viewModel, _) = CreateViewModelWithLineNumbers(lines);
 
         // act & assert
-        Assert.AreEqual(2, viewModel.GutterWidth);
+        Assert.AreEqual(3, viewModel.GutterWidth);
     }
 
     [TestMethod]
-    public void GutterWidth_WithMultiDigitLineCount_ReturnsFour()
+    public void GutterWidth_WithMultiDigitLineCount_ReturnsFive()
     {
         // arrange
         var lines = Enumerable.Repeat("line", 100).ToArray();
         var (viewModel, _) = CreateViewModelWithLineNumbers(lines);
 
         // act & assert
-        Assert.AreEqual(4, viewModel.GutterWidth);
+        Assert.AreEqual(5, viewModel.GutterWidth);
     }
 
     private static (EditorViewModel viewModel, EditorSession session) CreateViewModel(string[] lines)

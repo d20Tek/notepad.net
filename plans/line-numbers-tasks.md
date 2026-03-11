@@ -130,7 +130,7 @@ blank space.
 
 ### Application Wiring
 
-- [ ] **LN-11 — Wire `LineNumbersChanged` in `Program.cs`**
+- [x] **LN-11 — Wire `LineNumbersChanged` in `Program.cs`**
   - Subscribe to `viewModel.LineNumbersChanged` in `Program.cs` to persist settings,
     following the same pattern as `WordWrapChanged`:
     ```
@@ -143,7 +143,7 @@ blank space.
 
 ### Feature Tracking
 
-- [ ] **LN-10 — Update `plans/features.md`**
+- [x] **LN-10 — Update `plans/features.md`**
   - Move **Line numbers** from the *Pending* table into the *Implemented* table.
   - Add shortcut column value (`—`) and note `Optional gutter display, toggle via View menu`.
   - Strike through the P3 priority entry in the implementation priority section.

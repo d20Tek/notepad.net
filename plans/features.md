@@ -43,6 +43,7 @@
 | View > Status bar menu | | EditorSetting for status bar, toggle menu item to show hide |
 | | | |
 | Change File Encoding | | Encoding submenu to change document encoding |
+| Line numbers | View menu | Optional gutter display, toggle via View menu; current-line highlighting; click gutter to select line |
 
 ---
 
@@ -58,7 +59,6 @@
 
 | Feature | Priority | Notes |
 |---------|----------|-------|
-| **Line numbers** | P3 | Optional gutter display |
 | **Zoom** | P4 | Ctrl+Plus/Minus (TUI limitations) |
 | **Recent files** | P4 | File > Recent submenu |
 | **Insert/Overwrite mode** | P3 | Insert key toggle insert-overwrite mode |
@@ -75,7 +75,8 @@
 3. ~~**Word navigation** - Power user productivity~~
 4. ~~**Go to Line** - Common for developers~~
 5. ~~**Status bar** - Provides context to users~~
-5. **Large file support** - Provides context to users
+6. ~~**Line numbers** - Optional gutter display~~
+7. **Large file support** - Provides context to users
 
 ---
 

@@ -35,10 +35,9 @@ class Program
         var editorView = EditorViewFactory.Create(viewModel, settings.StatusBarEnabled);
         var statusBarView = new StatusBarView(viewModel) { Visible = settings.StatusBarEnabled };
 
-        // Save settings when word wrap changes
+        // Save settings when values change.
         viewModel.WordWrapChanged += (_) => settingsService.Save(viewModel.Settings);
-
-        // Show/hide status bar and adjust editor height when toggled; persist setting
+        viewModel.LineNumbersChanged += (_) => settingsService.Save(viewModel.Settings);
         viewModel.StatusBarChanged += (enabled) =>
         {
             statusBarView.Visible = enabled;

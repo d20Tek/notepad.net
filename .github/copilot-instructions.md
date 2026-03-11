@@ -5,6 +5,7 @@
 - Second general instruction
 - When completing coding tasks, update the corresponding task status in *-tasks.md files located in the plans folder.
 - Aim to keep code coverage close to 100% block coverage by adding unit tests to cover all possible conditions and branches.
+- Minimize repetition in generated code. When the same pattern appears for a third time, refactor it into a shared helper, base method, or utility rather than duplicating it again. Prefer extracting reusable methods over copy-paste patterns.
 
 ## Code Style
 - Use specific formatting rules

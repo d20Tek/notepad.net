@@ -6,7 +6,7 @@ public sealed partial class EditorViewModel
 
     public bool IsLineNumbersEnabled => _settings.LineNumbersEnabled;
 
-    public int GutterWidth => _settings.LineNumbersEnabled ? Session.Document.Lines.Count.ToString().Length + 1 : 0;
+    public int GutterWidth => _settings.LineNumbersEnabled ? Session.Document.Lines.Count.ToString().Length + 2 : 0;
 
     public void ToggleLineNumbers()
     {

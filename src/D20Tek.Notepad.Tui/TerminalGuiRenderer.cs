@@ -123,11 +123,11 @@ public sealed class TerminalGuiRenderer(View target) : IEditorRenderer
         // Word-wrap continuation segments show blank space instead of a line number
         if (line.SegmentStartColumn > 0)
         {
-            driver.AddStr(new string(' ', _gutterWidth - 1) + '│');
+            driver.AddStr(new string(' ', _gutterWidth - 2) + "\u2502 ");
             return;
         }
 
         int lineNumber = line.DocumentLineIndex + 1;
-        driver.AddStr(lineNumber.ToString().PadLeft(_gutterWidth - 1) + '│');
+        driver.AddStr(lineNumber.ToString().PadLeft(_gutterWidth - 2) + "\u2502 ");
     }
 }

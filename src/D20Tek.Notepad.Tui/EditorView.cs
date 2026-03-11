@@ -81,7 +81,7 @@ public sealed partial class EditorView : View, IDisposable
 
         if (IsInScrollBarArea(me.X, me.Y)) return base.MouseEvent(me);
 
-        if (IsGutterEventToConsume(me)) return true;
+        if (TryHandleGutterEvent(me)) return true;
 
         me.X -= _viewModel.GutterWidth;
 
@@ -94,7 +94,7 @@ public sealed partial class EditorView : View, IDisposable
         return base.MouseEvent(me);
     }
 
-    private bool IsGutterEventToConsume(MouseEvent me)
+    private bool TryHandleGutterEvent(MouseEvent me)
     {
         int gutterWidth = _viewModel.GutterWidth;
         if (gutterWidth == 0 || me.X >= gutterWidth) return false;
@@ -107,7 +107,14 @@ public sealed partial class EditorView : View, IDisposable
         // Drag into gutter passes through; adjusted X will be negative, handled by CalculateColumn's left-edge path
         if (flags.HasFlag(MouseFlags.Button1Pressed) && flags.HasFlag(MouseFlags.ReportMousePosition)) return false;
 
-        // All other button events in the gutter are consumed without acting
+        // Single click in gutter selects the entire line at that row
+        if (flags.HasFlag(MouseFlags.Button1Clicked))
+        {
+            int line = MouseBindings.CalculateDocumentLine(_viewModel, me.Y);
+            _viewModel.SelectLineAt(line);
+            SetNeedsDisplay();
+        }
+
         return true;
     }
 
