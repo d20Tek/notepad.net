@@ -69,7 +69,11 @@ internal static class MenuDefinitions
                 "_Line Numbers",
                 LineNumbersCommand.CommandName,
                 IsCheckable: true,
-                IsChecked: () => viewModel.IsLineNumbersEnabled))
+                IsChecked: () => viewModel.IsLineNumbersEnabled)),
+
+        new TopLevelMenu("_Help",
+            new CommandEntry("_Getting Started", HelpGettingStartedCommand.CommandName),
+            new CommandEntry("_About Notepad.Tui", HelpAboutCommand.CommandName))
     ];
 }
 

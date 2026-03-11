@@ -35,6 +35,10 @@ internal static class MenuCommands
         commands.Register(StatusBarCommand.Create(viewModel));
         commands.Register(LineNumbersCommand.Create(viewModel));
 
+        // Help commands
+        commands.Register(HelpGettingStartedCommand.Create());
+        commands.Register(HelpAboutCommand.Create());
+
         // Encoding commands
         commands.Register(ChangeEncodingCommand.CreateUtf8(viewModel));
         commands.Register(ChangeEncodingCommand.CreateUtf8Bom(viewModel));

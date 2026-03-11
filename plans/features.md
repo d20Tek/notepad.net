@@ -44,6 +44,8 @@
 | | | |
 | Change File Encoding | | Encoding submenu to change document encoding |
 | Line numbers | View menu | Optional gutter display, toggle via View menu; current-line highlighting; click gutter to select line |
+| Help > Getting Started | F1 | Opens project page in default browser |
+| Help > About | Help menu | About dialog with app name, version, description, and copyright |
 
 ---
 
@@ -62,8 +64,8 @@
 | **Zoom** | P4 | Ctrl+Plus/Minus (TUI limitations) |
 | **Recent files** | P4 | File > Recent submenu |
 | **Insert/Overwrite mode** | P3 | Insert key toggle insert-overwrite mode |
-| **Help>About dialog** | P4 | Basic about dialog with version info |
-| **Help>Getting Started** | P4 | Link to online documentation |
+| ~~**Help>About dialog**~~ | ~~P4~~ | ~~Basic about dialog with version info~~ |
+| ~~**Help>Getting Started**~~ | ~~P4~~ | ~~Link to online documentation~~ |
 | **Status Bar Enhancements** | P3 | show Word count, Text selection length |
 
 ---
@@ -76,7 +78,8 @@
 4. ~~**Go to Line** - Common for developers~~
 5. ~~**Status bar** - Provides context to users~~
 6. ~~**Line numbers** - Optional gutter display~~
-7. **Large file support** - Provides context to users
+7. ~~**Help menu (About + Getting Started)**~~
+8. **Large file support** - Provides context to users
 
 ---
 
