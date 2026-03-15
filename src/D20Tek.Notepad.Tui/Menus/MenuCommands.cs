@@ -4,7 +4,7 @@ namespace D20Tek.Notepad.Tui.Menus;
 
 internal static class MenuCommands
 {
-    public static CommandRegistry Get(EditorViewModel viewModel)
+    public static CommandRegistry Get(EditorViewModel viewModel, StatusBarView statusBarView)
     {
         var commands = new CommandRegistry();
 
@@ -34,6 +34,10 @@ internal static class MenuCommands
         commands.Register(WordWrapCommand.Create(viewModel));
         commands.Register(StatusBarCommand.Create(viewModel));
         commands.Register(LineNumbersCommand.Create(viewModel));
+
+        // Zoom commands
+        commands.Register(ZoomCommands.CreateZoomIn(viewModel, statusBarView));
+        commands.Register(ZoomCommands.CreateZoomOut(viewModel, statusBarView));
 
         // Help commands
         commands.Register(HelpGettingStartedCommand.Create());

@@ -5,9 +5,9 @@ namespace D20Tek.Notepad.Tui.Menus;
 
 internal static class MenuBuilder
 {
-    public static MenuBar Build(EditorViewModel viewModel)
+    public static MenuBar Build(EditorViewModel viewModel, StatusBarView statusBarView)
     {
-        var commands = MenuCommands.Get(viewModel);
+        var commands = MenuCommands.Get(viewModel, statusBarView);
         var menuBarItems = MenuDefinitions.Get(viewModel)
             .Select(m => new MenuBarItem(m.Title, BuildItems(m.Items, commands)))
             .ToArray();

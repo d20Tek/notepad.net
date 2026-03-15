@@ -3,6 +3,7 @@ global using D20Tek.Notepad.Core.Editing;
 global using D20Tek.Notepad.Core.Primitives;
 global using D20Tek.Notepad.ViewModel;
 global using Terminal.Gui;
+using D20Tek.Notepad.Tui.Commands;
 using D20Tek.Notepad.Tui.Menus;
 
 namespace D20Tek.Notepad.Tui;
@@ -46,8 +47,9 @@ class Program
             Application.Top.SetNeedsDisplay();
             settingsService.Save(viewModel.Settings);
         };
+        editorView.ZoomRequested += () => ZoomCommands.ShowHint(viewModel, statusBarView);
 
-        top.Add(MenuBuilder.Build(viewModel));
+        top.Add(MenuBuilder.Build(viewModel, statusBarView));
         top.Add(editorView);
         top.Add(statusBarView);
 

@@ -8,6 +8,7 @@ internal sealed class StatusBarView : View, IDisposable
     private StatusDetails _status;
     private bool _disposed;
     private bool _pendingRedraw;
+    private string? _transientMessage;
 
     public StatusBarView(EditorViewModel viewModel)
     {
@@ -31,12 +32,36 @@ internal sealed class StatusBarView : View, IDisposable
         _viewModel.StatusChanged -= OnStatusChanged;
     }
 
+    public void ShowTransientMessage(string message, TimeSpan duration)
+    {
+        if (_disposed) return;
+        _transientMessage = message;
+        SetNeedsDisplay();
+
+        Application.MainLoop?.AddTimeout(duration, _ =>
+        {
+            _transientMessage = null;
+            if (!_disposed) SetNeedsDisplay();
+            return false;
+        });
+    }
+
     public override void Redraw(Rect bounds)
     {
         Driver.SetAttribute(ColorScheme.Normal);
 
         Move(0, 0);
         Driver.AddStr(new string(' ', bounds.Width));
+
+        if (_transientMessage is not null)
+        {
+            string clipped = _transientMessage.Length > bounds.Width - 2
+                ? _transientMessage[..(bounds.Width - 2)]
+                : _transientMessage;
+            Move(1, 0);
+            Driver.AddStr(clipped);
+            return;
+        }
 
         string left = FormatPosition(_status);
         string center = FormatStatistics(_status);

@@ -55,6 +55,9 @@ internal static class MenuDefinitions
             new CommandEntry("Select _All", SelectAllCommand.CommandName)),
 
         new TopLevelMenu("_View",
+            new CommandEntry("Zoom _In", ZoomCommands.ZoomInCommandName),
+            new CommandEntry("Zoom _Out", ZoomCommands.ZoomOutCommandName),
+            MenuEntry.Separator,
             new CommandEntry(
                 "_Status Bar",
                 StatusBarCommand.CommandName,

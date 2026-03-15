@@ -9,6 +9,8 @@ public sealed partial class EditorView : View, IDisposable
     private readonly TerminalGuiRenderer _renderer;
     private bool _disposed;
 
+    public event Action? ZoomRequested;
+
     public EditorView(EditorViewModel viewModel)
     {
         _viewModel = viewModel;
@@ -76,6 +78,16 @@ public sealed partial class EditorView : View, IDisposable
 
     public override bool MouseEvent(MouseEvent me)
     {
+        var flags = me.Flags;
+
+        // Ctrl+ScrollWheel → zoom hint (intercept before plain scroll in MouseBindings)
+        if (flags.HasFlag(MouseFlags.ButtonCtrl) &&
+            (flags.HasFlag(MouseFlags.WheeledUp) || flags.HasFlag(MouseFlags.WheeledDown)))
+        {
+            ZoomRequested?.Invoke();
+            return true;
+        }
+
         // Only handle mouse events that are within our bounds
         if (me.X < 0 || me.Y < 0 || me.X >= Bounds.Width || me.Y >= Bounds.Height) return false;
 
