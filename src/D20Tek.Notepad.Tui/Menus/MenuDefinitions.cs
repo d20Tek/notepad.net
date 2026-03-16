@@ -15,7 +15,7 @@ internal static class MenuDefinitions
             new CommandEntry("_Save", FileSaveCommand.CommandName),
             new CommandEntry("Save _As...", FileSaveAsCommand.CommandName),
             MenuEntry.Separator,
-            new SubMenuEntry("_Encoding",
+            new SubMenuEntry("Enco_ding",
                 new CommandEntry(
                     "UTF-_8",
                     ChangeEncodingCommand.Utf8CommandName,
@@ -49,7 +49,7 @@ internal static class MenuDefinitions
             MenuEntry.Separator,
             new CommandEntry("_Find...", FindCommand.CommandName),
             new CommandEntry("Find _Next", FindNextCommand.CommandName, CanExecute: () => viewModel.HasLastSearch),
-            new CommandEntry("Find Pre_vious", FindPreviousCommand.CommandName, CanExecute: () => viewModel.HasLastSearch),
+            new CommandEntry("Find Prev_ious", FindPreviousCommand.CommandName, CanExecute: () => viewModel.HasLastSearch),
             new CommandEntry("_Replace...", ReplaceCommand.CommandName),
             MenuEntry.Separator,
             new CommandEntry("_Go to Line...", GoToLineCommand.CommandName),

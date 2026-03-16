@@ -66,6 +66,7 @@
 |---------|----------|-------|
 | **Insert/Overwrite mode** | P3 | Insert key toggle insert-overwrite mode |
 | **Status Bar Enhancements** | P4 | show Word count, Text selection length |
+| Fix Alt hot keys | P3 | Alt+F, Alt+E, etc. for menu access are not always working - getting swallowed by the editor |
 
 ---
 

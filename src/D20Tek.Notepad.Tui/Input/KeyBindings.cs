@@ -82,6 +82,9 @@ internal static class KeyBindings
 
     public static bool TryExecute(EditorViewModel vm, KeyEvent keyEvent)
     {
+        // Alt-key combos are reserved for menu hot keys; never consume them here.
+        if ((keyEvent.Key & Key.AltMask) != 0) return false;
+
         bool shift = (keyEvent.Key & Key.ShiftMask) != 0;
         bool ctrl = (keyEvent.Key & Key.CtrlMask) != 0;
         Key baseKey = keyEvent.Key & ~(Key.ShiftMask | Key.CtrlMask);
