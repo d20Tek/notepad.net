@@ -11,6 +11,7 @@ internal static class MenuDefinitions
             new CommandEntry("_New", FileNewCommand.CommandName),
             MenuEntry.Separator,
             new CommandEntry("_Open...", FileOpenCommand.CommandName),
+            new SubMenuEntry("_Recent", BuildRecentFileItems(viewModel)),
             new CommandEntry("_Save", FileSaveCommand.CommandName),
             new CommandEntry("Save _As...", FileSaveAsCommand.CommandName),
             MenuEntry.Separator,
@@ -78,5 +79,18 @@ internal static class MenuDefinitions
             new CommandEntry("_Getting Started", HelpGettingStartedCommand.CommandName),
             new CommandEntry("_About Notepad.Tui", HelpAboutCommand.CommandName))
     ];
-}
 
+    private static IReadOnlyList<MenuEntry> BuildRecentFileItems(EditorViewModel viewModel)
+    {
+        if (viewModel.RecentFiles.Count == 0) return [new ActionEntry("(Empty)", () => { }, CanExecute: () => false)];
+
+        return [.. viewModel.RecentFiles
+                            .Select((path, i) =>
+                            {
+                                var label = $"_{(i == 9 ? 0 : i + 1)} {Path.GetFileName(path)}";
+                                return (MenuEntry)new ActionEntry(
+                                    label,
+                                    () => OpenRecentCommand.Execute(viewModel, path));
+                            })];
+    }
+}

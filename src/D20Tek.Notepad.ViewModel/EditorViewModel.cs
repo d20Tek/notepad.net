@@ -35,6 +35,7 @@ public sealed partial class EditorViewModel
         _settings = settings;
         _clipboardService = clipboardService;
         Viewport = new Viewport();
+        HookFilePathChanged();
     }
 
     public EditorSession Session { get; }

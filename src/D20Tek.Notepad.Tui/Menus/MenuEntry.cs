@@ -19,3 +19,5 @@ internal sealed record SubMenuEntry(string Label, IReadOnlyList<MenuEntry> Items
     public SubMenuEntry(string label, params MenuEntry[] items)
         : this(label, (IReadOnlyList<MenuEntry>)items) { }
 }
+
+internal sealed record ActionEntry(string Label, Action Execute, Func<bool>? CanExecute = null) : MenuEntry;

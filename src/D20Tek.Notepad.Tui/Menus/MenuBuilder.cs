@@ -23,6 +23,9 @@ internal static class MenuBuilder
         SeparatorEntry => null,
         SubMenuEntry sub => BuildSubMenu(sub, commands),
         CommandEntry cmd => BuildCommandItem(cmd, commands),
+        ActionEntry a => a.CanExecute is null
+            ? new MenuItem(a.Label, "", a.Execute)
+            : new MenuItem(a.Label, "", a.Execute) { CanExecute = a.CanExecute },
         _ => throw new UnreachableException($"Unhandled MenuEntry: {entry.GetType().Name}")
     };
 

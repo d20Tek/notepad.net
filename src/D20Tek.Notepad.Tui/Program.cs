@@ -49,7 +49,17 @@ class Program
         };
         editorView.ZoomRequested += () => ZoomCommands.ShowHint(viewModel, statusBarView);
 
-        top.Add(MenuBuilder.Build(viewModel, statusBarView));
+        var menuBar = MenuBuilder.Build(viewModel, statusBarView);
+        viewModel.RecentFilesChanged += (_) =>
+        {
+            settingsService.Save(viewModel.Settings);
+            top.Remove(menuBar);
+            menuBar = MenuBuilder.Build(viewModel, statusBarView);
+            top.Add(menuBar);
+            top.SetNeedsDisplay();
+        };
+
+        top.Add(menuBar);
         top.Add(editorView);
         top.Add(statusBarView);
 

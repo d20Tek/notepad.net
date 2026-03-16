@@ -142,6 +142,20 @@ public class EditorViewModelFileStateTests
     }
 
     [TestMethod]
+    public void SetFilePath_WhenFilePathChangedHasSubscriber_SetsCurrentFilePath()
+    {
+        // arrange
+        var (viewModel, _) = CreateViewModel(["Hello"]);
+        viewModel.FilePathChanged += [ExcludeFromCodeCoverage] (_) => { };
+
+        // act
+        viewModel.SetFilePath(@"C:\test\file.txt");
+
+        // assert
+        Assert.AreEqual(@"C:\test\file.txt", viewModel.CurrentFilePath);
+    }
+
+    [TestMethod]
     public void SetFilePath_WithNullPath_ThrowsArgumentException()
     {
         // arrange

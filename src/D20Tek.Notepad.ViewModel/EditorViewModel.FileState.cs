@@ -19,7 +19,8 @@ public sealed partial class EditorViewModel
             if (_currentFilePath != value)
             {
                 _currentFilePath = value;
-                FilePathChanged?.Invoke(value);
+                if (FilePathChanged is not null)
+                    FilePathChanged.Invoke(value);
             }
         }
     }

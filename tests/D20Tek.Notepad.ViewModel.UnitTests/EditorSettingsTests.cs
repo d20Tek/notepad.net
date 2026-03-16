@@ -17,6 +17,7 @@ public class EditorSettingsTests
         Assert.IsTrue(settings.UseSpacesForTab);
         Assert.IsFalse(settings.WordWrapEnabled);
         Assert.IsFalse(settings.LineNumbersEnabled);
+        Assert.IsEmpty(settings.RecentFiles);
     }
 
 
@@ -35,6 +36,7 @@ public class EditorSettingsTests
     public void Constructor_WithCustomValues_SetsProperties()
     {
         // act
+        var recentFiles = new List<string> { @"C:\files\a.txt", @"C:\files\b.txt" };
         var settings = new EditorSettings
         {
             MouseWheelScrollLines = 5,
@@ -43,7 +45,8 @@ public class EditorSettingsTests
             TabSize = 2,
             UseSpacesForTab = true,
             WordWrapEnabled = true,
-            LineNumbersEnabled = true
+            LineNumbersEnabled = true,
+            RecentFiles = recentFiles
         };
 
         // assert
@@ -54,6 +57,7 @@ public class EditorSettingsTests
         Assert.IsTrue(settings.UseSpacesForTab);
         Assert.IsTrue(settings.WordWrapEnabled);
         Assert.IsTrue(settings.LineNumbersEnabled);
+        Assert.AreEqual(recentFiles, settings.RecentFiles);
     }
 
     [TestMethod]
@@ -84,8 +88,10 @@ public class EditorSettingsTests
         // arrange
         var original = EditorSettings.Default;
 
+        var recentFiles = new List<string> { @"C:\files\a.txt" };
+
         // act
-        var modified = original with { MouseWheelScrollLines = 10, LineNumbersEnabled = true };
+        var modified = original with { MouseWheelScrollLines = 10, LineNumbersEnabled = true, RecentFiles = recentFiles };
 
         // assert
         Assert.AreEqual(3, original.MouseWheelScrollLines);
@@ -93,6 +99,8 @@ public class EditorSettingsTests
         Assert.AreEqual(original.EdgeScrollSpeed, modified.EdgeScrollSpeed);
         Assert.IsFalse(original.LineNumbersEnabled);
         Assert.IsTrue(modified.LineNumbersEnabled);
+        Assert.IsEmpty(original.RecentFiles);
+        Assert.AreEqual(recentFiles, modified.RecentFiles);
     }
 
     [TestMethod]

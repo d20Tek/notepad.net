@@ -19,4 +19,6 @@ public sealed record EditorSettings
     public bool StatusBarEnabled { get; init; } = false;
 
     public bool LineNumbersEnabled { get; init; } = false;
+
+    public IReadOnlyList<string> RecentFiles { get; init; } = [];
 }
