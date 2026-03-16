@@ -112,5 +112,6 @@ internal sealed class StatusBarView : View, IDisposable
     private static string FormatStatistics(StatusDetails s) =>
         $"Lines: {s.TotalLines:N0} | Chars: {s.TotalCharacters:N0}";
 
-    private static string FormatEncoding(StatusDetails s) => $"{s.DocumentEncoding} | {s.LineEndingStyle}";
+    private static string FormatEncoding(StatusDetails s) =>
+        $"{(s.IsOverwriteMode ? "OVR" : "INS")} | {s.DocumentEncoding} | {s.LineEndingStyle}";
 }

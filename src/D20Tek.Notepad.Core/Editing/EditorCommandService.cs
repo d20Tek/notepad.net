@@ -7,6 +7,8 @@ public sealed class EditorCommandService(EditorSession session)
     // Typing & Editing Commands
     public void TypeCharacter(char c) => _session.InsertText(c.ToString());
 
+    public void OverwriteCharacter(char c) => _session.OverwriteCharacter(c);
+
     public void InsertText(string text) => _session.InsertText(text);
 
     public void InsertNewLine() => _session.InsertNewLine();

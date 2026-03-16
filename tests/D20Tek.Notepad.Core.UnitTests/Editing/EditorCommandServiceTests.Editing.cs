@@ -343,4 +343,35 @@ public partial class EditorCommandServiceTests
         // assert
         Assert.AreEqual("Hello ", session.Document.Lines[0].Content);
     }
+
+    [TestMethod]
+    public void OverwriteCharacter_MidLine_ReplacesCharAtCaret()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello"]);
+        session.Caret = new TextPosition(0, 1);
+        session.Anchor = new TextPosition(0, 1);
+
+        // act
+        service.OverwriteCharacter('X');
+
+        // assert
+        Assert.AreEqual("HXllo", session.Document.Lines[0].Content);
+    }
+
+    [TestMethod]
+    public void OverwriteCharacter_AtLineEnd_InsertsCharacter()
+    {
+        // arrange
+        var (service, session) = CreateService(["Hello"]);
+        session.Caret = new TextPosition(0, 5);
+        session.Anchor = new TextPosition(0, 5);
+
+        // act
+        service.OverwriteCharacter('!');
+
+        // assert
+        Assert.AreEqual("Hello!", session.Document.Lines[0].Content);
+    }
 }
+

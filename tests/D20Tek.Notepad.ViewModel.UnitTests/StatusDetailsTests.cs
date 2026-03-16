@@ -13,7 +13,8 @@ public class StatusDetailsTests
             TotalLines: 100,
             TotalCharacters: 4521,
             DocumentEncoding: "UTF-8",
-            LineEndingStyle: "CRLF");
+            LineEndingStyle: "CRLF",
+            IsOverwriteMode: false);
 
         // assert
         Assert.AreEqual(5, status.CurrentLine);
@@ -22,6 +23,7 @@ public class StatusDetailsTests
         Assert.AreEqual(4521, status.TotalCharacters);
         Assert.AreEqual("UTF-8", status.DocumentEncoding);
         Assert.AreEqual("CRLF", status.LineEndingStyle);
+        Assert.IsFalse(status.IsOverwriteMode);
     }
 
     [TestMethod]
@@ -38,7 +40,8 @@ public class StatusDetailsTests
             TotalLines = 50,
             TotalCharacters = 200,
             DocumentEncoding = "US-ASCII",
-            LineEndingStyle = "LF"
+            LineEndingStyle = "LF",
+            IsOverwriteMode = true
         };
 
         // assert
@@ -49,6 +52,8 @@ public class StatusDetailsTests
         Assert.AreEqual(200, modified.TotalCharacters);
         Assert.AreEqual("US-ASCII", modified.DocumentEncoding);
         Assert.AreEqual("LF", modified.LineEndingStyle);
+        Assert.IsFalse(original.IsOverwriteMode);
+        Assert.IsTrue(modified.IsOverwriteMode);
     }
 
     [TestMethod]
@@ -68,7 +73,7 @@ public class StatusDetailsTests
     {
         // arrange
         var status1 = new StatusDetails(3, 7, 10, 500, "UTF-8", "CRLF");
-        var status2 = new StatusDetails(4, 7, 10, 500, "UTF-8", "CRLF");
+        var status2 = new StatusDetails(3, 7, 10, 500, "UTF-8", "CRLF", IsOverwriteMode: true);
 
         // assert
         Assert.AreNotEqual(status1, status2);
@@ -88,5 +93,6 @@ public class StatusDetailsTests
         Assert.AreEqual(0, status.TotalCharacters);
         Assert.AreEqual("UTF-8", status.DocumentEncoding);
         Assert.AreEqual("CRLF", status.LineEndingStyle);
+        Assert.IsFalse(status.IsOverwriteMode);
     }
 }

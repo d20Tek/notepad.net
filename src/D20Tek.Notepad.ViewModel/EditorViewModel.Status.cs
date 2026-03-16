@@ -44,7 +44,8 @@ public sealed partial class EditorViewModel
             TotalLines: Session.Document.LineCount,
             TotalCharacters: _cachedTotalChars,
             DocumentEncoding: _cachedEncoding,
-            LineEndingStyle: _cachedLineEnding);
+            LineEndingStyle: _cachedLineEnding,
+            IsOverwriteMode: IsOverwriteMode);
     }
 
     private static string GetEncodingDisplay(Encoding encoding)

@@ -28,6 +28,7 @@ public sealed partial class EditorView : View, IDisposable
         _viewModel.SelectionChanged += OnViewModelChanged;
         _viewModel.WordWrapChanged += OnWordWrapChanged;
         _viewModel.LineNumbersChanged += OnLineNumbersChanged;
+        _viewModel.InsertModeChanged += OnInsertModeChanged;
     }
 
     public new void Dispose()
@@ -42,6 +43,7 @@ public sealed partial class EditorView : View, IDisposable
         _viewModel.SelectionChanged -= OnViewModelChanged;
         _viewModel.WordWrapChanged -= OnWordWrapChanged;
         _viewModel.LineNumbersChanged -= OnLineNumbersChanged;
+        _viewModel.InsertModeChanged -= OnInsertModeChanged;
 
         Resized -= OnViewResized;
         Added -= OnAddedToSuperView;
@@ -67,7 +69,8 @@ public sealed partial class EditorView : View, IDisposable
         if (HasFocus && IsCaretVisible())
         {
             var (screenX, screenY) = GetCaretScreenPosition();
-            Application.Driver.SetCursorVisibility(CursorVisibility.Default);
+            var cursorStyle = _viewModel.IsOverwriteMode ? CursorVisibility.Box : CursorVisibility.Default;
+            Application.Driver.SetCursorVisibility(cursorStyle);
             Application.Driver.Move(screenX, screenY);
         }
         else
@@ -146,6 +149,8 @@ public sealed partial class EditorView : View, IDisposable
     }
 
     private void OnLineNumbersChanged(bool _) => SetNeedsDisplay();
+
+    private void OnInsertModeChanged(bool _) => SetNeedsDisplay();
 
     private void OnViewResized(ResizedEventArgs args)
     {

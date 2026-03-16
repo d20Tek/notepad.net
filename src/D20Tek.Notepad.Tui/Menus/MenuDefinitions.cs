@@ -73,7 +73,13 @@ internal static class MenuDefinitions
                 "_Line Numbers",
                 LineNumbersCommand.CommandName,
                 IsCheckable: true,
-                IsChecked: () => viewModel.IsLineNumbersEnabled)),
+                IsChecked: () => viewModel.IsLineNumbersEnabled),
+            MenuEntry.Separator,
+            new CommandEntry(
+                "_Overwrite Mode",
+                OverwriteModeCommand.CommandName,
+                IsCheckable: true,
+                IsChecked: () => viewModel.IsOverwriteMode)),
 
         new TopLevelMenu("_Help",
             new CommandEntry("_Getting Started", HelpGettingStartedCommand.CommandName),

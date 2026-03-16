@@ -11,7 +11,14 @@ public sealed partial class EditorViewModel
     {
         BeginTypingGroupIfNeeded();
         ResetTypingGroupTimer();
-        Commands.TypeCharacter(c);
+
+        bool atLineEnd = Session.Caret.Column >= Session.GetLineLength(Session.Caret.Line);
+
+        if (_isOverwriteMode && !Session.HasSelection && !atLineEnd)
+            Commands.OverwriteCharacter(c);
+        else
+            Commands.TypeCharacter(c);
+
         CheckDirtyStateChanged();
         Refresh();
         EnsureCaretVisible();

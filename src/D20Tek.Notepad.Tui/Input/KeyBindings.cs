@@ -57,6 +57,7 @@ internal static class KeyBindings
         // Editing - New Line and Tab
         [(Key.Enter, false, false)] = vm => vm.InsertNewLine(),
         [(Key.Tab, false, false)] = vm => vm.InsertTab(),
+        [(Key.InsertChar, false, false)] = vm => vm.ToggleInsertMode(),
 
         // Undo/Redo
         [(Key.Z, false, true)] = vm => vm.Undo(),

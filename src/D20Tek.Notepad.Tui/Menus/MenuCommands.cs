@@ -34,6 +34,7 @@ internal static class MenuCommands
         commands.Register(WordWrapCommand.Create(viewModel));
         commands.Register(StatusBarCommand.Create(viewModel));
         commands.Register(LineNumbersCommand.Create(viewModel));
+        commands.Register(OverwriteModeCommand.Create(viewModel));
 
         // Zoom commands
         commands.Register(ZoomCommands.CreateZoomIn(viewModel, statusBarView));

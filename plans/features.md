@@ -49,6 +49,7 @@
 | Zoom In | View menu / Ctrl+= | Status bar hint to use terminal zoom; MessageBox if status bar hidden |
 | Zoom Out | View menu / Ctrl+- | Same hint as Zoom In; also triggered by Ctrl+ScrollWheel |
 | Recent files | File menu | File > Recent submenu > MRU file list |
+| Insert/Overwrite mode | Insert key / View menu | Toggle insert-overwrite mode; OVR/INS in status bar; block cursor in overwrite |
 
 ---
 
@@ -64,9 +65,7 @@
 
 | Feature | Priority | Notes |
 |---------|----------|-------|
-| **Insert/Overwrite mode** | P3 | Insert key toggle insert-overwrite mode |
 | **Status Bar Enhancements** | P4 | show Word count, Text selection length |
-| Fix Alt hot keys | P3 | Alt+F, Alt+E, etc. for menu access are not always working - getting swallowed by the editor |
 
 ---
 

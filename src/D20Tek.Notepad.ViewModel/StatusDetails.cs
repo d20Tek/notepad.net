@@ -6,7 +6,8 @@ public record StatusDetails(
     int TotalLines,
     int TotalCharacters,
     string DocumentEncoding,
-    string LineEndingStyle)
+    string LineEndingStyle,
+    bool IsOverwriteMode = false)
 {
     public static StatusDetails Empty { get; } = new(1, 1, 1, 0, "UTF-8", "CRLF");
 }

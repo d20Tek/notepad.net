@@ -99,6 +99,27 @@ public sealed partial class EditorSession
         Execute(op);
     }
 
+    public void OverwriteCharacter(char c)
+    {
+        if (HasSelection)
+        {
+            ReplaceSelection(c.ToString());
+            return;
+        }
+
+        var line = Document.Lines[Caret.Line];
+        if (Caret.Column >= line.Content.Length)
+        {
+            InsertText(c.ToString());
+            return;
+        }
+
+        var range = new TextRange(Caret, new TextPosition(Caret.Line, Caret.Column + 1));
+        var oldChar = line.Content[Caret.Column].ToString();
+        var op = new ReplaceRangeOperation(range, c.ToString(), oldChar, Caret);
+        Execute(op);
+    }
+
     public void InsertNewLine() => InsertText(Environment.NewLine);
 
     public void DeleteWordLeft()

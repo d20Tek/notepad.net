@@ -234,4 +234,81 @@ public partial class EditorSessionTests
         Assert.AreEqual("Hello", session.Document.Lines[0].Content);
         Assert.AreEqual("World", session.Document.Lines[1].Content);
     }
+
+    [TestMethod]
+    public void OverwriteCharacter_MidLine_ReplacesCharAtCaret()
+    {
+        // arrange
+        var session = CreateSession("Hello");
+        session.Caret = new TextPosition(0, 1);
+        session.Anchor = new TextPosition(0, 1);
+
+        // act
+        session.OverwriteCharacter('X');
+
+        // assert
+        Assert.AreEqual("HXllo", session.Document.Lines[0].Content);
+    }
+
+    [TestMethod]
+    public void OverwriteCharacter_MidLine_AdvancesCaretByOne()
+    {
+        // arrange
+        var session = CreateSession("Hello");
+        session.Caret = new TextPosition(0, 1);
+        session.Anchor = new TextPosition(0, 1);
+
+        // act
+        session.OverwriteCharacter('X');
+
+        // assert
+        Assert.AreEqual(new TextPosition(0, 2), session.Caret);
+    }
+
+    [TestMethod]
+    public void OverwriteCharacter_AtLineEnd_InsertsCharacter()
+    {
+        // arrange
+        var session = CreateSession("Hello");
+        session.Caret = new TextPosition(0, 5);
+        session.Anchor = new TextPosition(0, 5);
+
+        // act
+        session.OverwriteCharacter('!');
+
+        // assert
+        Assert.AreEqual("Hello!", session.Document.Lines[0].Content);
+    }
+
+    [TestMethod]
+    public void OverwriteCharacter_WithSelection_ReplacesSelection()
+    {
+        // arrange
+        var session = CreateSession("Hello World");
+        session.Anchor = new TextPosition(0, 6);
+        session.Caret = new TextPosition(0, 11);
+
+        // act
+        session.OverwriteCharacter('X');
+
+        // assert
+        Assert.AreEqual("Hello X", session.Document.Lines[0].Content);
+    }
+
+    [TestMethod]
+    public void OverwriteCharacter_IsUndoable()
+    {
+        // arrange
+        var session = CreateSession("Hello");
+        session.Caret = new TextPosition(0, 0);
+        session.Anchor = new TextPosition(0, 0);
+        session.OverwriteCharacter('X');
+
+        // act
+        session.Undo();
+
+        // assert
+        Assert.AreEqual("Hello", session.Document.Lines[0].Content);
+    }
 }
+
