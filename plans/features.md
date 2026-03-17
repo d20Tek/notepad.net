@@ -50,6 +50,7 @@
 | Zoom Out | View menu / Ctrl+- | Same hint as Zoom In; also triggered by Ctrl+ScrollWheel |
 | Recent files | File menu | File > Recent submenu > MRU file list |
 | Insert/Overwrite mode | Insert key / View menu | Toggle insert-overwrite mode; OVR/INS in status bar; block cursor in overwrite |
+| | | |
 
 ---
 
@@ -80,12 +81,3 @@
 7. ~~**Help menu (About + Getting Started)**~~
 8. ~~**Zoom** - View menu hint directing users to terminal zoom~~
 9. **Large file support** - Provides context to users
-
----
-
-## Technical Considerations
-
-### Status Bar
-- Terminal.Gui `StatusBar` view
-- Update on caret movement
-- Show: `Ln X, Col Y | UTF-8 | CRLF`

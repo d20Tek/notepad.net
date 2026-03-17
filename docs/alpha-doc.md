@@ -1,11 +1,11 @@
-﻿# Notepad.Tui — Alpha Release (v0.2.3)
+﻿# Notepad.Tui — Alpha Release (v0.2.4)
 
 A fast, clean, and modern **terminal-based text viewer** for .NET, inspired by classic tools like Notepad and contemporary editor engines.  
 This alpha focuses on delivering a rock‑solid view and editing experience with smooth navigation, precise selection, and a responsive UI built on top of Terminal.Gui.
 
-This is the second public preview of the project. It’s intentionally limited in scope, but the foundation is strong and ready for community feedback. This second release includes editing capabilities, undo/redo, and cut/copy/paste support, and find/replace dialogs.
+This is the third public preview of the project. It’s intentionally limited in scope, but the foundation is strong and ready for community feedback. This release includes editing capabilities, undo/redo, cut/copy/paste support, find/replace dialogs, and additional features to round out the experience (status bar, MRU file list, changing file encoding.
 
-This update introduced the editing features, but is still in the early stages of development. The core architecture is in place, but there are still new features planned in future releases. Please try out the tool and share any feedback or issues you encounter!
+This update has the full set of editor features, please try out the tool and share any feedback or issues you encounter!
 
 ---
 
@@ -79,18 +79,20 @@ This update introduced the editing features, but is still in the early stages of
 - Undo/redo operation to change encoding and update the document model accordingly
 - Ensure document IsDirty flag is set when encoding changes
 
+### ✔️ Additional Editing Features
+- Line number gutter in the editor view (optional toggle via View menu)
+- Recent files submenu to quickly access recently opened documents (last 10)
+- Zoom behavior with status bar hint to use terminal zoom, and message box if status bar is hidden
+- Insert/Overwrite mode toggle
+- Help/About dialog with version info & link to documentation
+
 ---
 
 ## What’s *Not* Included Yet (By Design)
 
-We don't provide the full set of features yet. The following features are planned for future phases:
+The following features are planned for future phases:
 
-- Line number column in the editor view
 - Large file support using memory-mapped files
-- Recent files submenu
-- Zoom? (TUI limitations may apply)
-- Insert/Overwrite mode toggle
-- Help/About dialog with version info & link to documentation
 - Status bar enhancements like word count and selection length
 
 The goal of this release is to validate the **interaction model**, **viewport engine**, and **editing capabilities**.
@@ -119,6 +121,8 @@ This architecture is designed for long‑term maintainability and future feature
 
 ## Installing & Running
 
+The Notepad.Tui tool is available as a global .NET tool installable from NuGet.org. You can install it using the following command:
+
 ```bash
-dotnet run -- path/to/file.txt
+dotnet tool install --global notepad.tui --version 0.2.4
 ```
