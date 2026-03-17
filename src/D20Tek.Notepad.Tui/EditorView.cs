@@ -55,7 +55,8 @@ public sealed partial class EditorView : View, IDisposable
         SyncScrollBarState();
 
         _viewModel.RenderFrame(_renderer);
-        if (_viewModel.IsOverwriteMode && HasFocus) DrawOverwriteBlockCursor();
+        if (_viewModel.IsOverwriteMode && HasFocus && !_viewModel.Session.HasSelection)
+            DrawOverwriteBlockCursor();
         base.Redraw(bounds);
     }
 
@@ -70,7 +71,9 @@ public sealed partial class EditorView : View, IDisposable
         if (HasFocus && IsCaretVisible())
         {
             var (screenX, screenY) = GetCaretScreenPosition();
-            var cursorStyle = _viewModel.IsOverwriteMode ? CursorVisibility.Invisible : CursorVisibility.VerticalFix;
+            var cursorStyle = _viewModel.IsOverwriteMode && !_viewModel.Session.HasSelection
+                ? CursorVisibility.Invisible
+                : CursorVisibility.VerticalFix;
             Application.Driver.SetCursorVisibility(cursorStyle);
             Application.Driver.Move(screenX, screenY);
         }
