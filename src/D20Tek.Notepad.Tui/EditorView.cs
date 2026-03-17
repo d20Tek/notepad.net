@@ -55,6 +55,7 @@ public sealed partial class EditorView : View, IDisposable
         SyncScrollBarState();
 
         _viewModel.RenderFrame(_renderer);
+        if (_viewModel.IsOverwriteMode && HasFocus) DrawOverwriteBlockCursor();
         base.Redraw(bounds);
     }
 
@@ -69,7 +70,7 @@ public sealed partial class EditorView : View, IDisposable
         if (HasFocus && IsCaretVisible())
         {
             var (screenX, screenY) = GetCaretScreenPosition();
-            var cursorStyle = _viewModel.IsOverwriteMode ? CursorVisibility.Box : CursorVisibility.Default;
+            var cursorStyle = _viewModel.IsOverwriteMode ? CursorVisibility.Invisible : CursorVisibility.VerticalFix;
             Application.Driver.SetCursorVisibility(cursorStyle);
             Application.Driver.Move(screenX, screenY);
         }
@@ -151,6 +152,26 @@ public sealed partial class EditorView : View, IDisposable
     private void OnLineNumbersChanged(bool _) => SetNeedsDisplay();
 
     private void OnInsertModeChanged(bool _) => SetNeedsDisplay();
+
+    private void DrawOverwriteBlockCursor()
+    {
+        if (!IsCaretVisible()) return;
+
+        var caret = _viewModel.CaretViewPosition;
+        var lines = _viewModel.VisibleLines;
+        if (caret.LineIndex < 0 || caret.LineIndex >= lines.Count) return;
+
+        var lineText = lines[caret.LineIndex].Text;
+        string ch = caret.Column < lineText.Length ? lineText[caret.Column].ToString() : " ";
+
+        var (screenX, screenY) = GetCaretScreenPosition();
+        var normal = ColorScheme.Normal;
+
+        Application.Driver.SetAttribute(new Terminal.Gui.Attribute(normal.Background, normal.Foreground));
+        Application.Driver.Move(screenX, screenY);
+        Application.Driver.AddStr(ch);
+        Application.Driver.SetAttribute(normal);
+    }
 
     private void OnViewResized(ResizedEventArgs args)
     {

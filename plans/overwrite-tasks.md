@@ -202,11 +202,9 @@ File: `src\D20Tek.Notepad.Tui\Input\KeyBindings.cs`
 
 ### Task 4.5: Switch cursor shape in `EditorView.PositionCursor()`
 File: `src\D20Tek.Notepad.Tui\EditorView.cs`
-- [x] Change `SetCursorVisibility(CursorVisibility.Default)` to:
-  ```csharp
-  var cursorStyle = _viewModel.IsOverwriteMode ? CursorVisibility.Box : CursorVisibility.Default;
-  Application.Driver.SetCursorVisibility(cursorStyle);
-  ```
+- [x] Use `CursorVisibility.Invisible` in overwrite mode and `CursorVisibility.VerticalFix` in insert mode
+- [x] Draw a **software block cursor** in `Redraw` via `DrawOverwriteBlockCursor()` — renders the
+  character at the caret with inverted foreground/background colors, works in all terminals
 - [x] Subscribe to `_viewModel.InsertModeChanged` in the constructor:
   `_viewModel.InsertModeChanged += OnInsertModeChanged;`
 - [x] Add handler: `private void OnInsertModeChanged(bool _) => SetNeedsDisplay();`
@@ -253,6 +251,6 @@ File: `src\D20Tek.Notepad.Tui\EditorView.cs`
 - [x] In overwrite mode, typing with an active selection replaces the selection
 - [x] `Enter`, `Backspace`, `Delete`, and `Tab` behave identically in both modes
 - [x] Status bar shows `INS` in insert mode and `OVR` in overwrite mode (when status bar is visible)
-- [ ] Caret renders as a line cursor in insert mode and a block cursor in overwrite mode
+- [x] Caret renders as a line cursor (I-beam) in insert mode and a block cursor in overwrite mode
 - [x] Overwrite operations are undoable/redoable and group with the existing typing-group mechanism
 - [x] Mode resets to insert on every application launch (not persisted to `editor-settings.json`)
