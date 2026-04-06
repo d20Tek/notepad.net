@@ -232,7 +232,7 @@ public sealed partial class EditorViewModel
         else
         {
             // Move to previous visual line, preserving column position if possible
-            var newDocPos = GetDocumentPositionForVisualLine(visualLineIndex - 1, caret.Column);
+            var newDocPos = GetDocumentPositionForVisualLine(visualLineIndex - 1, GetVisualColumnForCaret(caret));
             Session.Caret = newDocPos;
         }
 
@@ -258,7 +258,7 @@ public sealed partial class EditorViewModel
         else
         {
             // Move to next visual line, preserving column position if possible
-            var newDocPos = GetDocumentPositionForVisualLine(visualLineIndex + 1, caret.Column);
+            var newDocPos = GetDocumentPositionForVisualLine(visualLineIndex + 1, GetVisualColumnForCaret(caret));
             Session.Caret = newDocPos;
         }
 
@@ -266,6 +266,23 @@ public sealed partial class EditorViewModel
         {
             Session.Anchor = Session.Caret;
         }
+    }
+
+    [ExcludeFromCodeCoverage]
+    private int GetVisualColumnForCaret(TextPosition caret)
+    {
+        if (_viewportWidth <= 0 || caret.Line < 0 || caret.Line >= Session.Document.Lines.Count)
+            return caret.Column;
+
+        var segments = WordWrapCalculator.WrapLine(Session.Document.Lines[caret.Line].Content, _viewportWidth);
+
+        for (int i = 0; i < segments.Count - 1; i++)
+        {
+            if (caret.Column <= segments[i].StartColumn + segments[i].Length)
+                return caret.Column - segments[i].StartColumn;
+        }
+
+        return segments.Count > 0 ? caret.Column - segments[^1].StartColumn : caret.Column;
     }
 
     [ExcludeFromCodeCoverage]

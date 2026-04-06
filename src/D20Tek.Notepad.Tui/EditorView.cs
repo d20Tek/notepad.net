@@ -236,15 +236,19 @@ public sealed partial class EditorView : View, IDisposable
         return caretViewPos.LineIndex >= 0 &&
                caretViewPos.LineIndex < viewport.VisibleLineCount &&
                caretViewPos.Column >= 0 &&
-               caretViewPos.Column < _viewModel.ViewportWidth;
+               caretViewPos.Column <= _viewModel.ViewportWidth;
     }
 
     private (int X, int Y) GetCaretScreenPosition()
     {
         var caretViewPos = _viewModel.CaretViewPosition;
 
-        // CaretViewPosition is already relative to visible area; offset by gutter
-        int screenX = caretViewPos.Column + Frame.X + _viewModel.GutterWidth;
+        // Clamp column so a caret at the end of a full-width wrapped segment stays on-screen
+        int effectiveColumn = _viewModel.ViewportWidth > 0
+            ? Math.Min(caretViewPos.Column, _viewModel.ViewportWidth - 1)
+            : 0;
+
+        int screenX = effectiveColumn + Frame.X + _viewModel.GutterWidth;
         int screenY = caretViewPos.LineIndex + Frame.Y;
 
         return (screenX, screenY);

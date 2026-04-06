@@ -1,4 +1,4 @@
-﻿# Notepad.Tui — Alpha Release (v0.2.4)
+﻿# Notepad.Tui — Alpha Release (v0.2.5)
 
 A fast, clean, and modern **terminal-based text viewer** for .NET, inspired by classic tools like Notepad and contemporary editor engines.  
 This alpha focuses on delivering a rock‑solid view and editing experience with smooth navigation, precise selection, and a responsive UI built on top of Terminal.Gui.
@@ -124,5 +124,5 @@ This architecture is designed for long‑term maintainability and future feature
 The Notepad.Tui tool is available as a global .NET tool installable from NuGet.org. You can install it using the following command:
 
 ```bash
-dotnet tool install --global notepad.tui --version 0.2.4
+dotnet tool install --global notepad.tui --version 0.2.5
 ```

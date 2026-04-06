@@ -18,8 +18,8 @@
     <PackageProjectUrl>https://github.com/d20Tek/notepad.net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/d20Tek/notepad.net</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <AssemblyVersion>0.2.4</AssemblyVersion>
-    <FileVersion>0.2.4</FileVersion>
+    <AssemblyVersion>0.2.5</AssemblyVersion>
+    <FileVersion>0.2.5</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
