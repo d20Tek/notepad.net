@@ -80,14 +80,14 @@ exposed in the UI.
 
 ### Task 1.1: Create `ILoadProgress` interface
 File: `src\D20Tek.Notepad.Core\Storage\ILoadProgress.cs`
-- [ ] Define `public interface ILoadProgress`
-- [ ] Add `void Report(long bytesProcessed, long totalBytes)` method
-- [ ] Add `static ILoadProgress None { get; }` returning a no-op implementation
+- [x] Define `public interface ILoadProgress`
+- [x] Add `void Report(long bytesProcessed, long totalBytes)` method
+- [x] Add `static ILoadProgress None { get; }` returning a no-op implementation
 
 ### Task 1.2: Create `LargeTextStorage` class
 File: `src\D20Tek.Notepad.Core\Storage\LargeTextStorage.cs`
-- [ ] Define `internal sealed class LargeTextStorage`
-- [ ] Add `public DocumentData Load(string filePath, ILoadProgress? progress = null,
+- [x] Define `internal sealed class LargeTextStorage`
+- [x] Add `public DocumentData Load(string filePath, ILoadProgress? progress = null,
       CancellationToken cancellation = default)`:
   - Open `MemoryMappedFile.CreateFromFile(filePath, FileMode.Open, null, 0,
     MemoryMappedFileAccess.Read)` in a `using` block
@@ -99,14 +99,14 @@ File: `src\D20Tek.Notepad.Core\Storage\LargeTextStorage.cs`
   - Call `MaterializeLines(accessor, lineOffsets, fileLength, encoding, progress,
     cancellation)` to get `List<TextLine>`
   - Return `new DocumentData(lines, encoding, lineEndingStyle)`
-- [ ] Add `private static (List<long> Offsets, LineEndingStyle Style) BuildLineIndex(...)`:
+- [x] Add `private static (List<long> Offsets, LineEndingStyle Style) BuildLineIndex(...)`:
   - Walk bytes from `preambleLength` to end of file
   - Use `accessor.ReadByte(offset)` or read chunks via `ReadArray<byte>` for performance
   - Record byte offset of each line start (first offset = preambleLength)
   - Detect `\r\n` vs `\n` vs `\r` for `LineEndingStyle` (from first newline found)
   - Call `cancellation.ThrowIfCancellationRequested()` periodically
   - Report progress periodically via `progress?.Report(offset, fileLength)`
-- [ ] Add `private static List<TextLine> MaterializeLines(...)`:
+- [x] Add `private static List<TextLine> MaterializeLines(...)`:
   - Pre-allocate `List<TextLine>(lineOffsets.Count)`
   - For each consecutive pair of offsets, compute byte length of line (excluding line
     ending bytes)
@@ -117,46 +117,46 @@ File: `src\D20Tek.Notepad.Core\Storage\LargeTextStorage.cs`
 
 ### Task 1.3: Add `LargeFileThresholdBytes` to `EditorSettings`
 File: `src\D20Tek.Notepad.ViewModel\EditorSettings.cs`
-- [ ] Add `long LargeFileThresholdBytes = 10_485_760` parameter to the record
-- [ ] Ensure `EditorSettings.Default` includes this value
+- [x] Add `long LargeFileThresholdBytes = 10_485_760` parameter to the record
+- [x] Ensure `EditorSettings.Default` includes this value
 
 ### Task 1.4: Modify `DocumentFactory.Load` to select storage strategy
 File: `src\D20Tek.Notepad.Core\Document\DocumentFactory.cs`
-- [ ] Change `Load(string filePath)` signature to
+- [x] Change `Load(string filePath)` signature to
       `Load(string filePath, long largeFileThreshold = 10_485_760,
       ILoadProgress? progress = null, CancellationToken cancellation = default)`
-- [ ] Add file-size check: `new FileInfo(filePath).Length`
-- [ ] If below threshold: use existing `SimpleTextStorage` path (unchanged)
-- [ ] If at or above threshold: use `new LargeTextStorage().Load(filePath, progress,
+- [x] Add file-size check: `new FileInfo(filePath).Length`
+- [x] If below threshold: use existing `SimpleTextStorage` path (unchanged)
+- [x] If at or above threshold: use `new LargeTextStorage().Load(filePath, progress,
       cancellation)`
-- [ ] Both paths produce `DocumentData` → `Create(data)` → `IDocument` (unchanged)
+- [x] Both paths produce `DocumentData` → `Create(data)` → `IDocument` (unchanged)
 
 ### Task 1.5: Update `IDocumentFactory` interface
 File: `src\D20Tek.Notepad.Core\Document\IDocumentFactory.cs`
-- [ ] Update `Load` signature to match `DocumentFactory.Load` (add optional parameters
+- [x] Update `Load` signature to match `DocumentFactory.Load` (add optional parameters
       for threshold, progress, and cancellation)
 
 ### Task 1.6: Unit tests for `LargeTextStorage`
 File: `tests\D20Tek.Notepad.Core.UnitTests\Storage\LargeTextStorageTests.cs`
-- [ ] `Load_SmallUtf8File_ReturnsCorrectLinesAndEncoding`
-- [ ] `Load_FileWithCrLfEndings_DetectsLineEndingStyle`
-- [ ] `Load_FileWithLfEndings_DetectsLineEndingStyle`
-- [ ] `Load_Utf8BomFile_StripsAndDetectsEncoding`
-- [ ] `Load_EmptyFile_ReturnsSingleEmptyLine`
-- [ ] `Load_SingleLineFile_ReturnsSingleLine`
-- [ ] `Load_ReportsProgress`
-- [ ] `Load_CancellationRequested_ThrowsOperationCanceledException`
+- [x] `Load_SmallUtf8File_ReturnsCorrectLinesAndEncoding`
+- [x] `Load_FileWithCrLfEndings_DetectsLineEndingStyle`
+- [x] `Load_FileWithLfEndings_DetectsLineEndingStyle`
+- [x] `Load_Utf8BomFile_StripsAndDetectsEncoding`
+- [x] `Load_EmptyFile_ReturnsSingleEmptyLine`
+- [x] `Load_SingleLineFile_ReturnsSingleLine`
+- [x] `Load_ReportsProgress`
+- [x] `Load_CancellationRequested_ThrowsOperationCanceledException`
 
 ### Task 1.7: Unit tests for updated `DocumentFactory.Load`
 File: `tests\D20Tek.Notepad.Core.UnitTests\Document\DocumentFactoryTests.cs`
-- [ ] `Load_FileBelowThreshold_UsesSimpleStorage`
-- [ ] `Load_FileAtOrAboveThreshold_UsesLargeStorage`
-- [ ] Update any existing tests affected by the signature change
+- [x] `Load_FileBelowThreshold_UsesSimpleStorage`
+- [x] `Load_FileAtOrAboveThreshold_UsesLargeStorage`
+- [x] Update any existing tests affected by the signature change
 
 ### Task 1.8: Unit tests for `EditorSettings.LargeFileThresholdBytes`
 File: `tests\D20Tek.Notepad.ViewModel.UnitTests\EditorSettingsTests.cs`
-- [ ] Update existing tests to include `LargeFileThresholdBytes` assertions
-- [ ] Verify default value is `10_485_760`
+- [x] Update existing tests to include `LargeFileThresholdBytes` assertions
+- [x] Verify default value is `10_485_760`
 
 ---
 

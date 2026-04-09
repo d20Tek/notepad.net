@@ -19,12 +19,24 @@ public sealed class DocumentFactory : IDocumentFactory
 
     public IDocument Empty { get; } = new Document([TextLine.Empty], Encoding.UTF8, LineEndingStyle.CRLF);
 
-    public IDocument Load(string filePath)
+    public IDocument Load(
+        string filePath,
+        long largeFileThreshold = 10_485_760,
+        ILoadProgress? progress = null,
+        CancellationToken cancellation = default)
     {
-        using var stream = File.OpenRead(filePath);
+        var fileLength = new FileInfo(filePath).Length;
 
-        var storage = new SimpleTextStorage();
-        DocumentData data = storage.Load(stream);
+        DocumentData data;
+        if (fileLength < largeFileThreshold)
+        {
+            using var stream = File.OpenRead(filePath);
+            data = new SimpleTextStorage().Load(stream);
+        }
+        else
+        {
+            data = new LargeTextStorage().Load(filePath, progress, cancellation);
+        }
 
         return Create(data);
     }

@@ -491,4 +491,45 @@ public class DocumentFactoryTests
             File.Delete(tempFile);
         }
     }
+
+    // Threshold-based loading tests
+    [TestMethod]
+    public void Load_FileBelowThreshold_UsesSimpleStorage()
+    {
+        // arrange
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, "Hello\r\nWorld", Encoding.UTF8);
+
+            // act
+            var result = _factory.Load(tempFile, largeFileThreshold: 10_485_760);
+
+            // assert
+            Assert.HasCount(2, result.Lines);
+            Assert.AreEqual("Hello", result.Lines[0].Content);
+            Assert.AreEqual("World", result.Lines[1].Content);
+        }
+        finally { File.Delete(tempFile); }
+    }
+
+    [TestMethod]
+    public void Load_FileAtOrAboveThreshold_UsesLargeStorage()
+    {
+        // arrange
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, "Line1\r\nLine2\r\nLine3", Encoding.UTF8);
+
+            // act — set threshold to 1 byte to force the large-storage path
+            var result = _factory.Load(tempFile, largeFileThreshold: 1);
+
+            // assert
+            Assert.AreEqual(3, result.Lines.Count);
+            Assert.AreEqual("Line1", result.Lines[0].Content);
+            Assert.AreEqual("Line3", result.Lines[2].Content);
+        }
+        finally { File.Delete(tempFile); }
+    }
 }

@@ -21,4 +21,6 @@ public sealed record EditorSettings
     public bool LineNumbersEnabled { get; init; } = false;
 
     public IReadOnlyList<string> RecentFiles { get; init; } = [];
+
+    public long LargeFileThresholdBytes { get; init; } = 10_485_760;
 }

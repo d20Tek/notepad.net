@@ -18,6 +18,7 @@ public class EditorSettingsTests
         Assert.IsFalse(settings.WordWrapEnabled);
         Assert.IsFalse(settings.LineNumbersEnabled);
         Assert.IsEmpty(settings.RecentFiles);
+        Assert.AreEqual(10_485_760L, settings.LargeFileThresholdBytes);
     }
 
 
@@ -109,6 +110,27 @@ public class EditorSettingsTests
         // arrange
         var settings1 = new EditorSettings { LineNumbersEnabled = true };
         var settings2 = new EditorSettings { LineNumbersEnabled = false };
+
+        // assert
+        Assert.AreNotEqual(settings1, settings2);
+    }
+
+    [TestMethod]
+    public void Default_LargeFileThresholdBytes_Is10MB()
+    {
+        // act
+        var settings = EditorSettings.Default;
+
+        // assert
+        Assert.AreEqual(10_485_760L, settings.LargeFileThresholdBytes);
+    }
+
+    [TestMethod]
+    public void RecordEquality_WithDifferentLargeFileThresholdBytes_AreNotEqual()
+    {
+        // arrange
+        var settings1 = new EditorSettings { LargeFileThresholdBytes = 10_485_760 };
+        var settings2 = new EditorSettings { LargeFileThresholdBytes = 5_242_880 };
 
         // assert
         Assert.AreNotEqual(settings1, settings2);
