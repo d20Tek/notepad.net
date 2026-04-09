@@ -164,23 +164,23 @@ File: `tests\D20Tek.Notepad.ViewModel.UnitTests\EditorSettingsTests.cs`
 
 ### Task 2.1: Create `LoadProgressDialog` in Tui project
 File: `src\D20Tek.Notepad.Tui\Dialogs\LoadProgressDialog.cs`
-- [ ] Define `internal sealed class LoadProgressDialog : Dialog` (Terminal.Gui v1 pattern)
-- [ ] Display a centered dialog with:
+- [x] Define `internal sealed class LoadProgressDialog : Dialog` (Terminal.Gui v1 pattern)
+- [x] Display a centered dialog with:
   - Title: `"Loading Large File"`
   - A `Label` showing `"Loading {fileName}..."` 
   - A `ProgressBar` bound to `ILoadProgress.Report` updates
   - A `"Cancel"` button wired to `CancellationTokenSource.Cancel()`
-- [ ] Implement `ILoadProgress` to update the progress bar via
+- [x] Implement `ILoadProgress` to update the progress bar via
       `Application.MainLoop.Invoke()` for thread-safe UI updates
-- [ ] Expose `CancellationToken Token` property for callers
-- [ ] Expose a factory method: `static LoadProgressDialog Create(string fileName)`
+- [x] Expose `CancellationToken Token` property for callers
+- [x] Expose a factory method: `static LoadProgressDialog Create(string fileName)`
 
 ### Task 2.2: Modify `FileOpenCommand` to handle large files
 File: `src\D20Tek.Notepad.Tui\Commands\FileOpenCommand.cs`
-- [ ] After getting `filePath` from `OpenDialog`, check file size against
+- [x] After getting `filePath` from `OpenDialog`, check file size against
       `viewModel.Settings.LargeFileThresholdBytes`
-- [ ] If below threshold: use existing `factory.Load(filePath)` path (unchanged)
-- [ ] If at/above threshold:
+- [x] If below threshold: use existing `factory.Load(filePath)` path (unchanged)
+- [x] If at/above threshold:
   - Create `LoadProgressDialog` with the file name
   - Run the load on a background thread (`Task.Run`) passing the dialog's
     `ILoadProgress` and `CancellationToken`
@@ -188,23 +188,23 @@ File: `src\D20Tek.Notepad.Tui\Commands\FileOpenCommand.cs`
   - On completion, close dialog and apply document to session
   - On cancellation, show no error — just return
   - On exception, show `MessageBox.ErrorQuery`
-- [ ] Extract shared document-apply logic into a private helper to avoid duplication
+- [x] Extract shared document-apply logic into a private helper to avoid duplication
 
 ### Task 2.3: Modify `OpenRecentCommand` to handle large files
 File: `src\D20Tek.Notepad.Tui\Commands\OpenRecentCommand.cs`
-- [ ] Apply the same large-file check + progress dialog pattern as `FileOpenCommand`
-- [ ] Extract any shared helper from Task 2.2 if both commands need the same logic
+- [x] Apply the same large-file check + progress dialog pattern as `FileOpenCommand`
+- [x] Extract any shared helper from Task 2.2 if both commands need the same logic
       (consider a `FileLoadHelper` static class in the Commands folder)
 
 ### Task 2.4: Create `FileLoadHelper` for shared load-and-apply logic
 File: `src\D20Tek.Notepad.Tui\Commands\FileLoadHelper.cs`
-- [ ] Define `internal static class FileLoadHelper`
-- [ ] Add `public static bool LoadAndApply(EditorViewModel viewModel, string filePath)`:
+- [x] Define `internal static class FileLoadHelper`
+- [x] Add `public static bool LoadAndApply(EditorViewModel viewModel, string filePath)`:
   - Check file size vs `viewModel.Settings.LargeFileThresholdBytes`
   - Small file: synchronous `factory.Load(filePath)` → apply to session → return true
   - Large file: create `LoadProgressDialog`, run background load, show dialog, apply
     result on completion, handle cancellation/errors → return true/false
-- [ ] Both `FileOpenCommand.Execute` and `OpenRecentCommand.Execute` call this helper
+- [x] Both `FileOpenCommand.Execute` and `OpenRecentCommand.Execute` call this helper
       after the unsaved-changes check and file selection
 
 ---
@@ -213,21 +213,21 @@ File: `src\D20Tek.Notepad.Tui\Commands\FileLoadHelper.cs`
 
 ### Task 3.1: Use chunked byte reading in `BuildLineIndex`
 File: `src\D20Tek.Notepad.Core\Storage\LargeTextStorage.cs`
-- [ ] Instead of `ReadByte` one at a time, read in 64 KB (or configurable) chunks
+- [x] Instead of `ReadByte` one at a time, read in 64 KB (or configurable) chunks
       using `accessor.ReadArray<byte>(offset, buffer, 0, chunkSize)`
-- [ ] Process the chunk buffer to find newline byte positions
-- [ ] Handle newline characters that span chunk boundaries (`\r` at end of chunk,
+- [x] Process the chunk buffer to find newline byte positions
+- [x] Handle newline characters that span chunk boundaries (`\r` at end of chunk,
       `\n` at start of next)
 
 ### Task 3.2: Use `Span<byte>` and `unsafe` accessor for materialization
 File: `src\D20Tek.Notepad.Core\Storage\LargeTextStorage.cs`
-- [ ] For `MaterializeLines`, consider using `MemoryMappedViewAccessor.SafeMemoryMappedViewHandle`
+- [x] For `MaterializeLines`, consider using `MemoryMappedViewAccessor.SafeMemoryMappedViewHandle`
       with `AcquirePointer` / `ReleasePointer` to get direct byte pointer access
-- [ ] Use `Encoding.GetString(ReadOnlySpan<byte>)` for zero-copy decoding
-- [ ] Only apply if benchmarks show measurable improvement over `ReadArray`
+- [x] Use `Encoding.GetString(ReadOnlySpan<byte>)` for zero-copy decoding
+- [x] Only apply if benchmarks show measurable improvement over `ReadArray`
 
 ### Task 3.3: Benchmark `LargeTextStorage` vs `SimpleTextStorage`
-- [ ] Create a benchmark (manual or BenchmarkDotNet) comparing load times:
+- [x] Create a benchmark (manual) comparing load times:
   - 1 MB file, 10 MB file, 100 MB file, 500 MB file
   - Measure wall-clock time and peak memory allocation
   - Document results in this file or a separate benchmark report

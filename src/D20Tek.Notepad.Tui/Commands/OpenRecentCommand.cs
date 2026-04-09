@@ -14,22 +14,7 @@ internal static class OpenRecentCommand
             return;
         }
 
-        try
-        {
-            var factory = new DocumentFactory();
-            var newDoc = factory.Load(filePath);
-
-            viewModel.Session.ReplaceDocument(newDoc);
-            viewModel.Session.UndoStack.Clear();
-            viewModel.SetFilePath(Path.GetFullPath(filePath));
-            viewModel.ResetCleanVersion();
-            viewModel.Viewport.Reset();
-            viewModel.Refresh();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.ErrorQuery("Error", $"Failed to open file:\n{ex.Message}", "OK");
-        }
+        FileLoadHelper.LoadAndApply(viewModel, filePath);
     }
 
     public static UiCommand Create(EditorViewModel viewModel, string filePath, int index) =>

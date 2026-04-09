@@ -23,24 +23,7 @@ internal static class FileOpenCommand
 
         if (dialog.Canceled || dialog.FilePaths.Count == 0) return;
 
-        string filePath = dialog.FilePaths[0];
-
-        try
-        {
-            var factory = new DocumentFactory();
-            var newDoc = factory.Load(filePath);
-
-            viewModel.Session.ReplaceDocument(newDoc);
-            viewModel.Session.UndoStack.Clear(); 
-            viewModel.SetFilePath(Path.GetFullPath(filePath));
-            viewModel.ResetCleanVersion();
-            viewModel.Viewport.Reset();
-            viewModel.Refresh();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.ErrorQuery("Error", $"Failed to open file:\n{ex.Message}", "OK");
-        }
+        FileLoadHelper.LoadAndApply(viewModel, dialog.FilePaths[0]);
     }
 
     public static UiCommand Create(EditorViewModel viewModel) =>

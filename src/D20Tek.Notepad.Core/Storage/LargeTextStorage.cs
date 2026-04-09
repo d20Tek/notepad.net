@@ -138,7 +138,7 @@ internal sealed class LargeTextStorage
         return (offsets, lineEndingStyle);
     }
 
-    private List<TextLine> MaterializeLines(
+    private unsafe List<TextLine> MaterializeLines(
         MemoryMappedViewAccessor accessor,
         List<long> lineOffsets,
         long fileLength,
@@ -148,49 +148,49 @@ internal sealed class LargeTextStorage
     {
         var lines = new List<TextLine>(lineOffsets.Count);
 
-        for (int i = 0; i < lineOffsets.Count; i++)
+        byte* basePtr = null;
+        accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref basePtr);
+        try
         {
-            if (i % _progressInterval == 0)
+            for (int i = 0; i < lineOffsets.Count; i++)
             {
-                cancellation.ThrowIfCancellationRequested();
-                progress?.Report(lineOffsets[i], fileLength);
-            }
-
-            long start = lineOffsets[i];
-            long end = (i + 1 < lineOffsets.Count) ? lineOffsets[i + 1] : fileLength;
-
-            // Strip line ending bytes from end
-            long contentEnd = end;
-            if (contentEnd > start)
-            {
-                byte lastByte = accessor.ReadByte(contentEnd - 1);
-                if (lastByte == '\n')
+                if (i % _progressInterval == 0)
                 {
-                    contentEnd--;
-                    if (contentEnd > start && accessor.ReadByte(contentEnd - 1) == '\r')
+                    cancellation.ThrowIfCancellationRequested();
+                    progress?.Report(lineOffsets[i], fileLength);
+                }
+
+                long start = lineOffsets[i];
+                long end = (i + 1 < lineOffsets.Count) ? lineOffsets[i + 1] : fileLength;
+
+                // Strip line ending bytes from end
+                long contentEnd = end;
+                if (contentEnd > start)
+                {
+                    byte lastByte = *(basePtr + contentEnd - 1);
+                    if (lastByte == '\n')
+                    {
                         contentEnd--;
+                        if (contentEnd > start && *(basePtr + contentEnd - 1) == '\r')
+                            contentEnd--;
+                    }
+                    else if (lastByte == '\r')
+                    {
+                        contentEnd--;
+                    }
                 }
-                else if (lastByte == '\r')
-                {
-                    contentEnd--;
-                }
-            }
 
-            int byteCount = (int)(contentEnd - start);
-            string content;
+                int byteCount = (int)(contentEnd - start);
+                string content = byteCount <= 0
+                    ? string.Empty
+                    : encoding.GetString(new ReadOnlySpan<byte>(basePtr + start, byteCount));
 
-            if (byteCount <= 0)
-            {
-                content = string.Empty;
+                lines.Add(new TextLine(content));
             }
-            else
-            {
-                var bytes = new byte[byteCount];
-                accessor.ReadArray(start, bytes, 0, byteCount);
-                content = encoding.GetString(bytes);
-            }
-
-            lines.Add(new TextLine(content));
+        }
+        finally
+        {
+            accessor.SafeMemoryMappedViewHandle.ReleasePointer();
         }
 
         progress?.Report(fileLength, fileLength);
