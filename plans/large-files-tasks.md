@@ -275,22 +275,22 @@ File: `tests\D20Tek.Notepad.Core.UnitTests\Storage\LargeTextStorageTests.cs`
 
 ### Task 5.1: Integration test — open large file via `DocumentFactory`
 File: `tests\D20Tek.Notepad.Core.UnitTests\Document\DocumentFactoryTests.cs`
-- [ ] Create a temporary file > threshold size, load via `DocumentFactory.Load`
+- [x] Create a temporary file > threshold size, load via `DocumentFactory.Load`
       with threshold set to small value (e.g., 100 bytes) to force large-file path
-- [ ] Verify line count, first line content, last line content, encoding, line ending
+- [x] Verify line count, first line content, last line content, encoding, line ending
 
 ### Task 5.2: Verify save round-trip for large-file-loaded documents
 File: `tests\D20Tek.Notepad.Core.UnitTests\Document\DocumentFactoryTests.cs`
-- [ ] Load a file via large-file path
-- [ ] Save via `DocumentFactory.Save`
-- [ ] Re-load and verify content matches original
+- [x] Load a file via large-file path
+- [x] Save via `DocumentFactory.Save`
+- [x] Re-load and verify content matches original
 
 ### Task 5.3: Verify editing operations work after large-file load
 File: `tests\D20Tek.Notepad.Core.UnitTests\Editing\EditorSessionTests.Commands.cs`
-- [ ] Load a document via large-file path
-- [ ] Create `EditorSession` with the loaded document
-- [ ] Perform InsertText, Backspace, Delete, Undo, Redo
-- [ ] Verify document state is correct after each operation
+- [x] Load a document via large-file path
+- [x] Create `EditorSession` with the loaded document
+- [x] Perform InsertText, Backspace, Delete, Undo, Redo
+- [x] Verify document state is correct after each operation
 
 ### Task 5.4: Update `features.md`
 File: `plans\features.md`
