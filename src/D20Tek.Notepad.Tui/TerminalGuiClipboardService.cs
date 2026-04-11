@@ -8,7 +8,23 @@ internal sealed class TerminalGuiClipboardService : IClipboardService
         Clipboard.TrySetClipboardData(text);
     }
 
-    public string? GetText() => Clipboard.TryGetClipboardData(out string? data) ? data : null;
+    public string? GetText()
+    {
+        if (!Clipboard.IsSupported) return null;
 
-    public bool ContainsText => Clipboard.TryGetClipboardData(out string? data) && !string.IsNullOrEmpty(data);
+        try
+        {
+            var contents = Clipboard.Contents?.ToString();
+            return string.IsNullOrEmpty(contents) ? null : contents;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    // Always report true to avoid Terminal.Gui's TryGetClipboardData infinite loop
+    // (its internal GetClipboardDataImpl busy-waits when clipboard returns null).
+    // The Paste command itself handles empty clipboard gracefully.
+    public bool ContainsText => Clipboard.IsSupported;
 }

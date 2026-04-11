@@ -92,10 +92,16 @@ public partial class EditorView
         var viewportLines = _viewModel.Viewport.VisibleLineCount;
         int maxPosition = Math.Max(0, totalLines - viewportLines);
 
-        _vScrollBar.Size = Math.Max(1, totalLines);
-        _vScrollBar.Position = Math.Clamp(_viewModel.Viewport.FirstVisibleLine, 0, maxPosition);
-        _vScrollBar.Visible = totalLines > viewportLines;
-        _vScrollBar.SetNeedsDisplay();
+        int newSize = Math.Max(1, totalLines);
+        int newPosition = Math.Clamp(_viewModel.Viewport.FirstVisibleLine, 0, maxPosition);
+        bool newVisible = totalLines > viewportLines;
+
+        // Change guards: Terminal.Gui's Size setter always calls SetNeedsDisplay (no
+        // change check), so setting the same value every Redraw creates a continuous
+        // redraw cycle that starves input processing.
+        if (_vScrollBar.Size != newSize) _vScrollBar.Size = newSize;
+        if (_vScrollBar.Position != newPosition) _vScrollBar.Position = newPosition;
+        if (_vScrollBar.Visible != newVisible) _vScrollBar.Visible = newVisible;
     }
 
     private void SyncHorizontalScrollBar()
@@ -105,8 +111,7 @@ public partial class EditorView
         // Hide horizontal scrollbar when word wrap is enabled
         if (_viewModel.IsWordWrapEnabled)
         {
-            _hScrollBar.Visible = false;
-            _hScrollBar.SetNeedsDisplay();
+            if (_hScrollBar.Visible) _hScrollBar.Visible = false;
             return;
         }
 
@@ -114,10 +119,13 @@ public partial class EditorView
         var viewportCols = _viewModel.ViewportWidth;
         int maxPosition = Math.Max(0, maxLineLength - viewportCols);
 
-        _hScrollBar.Size = Math.Max(1, maxLineLength + 1);
-        _hScrollBar.Position = Math.Clamp(_viewModel.Viewport.HorizontalOffset, 0, maxPosition);
-        _hScrollBar.Visible = maxLineLength > viewportCols;
-        _hScrollBar.SetNeedsDisplay();
+        int newSize = Math.Max(1, maxLineLength + 1);
+        int newPosition = Math.Clamp(_viewModel.Viewport.HorizontalOffset, 0, maxPosition);
+        bool newVisible = maxLineLength > viewportCols;
+
+        if (_hScrollBar.Size != newSize) _hScrollBar.Size = newSize;
+        if (_hScrollBar.Position != newPosition) _hScrollBar.Position = newPosition;
+        if (_hScrollBar.Visible != newVisible) _hScrollBar.Visible = newVisible;
     }
 
     private bool IsInScrollBarArea(int x, int y)
