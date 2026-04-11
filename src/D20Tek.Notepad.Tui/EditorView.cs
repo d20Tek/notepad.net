@@ -178,10 +178,16 @@ public sealed partial class EditorView : View, IDisposable
 
     private void OnViewResized(ResizedEventArgs args)
     {
-        // Initial resize - scrollbars may not exist yet, so use full dimensions
-        // UpdateViewportSize in Redraw will adjust once scrollbar visibility is known
+        int height = Frame.Height;
+
+        // Reserve 1 row for horizontal scrollbar when word wrap is off
+        if (!_viewModel.IsWordWrapEnabled)
+        {
+            height = Math.Max(0, height - 1);
+        }
+
         _viewModel.SetViewportWidth(Math.Max(0, Frame.Width - _viewModel.GutterWidth));
-        _viewModel.SetViewportHeight(Frame.Height);
+        _viewModel.SetViewportHeight(height);
         _viewModel.EnsureCaretVisible();
 
         SyncScrollBarState();
@@ -203,7 +209,7 @@ public sealed partial class EditorView : View, IDisposable
         int effectiveHeight = Bounds.Height;
         int effectiveWidth = Bounds.Width;
 
-        if (_hScrollBar?.Visible == true)
+        if (!_viewModel.IsWordWrapEnabled || _hScrollBar?.Visible == true)
         {
             effectiveHeight = Math.Max(0, effectiveHeight - 1);
         }
