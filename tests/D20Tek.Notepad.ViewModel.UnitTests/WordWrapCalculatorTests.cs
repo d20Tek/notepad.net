@@ -234,4 +234,59 @@ public class WordWrapCalculatorTests
         Assert.AreEqual(3, result[1].StartColumn);
         Assert.AreEqual(4, result[1].Length);
     }
+
+    [TestMethod]
+    public void CountSegments_WithEmptyString_ReturnsOne()
+    {
+        // act
+        var result = WordWrapCalculator.CountSegments(string.Empty, 80);
+
+        // assert
+        Assert.AreEqual(1, result);
+    }
+
+    [TestMethod]
+    public void CountSegments_WithShortLine_ReturnsOne()
+    {
+        // act
+        var result = WordWrapCalculator.CountSegments("Hello World", 80);
+
+        // assert
+        Assert.AreEqual(1, result);
+    }
+
+    [TestMethod]
+    public void CountSegments_WithWrappedLine_ReturnsCorrectCount()
+    {
+        // act
+        var result = WordWrapCalculator.CountSegments("One Two Three Four", 8);
+
+        // assert
+        Assert.AreEqual(3, result);
+    }
+
+    [TestMethod]
+    public void CountSegments_MatchesWrapLineCount()
+    {
+        // arrange
+        var text = "The quick brown fox jumps over the lazy dog";
+        var viewportWidth = 10;
+
+        // act
+        var countResult = WordWrapCalculator.CountSegments(text, viewportWidth);
+        var wrapResult = WordWrapCalculator.WrapLine(text, viewportWidth);
+
+        // assert
+        Assert.AreEqual(wrapResult.Count, countResult);
+    }
+
+    [TestMethod]
+    public void CountSegments_WithExactFit_ReturnsOne()
+    {
+        // act
+        var result = WordWrapCalculator.CountSegments("1234567890", 10);
+
+        // assert
+        Assert.AreEqual(1, result);
+    }
 }

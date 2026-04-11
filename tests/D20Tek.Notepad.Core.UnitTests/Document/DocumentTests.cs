@@ -205,4 +205,165 @@ public class DocumentTests
         // assert
         Assert.AreEqual(4, result);
     }
+
+    [TestMethod]
+    public void TotalCharacterCount_Constructor_ReturnsSumPlusLineEndings()
+    {
+        // arrange - "Hello" (5) + "World" (5) + 1 line ending = 11
+        var doc = new Doc.Document([new("Hello"), new("World")]);
+
+        // act
+        var result = doc.TotalCharacterCount;
+
+        // assert
+        Assert.AreEqual(11, result);
+    }
+
+    [TestMethod]
+    public void TotalCharacterCount_EmptyDocument_ReturnsZero()
+    {
+        // arrange
+        var doc = new Doc.Document([]);
+
+        // act
+        var result = doc.TotalCharacterCount;
+
+        // assert
+        Assert.AreEqual(0, result);
+    }
+
+    [TestMethod]
+    public void TotalCharacterCount_AfterInsertLine_UpdatesIncrementally()
+    {
+        // arrange - "AB" (2) = 2 total
+        var doc = new Doc.Document([new("AB")]);
+        Assert.AreEqual(2, doc.TotalCharacterCount);
+
+        // act - replace "AB" with "AB" + "CD" → 2 + 2 + 1 line ending = 5
+        doc.ReplaceLines(0, 1, [new("AB"), new("CD")]);
+
+        // assert
+        Assert.AreEqual(5, doc.TotalCharacterCount);
+    }
+
+    [TestMethod]
+    public void TotalCharacterCount_AfterRemoveLine_UpdatesIncrementally()
+    {
+        // arrange - "Hello" + "World" + "End" = 5+5+3 + 2 line endings = 15
+        var doc = new Doc.Document([new("Hello"), new("World"), new("End")]);
+        Assert.AreEqual(15, doc.TotalCharacterCount);
+
+        // act - remove middle line → "Hello" + "End" = 5+3 + 1 line ending = 9
+        doc.ReplaceLines(1, 1, []);
+
+        // assert
+        Assert.AreEqual(9, doc.TotalCharacterCount);
+    }
+
+    [TestMethod]
+    public void TotalCharacterCount_AfterReplaceWithDifferentLength_UpdatesIncrementally()
+    {
+        // arrange - "ABC" (3) = 3 total
+        var doc = new Doc.Document([new("ABC")]);
+
+        // act - replace with "ABCDEF" (6) = 6 total
+        doc.ReplaceLines(0, 1, [new("ABCDEF")]);
+
+        // assert
+        Assert.AreEqual(6, doc.TotalCharacterCount);
+    }
+
+    [TestMethod]
+    public void TotalCharacterCount_AfterRemoveAll_ReturnsZero()
+    {
+        // arrange
+        var doc = new Doc.Document([new("Hello"), new("World")]);
+
+        // act
+        doc.ReplaceLines(0, 2, []);
+
+        // assert
+        Assert.AreEqual(0, doc.TotalCharacterCount);
+    }
+
+    [TestMethod]
+    public void MaxLineLength_Constructor_ReturnsLongestLineLength()
+    {
+        // arrange
+        var doc = new Doc.Document([new("Hi"), new("Hello"), new("Hey")]);
+
+        // act
+        var result = doc.MaxLineLength;
+
+        // assert
+        Assert.AreEqual(5, result);
+    }
+
+    [TestMethod]
+    public void MaxLineLength_EmptyDocument_ReturnsZero()
+    {
+        // arrange
+        var doc = new Doc.Document([]);
+
+        // act
+        var result = doc.MaxLineLength;
+
+        // assert
+        Assert.AreEqual(0, result);
+    }
+
+    [TestMethod]
+    public void MaxLineLength_AfterInsertLongerLine_UpdatesMax()
+    {
+        // arrange - max is 3 ("ABC")
+        var doc = new Doc.Document([new("ABC")]);
+        Assert.AreEqual(3, doc.MaxLineLength);
+
+        // act - replace with longer line
+        doc.ReplaceLines(0, 1, [new("ABCDEF")]);
+
+        // assert
+        Assert.AreEqual(6, doc.MaxLineLength);
+    }
+
+    [TestMethod]
+    public void MaxLineLength_AfterRemoveLongestLine_Recomputes()
+    {
+        // arrange - max is 10 ("LongestLin")
+        var doc = new Doc.Document([new("Hi"), new("LongestLin"), new("Hey")]);
+        Assert.AreEqual(10, doc.MaxLineLength);
+
+        // act - remove the longest line
+        doc.ReplaceLines(1, 1, []);
+
+        // assert - max is now 3 ("Hey")
+        Assert.AreEqual(3, doc.MaxLineLength);
+    }
+
+    [TestMethod]
+    public void MaxLineLength_AfterShortenNonMaxLine_KeepsMax()
+    {
+        // arrange
+        var doc = new Doc.Document([new("ABCDE"), new("XY")]);
+        Assert.AreEqual(5, doc.MaxLineLength);
+
+        // act - shorten the short line further
+        doc.ReplaceLines(1, 1, [new("X")]);
+
+        // assert - max unchanged
+        Assert.AreEqual(5, doc.MaxLineLength);
+    }
+
+    [TestMethod]
+    public void MaxLineLength_AfterRemoveAll_ReturnsZero()
+    {
+        // arrange
+        var doc = new Doc.Document([new("Hello"), new("World")]);
+
+        // act
+        doc.ReplaceLines(0, 2, []);
+
+        // assert
+        Assert.AreEqual(0, doc.MaxLineLength);
+    }
 }

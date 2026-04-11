@@ -215,6 +215,7 @@ public sealed partial class EditorViewModel
         var newPos = Session.ClampToDocument(line, column);
         Session.Caret = newPos;
         Session.Anchor = newPos;
+        Refresh();
     }
 
     // Word Wrap Navigation Helpers

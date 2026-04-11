@@ -130,7 +130,6 @@ public sealed partial class EditorViewModel
         if (count > 0)
         {
             CheckDirtyStateChanged();
-            Refresh();
             EnsureCaretVisible();
         }
 
@@ -144,7 +143,6 @@ public sealed partial class EditorViewModel
         Session.Caret = new TextPosition(zeroBasedLine, 0);
         Session.ClearSelection();
 
-        Refresh();
         EnsureCaretVisible();
     }
 
@@ -152,7 +150,6 @@ public sealed partial class EditorViewModel
     {
         Session.Anchor = result.Start;
         Session.Caret = result.End;
-        Refresh();
         EnsureCaretVisible();
     }
 }

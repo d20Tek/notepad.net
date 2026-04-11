@@ -45,22 +45,4 @@ public class LargeTextStorageExceptionTests
         }
         finally { File.Delete(path); }
     }
-
-    [TestMethod]
-    public void Load_CancellationInMaterializeLines_ThrowsOperationCanceledException()
-    {
-        // arrange — UTF-8 BOM-only file (3 bytes): BuildLineIndex loop is skipped because
-        // position == fileLength after the preamble, so cancellation is first checked in
-        // MaterializeLines at line index 0.
-        var path = Path.GetTempFileName();
-        File.WriteAllBytes(path, [0xEF, 0xBB, 0xBF]);
-        using var cts = new CancellationTokenSource();
-        cts.Cancel();
-        try
-        {
-            // act & assert
-            Assert.ThrowsExactly<OperationCanceledException>(() => _storage.Load(path, null, cts.Token));
-        }
-        finally { File.Delete(path); }
-    }
 }

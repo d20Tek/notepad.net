@@ -1,5 +1,6 @@
 using D20Tek.Notepad.Core.Document;
 using D20Tek.Notepad.Core.Primitives;
+using System.Diagnostics;
 using System.IO.MemoryMappedFiles;
 using System.Text;
 
@@ -7,13 +8,13 @@ namespace D20Tek.Notepad.Core.Storage;
 
 internal sealed class LargeTextStorage
 {
-    private readonly int _chunkSize;
-    private readonly int _progressInterval;
+    private const long ProgressIntervalMs = 100;
 
-    internal LargeTextStorage(int chunkSize = 65536, int progressInterval = 4096)
+    private readonly int _chunkSize;
+
+    internal LargeTextStorage(int chunkSize = 65536)
     {
         _chunkSize = chunkSize;
-        _progressInterval = progressInterval;
     }
 
     public DocumentData Load(string filePath, ILoadProgress? progress = null, CancellationToken cancellation = default)
@@ -32,21 +33,20 @@ internal sealed class LargeTextStorage
         using var mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open, null, 0, MemoryMappedFileAccess.Read);
         using var accessor = mmf.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
 
-        var (encoding, preambleLength) = DetectEncoding(accessor);
-        var (lineOffsets, lineEndingStyle) = BuildLineIndex(accessor, fileLength, preambleLength, progress, cancellation);
-        var lines = MaterializeLines(accessor, lineOffsets, fileLength, encoding, progress, cancellation);
-
-        return new DocumentData(lines, encoding, lineEndingStyle);
+        var (encoding, preambleLength) = DetectEncoding(accessor, fileLength);
+        return LoadSinglePass(accessor, fileLength, encoding, preambleLength, progress, cancellation);
     }
 
-    private static (Encoding Encoding, int PreambleLength) DetectEncoding(MemoryMappedViewAccessor accessor)
+    private static (Encoding Encoding, int PreambleLength) DetectEncoding(
+        MemoryMappedViewAccessor accessor,
+        long fileLength)
     {
-        byte b0 = accessor.ReadByte(0);
-        byte b1 = accessor.ReadByte(1);
-        byte b2 = accessor.ReadByte(2);
-        byte b3 = accessor.ReadByte(3);
+        Span<byte> bom = stackalloc byte[4];
+        int toRead = (int)Math.Min(4, fileLength);
+        for (int i = 0; i < toRead; i++)
+            bom[i] = accessor.ReadByte(i);
 
-        return (b0, b1, b2, b3) switch
+        return (bom[0], bom[1], bom[2], bom[3]) switch
         {
             (0xEF, 0xBB, 0xBF, _) => (Encoding.UTF8, 3),
             (0xFF, 0xFE, _, _) => (Encoding.Unicode, 2),
@@ -55,137 +55,106 @@ internal sealed class LargeTextStorage
         };
     }
 
-    private (List<long> Offsets, LineEndingStyle Style) BuildLineIndex(
+    private unsafe DocumentData LoadSinglePass(
         MemoryMappedViewAccessor accessor,
         long fileLength,
+        Encoding encoding,
         int preambleLength,
         ILoadProgress? progress,
         CancellationToken cancellation)
     {
-        var offsets = new List<long> { preambleLength };
-
+        var lines = new List<TextLine>();
         var lineEndingStyle = LineEndingStyle.Unknown;
         var buffer = new byte[_chunkSize];
-        long position = preambleLength;
-        int reportCounter = 0;
-        bool prevWasCr = false;
-
-        while (position < fileLength)
-        {
-            cancellation.ThrowIfCancellationRequested();
-
-            long remaining = fileLength - position;
-            int toRead = (int)Math.Min(_chunkSize, remaining);
-            accessor.ReadArray(position, buffer, 0, toRead);
-
-            for (int i = 0; i < toRead; i++)
-            {
-                byte b = buffer[i];
-                long absolutePos = position + i;
-
-                if (b == '\n')
-                {
-                    if (lineEndingStyle == LineEndingStyle.Unknown)
-                        lineEndingStyle = prevWasCr ? LineEndingStyle.CRLF : LineEndingStyle.LF;
-
-                    offsets.Add(absolutePos + 1);
-                    prevWasCr = false;
-                }
-                else if (b == '\r')
-                {
-                    if (lineEndingStyle == LineEndingStyle.Unknown)
-                    {
-                        bool nextIsCr = (i + 1 < toRead && buffer[i + 1] == '\n') ||
-                                        (i + 1 == toRead && absolutePos + 1 < fileLength && accessor.ReadByte(absolutePos + 1) == '\n');
-                        lineEndingStyle = nextIsCr ? LineEndingStyle.CRLF : LineEndingStyle.CR;
-                    }
-
-                    if (!prevWasCr)
-                    {
-                        bool nextIsLf = (i + 1 < toRead && buffer[i + 1] == '\n') ||
-                                        (i + 1 == toRead && absolutePos + 1 < fileLength && accessor.ReadByte(absolutePos + 1) == '\n');
-                        if (!nextIsLf)
-                            offsets.Add(absolutePos + 1);
-                    }
-
-                    prevWasCr = true;
-                }
-                else
-                {
-                    prevWasCr = false;
-                }
-            }
-
-            position += toRead;
-            reportCounter++;
-
-            if (reportCounter >= _progressInterval)
-            {
-                if (progress is not null)
-                {
-                    progress.Report(position, fileLength);
-                }
-                reportCounter = 0;
-            }
-        }
-
-        progress?.Report(fileLength, fileLength);
-
-        // Remove trailing empty offset if file ended exactly on newline
-        if (offsets.Count > 1 && offsets[offsets.Count - 1] >= fileLength)
-            offsets.RemoveAt(offsets.Count - 1);
-
-        return (offsets, lineEndingStyle);
-    }
-
-    private unsafe List<TextLine> MaterializeLines(
-        MemoryMappedViewAccessor accessor,
-        List<long> lineOffsets,
-        long fileLength,
-        Encoding encoding,
-        ILoadProgress? progress,
-        CancellationToken cancellation)
-    {
-        var lines = new List<TextLine>(lineOffsets.Count);
+        var progressTimer = Stopwatch.StartNew();
 
         byte* basePtr = null;
         accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref basePtr);
         try
         {
-            for (int i = 0; i < lineOffsets.Count; i++)
+            long position = preambleLength;
+            long lineStart = preambleLength;
+            bool prevWasCr = false;
+
+            while (position < fileLength)
             {
-                if (i % _progressInterval == 0)
+                cancellation.ThrowIfCancellationRequested();
+
+                long remaining = fileLength - position;
+                int toRead = (int)Math.Min(_chunkSize, remaining);
+                accessor.ReadArray(position, buffer, 0, toRead);
+
+                for (int i = 0; i < toRead; i++)
                 {
-                    cancellation.ThrowIfCancellationRequested();
-                    progress?.Report(lineOffsets[i], fileLength);
+                    byte b = buffer[i];
+                    long absolutePos = position + i;
+
+                    if (b == '\n')
+                    {
+                        if (lineEndingStyle == LineEndingStyle.Unknown)
+                            lineEndingStyle = prevWasCr ? LineEndingStyle.CRLF : LineEndingStyle.LF;
+
+                        long contentEnd = prevWasCr ? absolutePos - 1 : absolutePos;
+                        EmitLine(lines, basePtr, lineStart, contentEnd, encoding);
+                        lineStart = absolutePos + 1;
+                        prevWasCr = false;
+                    }
+                    else if (b == '\r')
+                    {
+                        if (lineEndingStyle == LineEndingStyle.Unknown)
+                        {
+                            bool nextIsLf = (i + 1 < toRead && buffer[i + 1] == '\n') ||
+                                (i + 1 == toRead && absolutePos + 1 < fileLength &&
+                                    accessor.ReadByte(absolutePos + 1) == '\n');
+                            lineEndingStyle = nextIsLf ? LineEndingStyle.CRLF : LineEndingStyle.CR;
+                        }
+
+                        if (prevWasCr)
+                        {
+                            EmitLine(lines, basePtr, lineStart, absolutePos - 1, encoding);
+                            lineStart = absolutePos;
+                        }
+
+                        prevWasCr = true;
+                    }
+                    else
+                    {
+                        if (prevWasCr)
+                        {
+                            EmitLine(lines, basePtr, lineStart, absolutePos - 1, encoding);
+                            lineStart = absolutePos;
+                        }
+
+                        prevWasCr = false;
+                    }
                 }
 
-                long start = lineOffsets[i];
-                long end = (i + 1 < lineOffsets.Count) ? lineOffsets[i + 1] : fileLength;
+                position += toRead;
 
-                // Strip line ending bytes from end
-                long contentEnd = end;
-                if (contentEnd > start)
+                if (progress is not null && progressTimer.ElapsedMilliseconds >= ProgressIntervalMs)
                 {
-                    byte lastByte = *(basePtr + contentEnd - 1);
-                    if (lastByte == '\n')
-                    {
-                        contentEnd--;
-                        if (contentEnd > start && *(basePtr + contentEnd - 1) == '\r')
-                            contentEnd--;
-                    }
-                    else if (lastByte == '\r')
-                    {
-                        contentEnd--;
-                    }
+                    progress.Report(position, fileLength);
+                    progressTimer.Restart();
                 }
+            }
 
-                int byteCount = (int)(contentEnd - start);
-                string content = byteCount <= 0
-                    ? string.Empty
-                    : encoding.GetString(new ReadOnlySpan<byte>(basePtr + start, byteCount));
+            if (prevWasCr)
+            {
+                EmitLine(lines, basePtr, lineStart, fileLength - 1, encoding);
+                lineStart = fileLength;
+            }
 
-                lines.Add(new TextLine(content));
+            if (lineStart < fileLength)
+            {
+                EmitLine(lines, basePtr, lineStart, fileLength, encoding);
+            }
+            else if (lineStart == fileLength && lines.Count > 0)
+            {
+                // file ended exactly on a newline — no trailing empty line to add
+            }
+            else if (lines.Count == 0)
+            {
+                lines.Add(TextLine.Empty);
             }
         }
         finally
@@ -194,6 +163,16 @@ internal sealed class LargeTextStorage
         }
 
         progress?.Report(fileLength, fileLength);
-        return lines;
+        return new DocumentData(lines, encoding, lineEndingStyle);
+    }
+
+    private static unsafe void EmitLine(List<TextLine> lines, byte* basePtr, long start, long contentEnd, Encoding encoding)
+    {
+        int byteCount = (int)(contentEnd - start);
+        string content = byteCount <= 0
+            ? string.Empty
+            : encoding.GetString(new ReadOnlySpan<byte>(basePtr + start, byteCount));
+
+        lines.Add(new TextLine(content));
     }
 }

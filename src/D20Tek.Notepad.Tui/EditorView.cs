@@ -200,17 +200,14 @@ public sealed partial class EditorView : View, IDisposable
 
     private void UpdateViewportSize()
     {
-        // Account for scrollbar space when calculating effective viewport dimensions
         int effectiveHeight = Bounds.Height;
         int effectiveWidth = Bounds.Width;
 
-        // Reserve space for horizontal scrollbar if it will be visible
         if (_hScrollBar?.Visible == true)
         {
             effectiveHeight = Math.Max(0, effectiveHeight - 1);
         }
 
-        // Reserve space for vertical scrollbar if it will be visible
         if (_vScrollBar?.Visible == true)
         {
             effectiveWidth = Math.Max(0, effectiveWidth - 1);
@@ -221,9 +218,10 @@ public sealed partial class EditorView : View, IDisposable
             _viewModel.SetViewportHeight(effectiveHeight);
         }
 
-        if (effectiveWidth > 0)
+        int newTextWidth = Math.Max(0, effectiveWidth - _viewModel.GutterWidth);
+        if (newTextWidth != _viewModel.ViewportWidth)
         {
-            _viewModel.SetViewportWidth(Math.Max(0, effectiveWidth - _viewModel.GutterWidth));
+            _viewModel.SetViewportWidth(newTextWidth);
         }
     }
 

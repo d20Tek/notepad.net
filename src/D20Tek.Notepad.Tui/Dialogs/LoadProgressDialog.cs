@@ -6,6 +6,7 @@ internal sealed class LoadProgressDialog : Dialog, ILoadProgress
 {
     private readonly ProgressBar _progressBar;
     private readonly CancellationTokenSource _cts = new();
+    private float _lastReportedFraction = -1f;
 
     public CancellationToken Token => _cts.Token;
 
@@ -33,6 +34,10 @@ internal sealed class LoadProgressDialog : Dialog, ILoadProgress
     {
         if (totalBytes <= 0) return;
         float fraction = Math.Clamp((float)bytesProcessed / totalBytes, 0.0f, 1.0f);
+
+        if (Math.Abs(fraction - _lastReportedFraction) < 0.005f) return;
+        _lastReportedFraction = fraction;
+
         Application.MainLoop.Invoke(() =>
         {
             _progressBar.Fraction = fraction;

@@ -17,6 +17,10 @@ internal sealed class Document : IDocument
 
     public int LineCount => _lines.Count;
 
+    public int TotalCharacterCount { get; private set; }
+
+    public int MaxLineLength { get; private set; }
+
     public Document(IEnumerable<TextLine> lines) : this(lines, Encoding.UTF8, LineEndingStyle.CRLF) { }
 
     public Document(IEnumerable<TextLine> lines, Encoding encoding, LineEndingStyle lineEndingStyle)
@@ -29,6 +33,8 @@ internal sealed class Document : IDocument
 
         _lines = [.. lines];
         EnsureSingleLine();
+        TotalCharacterCount = ComputeTotalChars();
+        MaxLineLength = ComputeMaxLineLength();
 
         IsModified = false;
     }
@@ -41,10 +47,20 @@ internal sealed class Document : IDocument
         ArgumentOutOfRangeException.ThrowIfNegative(count);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(startIndex + count, _lines.Count);
 
+        int removedChars = SumContentLength(startIndex, count);
+        int oldLineCount = _lines.Count;
+
         _lines.RemoveRange(startIndex, count);
         _lines.InsertRange(startIndex, newLines);
 
         EnsureSingleLine();
+
+        int addedCount = _lines.Count - oldLineCount + count;
+        int addedChars = SumContentLength(startIndex, addedCount);
+        int lineCountDelta = _lines.Count - oldLineCount;
+
+        TotalCharacterCount += (addedChars - removedChars) + lineCountDelta;
+        UpdateMaxLineLength(startIndex, addedCount, removedChars >= MaxLineLength);
         Modify();
     }
 
@@ -66,5 +82,54 @@ internal sealed class Document : IDocument
     private void EnsureSingleLine()
     {
         if (_lines.Count == 0) _lines.Add(TextLine.Empty);
+    }
+
+    private int ComputeTotalChars()
+    {
+        int total = 0;
+        for (int i = 0; i < _lines.Count; i++)
+            total += _lines[i].Content.Length;
+
+        return total + (_lines.Count - 1);
+    }
+
+    private int SumContentLength(int startIndex, int count)
+    {
+        int total = 0;
+        for (int i = startIndex; i < startIndex + count; i++)
+            total += _lines[i].Content.Length;
+
+        return total;
+    }
+
+    private int ComputeMaxLineLength()
+    {
+        int max = 0;
+        for (int i = 0; i < _lines.Count; i++)
+        {
+            if (_lines[i].Content.Length > max)
+                max = _lines[i].Content.Length;
+        }
+
+        return max;
+    }
+
+    private void UpdateMaxLineLength(int startIndex, int addedCount, bool removedMaxLine)
+    {
+        int newMax = MaxLineLength;
+        for (int i = startIndex; i < startIndex + addedCount; i++)
+        {
+            if (_lines[i].Content.Length > newMax)
+                newMax = _lines[i].Content.Length;
+        }
+
+        if (newMax > MaxLineLength)
+        {
+            MaxLineLength = newMax;
+        }
+        else if (removedMaxLine)
+        {
+            MaxLineLength = ComputeMaxLineLength();
+        }
     }
 }

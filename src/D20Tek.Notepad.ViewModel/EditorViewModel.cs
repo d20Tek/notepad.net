@@ -11,6 +11,7 @@ public sealed partial class EditorViewModel
     private EditorSettings _settings;
     private readonly IClipboardService _clipboardService;
     private StatusDetails _currentStatus = StatusDetails.Empty;
+    private readonly VisualLineIndex _wrapIndex = new();
 
     // Events
     public event Action? ViewChanged;
@@ -113,6 +114,8 @@ public sealed partial class EditorViewModel
 
     public void Refresh()
     {
+        SyncWrapIndex();
+
         var oldCaret = CaretViewPosition;
         var oldSelection = SelectionViewRange;
 
@@ -131,6 +134,22 @@ public sealed partial class EditorViewModel
         {
             _currentStatus = newStatus;
             StatusChanged?.Invoke(_currentStatus);
+        }
+    }
+
+    internal VisualLineIndex WrapIndex => _wrapIndex;
+
+    internal void SyncWrapIndex()
+    {
+        if (!Settings.WordWrapEnabled || _viewportWidth <= 0) return;
+
+        if (_wrapIndex.NeedsRebuild(Session.Document.LineCount, _viewportWidth))
+        {
+            _wrapIndex.Rebuild(Session.Document, _viewportWidth);
+        }
+        else
+        {
+            _wrapIndex.UpdateLine(Session.Document, Session.Caret.Line);
         }
     }
 

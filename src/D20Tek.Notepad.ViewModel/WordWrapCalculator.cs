@@ -2,6 +2,28 @@ namespace D20Tek.Notepad.ViewModel;
 
 internal static class WordWrapCalculator
 {
+    public static int CountSegments(string text, int viewportWidth)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(viewportWidth);
+
+        if (text.Length == 0) return 1;
+
+        int count = 0;
+        int currentIndex = 0;
+        while (currentIndex < text.Length)
+        {
+            count++;
+            int remaining = text.Length - currentIndex;
+            if (remaining <= viewportWidth) break;
+
+            int breakIndex = FindWordBreakIndex(text, currentIndex, viewportWidth);
+            currentIndex = SkipLeadingSpaces(text, breakIndex);
+        }
+
+        return count;
+    }
+
     public static List<WrappedSegment> WrapLine(string text, int viewportWidth)
     {
         ArgumentNullException.ThrowIfNull(text);

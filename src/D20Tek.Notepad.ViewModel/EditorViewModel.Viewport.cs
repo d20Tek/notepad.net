@@ -2,11 +2,14 @@ namespace D20Tek.Notepad.ViewModel;
 
 public sealed partial class EditorViewModel
 {
-    public int GetMaxLineLength() => Session.Document.Lines.Max(l => l.Content.Length);
+    public int GetMaxLineLength() => Session.Document.MaxLineLength;
 
-    public int GetTotalVisualLineCount() => Settings.WordWrapEnabled
-        ? WordWrapHelper.GetTotalVisualLineCount(Session.Document, _viewportWidth)
-        : Session.Document.Lines.Count;
+    public int GetTotalVisualLineCount()
+    {
+        if (!Settings.WordWrapEnabled) return Session.Document.Lines.Count;
+        SyncWrapIndex();
+        return _wrapIndex.TotalVisualLineCount;
+    }
 
     public void SetViewportHeight(int visibleLineCount) => SetWithRefresh(() =>
         Viewport.SetVisibleLineCount(visibleLineCount));
@@ -31,12 +34,25 @@ public sealed partial class EditorViewModel
     {
         if (Settings.WordWrapEnabled)
         {
-            // In word wrap mode, calculate the visual line index for the caret position
-            int visualLineIndex = WordWrapHelper.GetVisualLineIndexForPosition(
-                Session.Document, _viewportWidth, Session.Caret.Line, Session.Caret.Column);
-            Viewport.EnsureLineVisible(visualLineIndex, GetTotalVisualLineCount());
+            SyncWrapIndex();
+            int visualLineIndex = _wrapIndex.GetVisualLineIndexForDocumentLine(Session.Caret.Line);
 
-            // No horizontal scrolling in word wrap mode
+            var lineText = Session.Document.Lines[Session.Caret.Line].Content;
+            var segments = WordWrapCalculator.WrapLine(lineText, _viewportWidth);
+            for (int i = 0; i < segments.Count - 1; i++)
+            {
+                int segmentEnd = segments[i].StartColumn + segments[i].Length;
+                if (Session.Caret.Column <= segmentEnd)
+                {
+                    visualLineIndex += i;
+                    break;
+                }
+
+                if (i == segments.Count - 2)
+                    visualLineIndex += segments.Count - 1;
+            }
+
+            Viewport.EnsureLineVisible(visualLineIndex, _wrapIndex.TotalVisualLineCount);
         }
         else
         {

@@ -52,30 +52,21 @@ internal static class VisibleLinesBuilder
         if (viewportWidth <= 0 || total == 0) return visibleLines;
 
         int firstVisualLine = viewModel.Viewport.FirstVisibleLine;
-        int visualLineIndex = 0;
+        viewModel.SyncWrapIndex();
 
-        for (int docLine = 0; docLine < total && visibleLines.Count < visibleLineCount; docLine++)
+        var (startDocLine, segmentOffset) = viewModel.WrapIndex.FindDocumentLineForVisualLine(firstVisualLine);
+
+        for (int docLine = startDocLine; docLine < total && visibleLines.Count < visibleLineCount; docLine++)
         {
             var lineText = viewModel.Session.Document.Lines[docLine].Content;
             var segments = WordWrapCalculator.WrapLine(lineText, viewportWidth);
-            int nextVisualIndex = visualLineIndex + segments.Count;
 
-            // Skip document lines entirely before the visible area
-            if (nextVisualIndex <= firstVisualLine)
-            {
-                visualLineIndex = nextVisualIndex;
-                continue;
-            }
-
-            int startSegment = Math.Max(0, firstVisualLine - visualLineIndex);
+            int startSegment = docLine == startDocLine ? segmentOffset : 0;
             for (int i = startSegment; i < segments.Count && visibleLines.Count < visibleLineCount; i++)
             {
                 visibleLines.Add(new ViewLine(docLine, segments[i].StartColumn, segments[i].Text));
             }
-
-            visualLineIndex = nextVisualIndex;
         }
-
 
         return visibleLines;
     }

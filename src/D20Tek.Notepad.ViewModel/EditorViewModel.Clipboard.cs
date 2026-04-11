@@ -10,7 +10,6 @@ public partial class EditorViewModel
         var text = Commands.CutSelection();
         _clipboardService.SetText(text);
         CheckDirtyStateChanged();
-        Refresh();
         EnsureCaretVisible();
     }
 
@@ -32,7 +31,6 @@ public partial class EditorViewModel
 
         Commands.Paste(text);
         CheckDirtyStateChanged();
-        Refresh();
         EnsureCaretVisible();
     }
 

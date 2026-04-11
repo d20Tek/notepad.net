@@ -15,6 +15,10 @@ public interface IDocument
 
     int LineCount { get; }
 
+    int TotalCharacterCount { get; }
+
+    int MaxLineLength { get; }
+
     void ReplaceLines(int startIndex, int count, IEnumerable<TextLine> newLines);
 
     void SetEncoding(Encoding encoding);

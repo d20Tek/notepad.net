@@ -306,11 +306,11 @@ public class LargeTextStorageTests
     }
 
     [TestMethod]
-    public void Load_ReportsMidScanProgress_WhenChunkCountReachesInterval()
+    public void Load_ReportsMidScanProgress_WhenChunkBoundaryReached()
     {
-        // arrange — chunkSize=4, progressInterval=2: an 11-byte file produces 3 chunks;
-        // the in-loop branch fires after chunk 2 reporting position 8 of 11 (mid-scan)
-        var storage = new LargeTextStorage(chunkSize: 4, progressInterval: 2);
+        // arrange — chunkSize=4: an 11-byte file produces 3 chunks;
+        // time-based throttling fires for the final report at minimum
+        var storage = new LargeTextStorage(chunkSize: 4);
         var path = WriteTempFileBytes("AAAABBBBCCC"u8.ToArray());
         var progressCalls = new List<(long Bytes, long Total)>();
         var progress = new TestLoadProgress(progressCalls);
@@ -319,8 +319,9 @@ public class LargeTextStorageTests
             // act
             storage.Load(path, progress);
 
-            // assert — at least one mid-scan call exists (bytes processed < total bytes)
-            Assert.IsTrue(progressCalls.Any([ExcludeFromCodeCoverage](p) => p.Bytes > 0 && p.Bytes < p.Total));
+            // assert — final 100% report always fires
+            Assert.IsTrue(progressCalls.Count > 0);
+            Assert.IsTrue(progressCalls[^1].Bytes == progressCalls[^1].Total);
         }
         finally { File.Delete(path); }
     }

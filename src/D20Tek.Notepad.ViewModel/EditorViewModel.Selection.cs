@@ -83,6 +83,7 @@ public sealed partial class EditorViewModel
     {
         Session.Caret = Session.ClampToDocument(line, column);
         // IMPORTANT: Do NOT modify session.Anchor here. Anchor was set when selection began.
+        Refresh();
     }
 
     private static bool SelectionChangedNeeded(SelectionViewRange? oldSel, SelectionViewRange? newSel)

@@ -103,7 +103,6 @@ internal static class MouseBindings
 
         var (line, col) = ToDocumentPosition(vm, me);
         vm.ExtendSelectionTo(line, col);
-        vm.Refresh();
     }
 
     private static void EndSelection(EditorViewModel vm, MouseEvent me)

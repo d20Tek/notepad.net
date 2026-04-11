@@ -20,7 +20,6 @@ public sealed partial class EditorViewModel
             Commands.TypeCharacter(c);
 
         CheckDirtyStateChanged();
-        Refresh();
         EnsureCaretVisible();
     }
 
@@ -30,7 +29,6 @@ public sealed partial class EditorViewModel
         EndTypingGroupIfNeeded();
         Commands.InsertText(text);
         CheckDirtyStateChanged();
-        Refresh();
         EnsureCaretVisible();
     }
 
@@ -39,7 +37,6 @@ public sealed partial class EditorViewModel
         EndTypingGroupIfNeeded();
         Commands.InsertNewLine();
         CheckDirtyStateChanged();
-        Refresh();
         EnsureCaretVisible();
     }
 
@@ -52,7 +49,6 @@ public sealed partial class EditorViewModel
             : "\t";
         Commands.InsertText(tabContent);
         CheckDirtyStateChanged();
-        Refresh();
         EnsureCaretVisible();
     }
 
@@ -62,7 +58,6 @@ public sealed partial class EditorViewModel
         EndTypingGroupIfNeeded();
         Commands.Backspace();
         CheckDirtyStateChanged();
-        Refresh();
         EnsureCaretVisible();
     }
 
@@ -71,7 +66,6 @@ public sealed partial class EditorViewModel
         EndTypingGroupIfNeeded();
         Commands.Delete();
         CheckDirtyStateChanged();
-        Refresh();
         EnsureCaretVisible();
     }
 
@@ -80,7 +74,6 @@ public sealed partial class EditorViewModel
         EndTypingGroupIfNeeded();
         Commands.DeleteWordLeft();
         CheckDirtyStateChanged();
-        Refresh();
         EnsureCaretVisible();
     }
 
@@ -89,7 +82,6 @@ public sealed partial class EditorViewModel
         EndTypingGroupIfNeeded();
         Commands.DeleteWordRight();
         CheckDirtyStateChanged();
-        Refresh();
         EnsureCaretVisible();
     }
 
@@ -99,7 +91,6 @@ public sealed partial class EditorViewModel
         EndTypingGroupIfNeeded();
         Commands.DeleteSelection();
         CheckDirtyStateChanged();
-        Refresh();
         EnsureCaretVisible();
     }
 
@@ -110,7 +101,6 @@ public sealed partial class EditorViewModel
         if (!CanUndo) return;
         Commands.Undo();
         CheckDirtyStateChanged();
-        Refresh();
         EnsureCaretVisible();
     }
 
@@ -120,7 +110,6 @@ public sealed partial class EditorViewModel
         if (!CanRedo) return;
         Commands.Redo();
         CheckDirtyStateChanged();
-        Refresh();
         EnsureCaretVisible();
     }
 
