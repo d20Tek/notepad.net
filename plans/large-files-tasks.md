@@ -294,7 +294,7 @@ File: `tests\D20Tek.Notepad.Core.UnitTests\Editing\EditorSessionTests.Commands.c
 
 ### Task 5.4: Update `features.md`
 File: `plans\features.md`
-- [ ] Move **Large file support** from Pending to Implemented features table
+- [x] Move **Large file support** from Pending to Implemented features table
 
 ---
 

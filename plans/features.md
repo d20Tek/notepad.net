@@ -51,16 +51,11 @@
 | Recent files | File menu | File > Recent submenu > MRU file list |
 | Insert/Overwrite mode | Insert key / View menu | Toggle insert-overwrite mode; OVR/INS in status bar; block cursor in overwrite |
 | | | |
+| Large file support | | P1 | Load large text files using memory mapped file |
 
 ---
 
 ## Pending Features
-
-### Important (Standard Editor Features)
-
-| Feature | Shortcut | Priority | Notes |
-|---------|----------|----------|-------|
-| **Large file support** | | P1 | Load large text files using memory mapped file |
 
 ### Nice to Have
 
@@ -84,4 +79,4 @@
 6. ~~**Line numbers** - Optional gutter display~~
 7. ~~**Help menu (About + Getting Started)**~~
 8. ~~**Zoom** - View menu hint directing users to terminal zoom~~
-9. **Large file support** - Provides context to users
+9. ~~**Large file support** - Provides context to users~~
