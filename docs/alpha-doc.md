@@ -1,11 +1,9 @@
-﻿# Notepad.Tui — Alpha Release (v0.2.5)
+﻿# Notepad.Tui — Alpha Release (v0.3.1)
 
 A fast, clean, and modern **terminal-based text viewer** for .NET, inspired by classic tools like Notepad and contemporary editor engines.  
 This alpha focuses on delivering a rock‑solid view and editing experience with smooth navigation, precise selection, and a responsive UI built on top of Terminal.Gui.
 
-This is the third public preview of the project. It’s intentionally limited in scope, but the foundation is strong and ready for community feedback. This release includes editing capabilities, undo/redo, cut/copy/paste support, find/replace dialogs, and additional features to round out the experience (status bar, MRU file list, changing file encoding.
-
-This update has the full set of editor features, please try out the tool and share any feedback or issues you encounter!
+This is the fourth public preview of the project. This release includes a comprehensive set of features that establish the core editing and navigation capabilities, including loading and editing large files using a memory mapped file.
 
 ---
 
@@ -86,16 +84,24 @@ This update has the full set of editor features, please try out the tool and sha
 - Insert/Overwrite mode toggle
 - Help/About dialog with version info & link to documentation
 
+### ✔️ Large File Support with Memory-Mapped Files
+- Loads files of 10MB or larger using memory-mapped files for efficient access.
+- Fixed performance problems with multi-pass calculations that caused slow loading of large files.
+- Fixed performance issues in typing and navigation in large files by removing O(N) operations.
+
 ---
 
 ## What’s *Not* Included Yet (By Design)
 
-The following features are planned for future phases:
+The following features are planned for future updates:
 
-- Large file support using memory-mapped files
-- Status bar enhancements like word count and selection length
-
-The goal of this release is to validate the **interaction model**, **viewport engine**, and **editing capabilities**.
+| Feature | Shortcut | Rationale |
+|---------|----------|-----------|
+| Duplicate Line/Selection | Ctrl+Shift+D | Copy current line (or selection) below caret. Very common text manipulation shortcut. |
+| Move Line Up/Down | Alt+Up / Alt+Down | Swap current line with the one above/below. Operates directly on Lines list with an undo operation. |
+| Indent/Outdent Selection | Tab / Shift+Tab (multi-line) | When multiple lines are selected, Tab prepends indent to each line and Shift+Tab removes one level. |
+| Status Bar Enhancements | | word count and selection length. StatusDetails just needs two new fields. |
+| Trim Trailing Whitespace | Edit menu | Single command that strips trailing spaces/tabs from every line. |
 
 ---
 
