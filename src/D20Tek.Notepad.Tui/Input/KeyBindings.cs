@@ -67,6 +67,9 @@ internal static class KeyBindings
         // Select All
         [(Key.A, false, true)] = vm => vm.SelectAll(),
 
+        // Line manipulation
+        [(Key.D, false, true)] = vm => vm.DuplicateLine(),
+
         // File commands
         [(Key.N, false, true)] = vm => FileNewCommand.Execute(vm),
         [(Key.O, false, true)] = vm => FileOpenCommand.Execute(vm),
@@ -83,12 +86,37 @@ internal static class KeyBindings
 
     public static bool TryExecute(EditorViewModel vm, KeyEvent keyEvent)
     {
-        // Alt-key combos are reserved for menu hot keys; never consume them here.
-        if ((keyEvent.Key & Key.AltMask) != 0) return false;
+        // Alt+Arrow keys for line movement (before general Alt filter)
+        bool alt = (keyEvent.Key & Key.AltMask) != 0;
+        if (alt)
+        {
+            Key altBase = keyEvent.Key & ~Key.AltMask;
+            if (altBase == Key.CursorUp) { vm.MoveLineUp(); return true; }
+            if (altBase == Key.CursorDown) { vm.MoveLineDown(); return true; }
+            return false;
+        }
 
         bool shift = (keyEvent.Key & Key.ShiftMask) != 0;
         bool ctrl = (keyEvent.Key & Key.CtrlMask) != 0;
         Key baseKey = keyEvent.Key & ~(Key.ShiftMask | Key.CtrlMask);
+
+        // Shift+Tab for outdent (multi-line selection)
+        if (baseKey == Key.Tab && shift && !ctrl && vm.Session.HasSelection)
+        {
+            vm.OutdentSelection();
+            return true;
+        }
+
+        // Tab for indent when multi-line selection exists
+        if (baseKey == Key.Tab && !shift && !ctrl && vm.Session.HasSelection)
+        {
+            var range = vm.Session.GetSelectionRange();
+            if (range.Start.Line != range.End.Line)
+            {
+                vm.IndentSelection();
+                return true;
+            }
+        }
 
         if (_bindings.TryGetValue((baseKey, shift, ctrl), out var action))
         {

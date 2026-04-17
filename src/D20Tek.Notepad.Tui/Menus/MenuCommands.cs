@@ -22,6 +22,12 @@ internal static class MenuCommands
         commands.Register(CopyCommand.Create(viewModel));
         commands.Register(PasteCommand.Create(viewModel));
         commands.Register(SelectAllCommand.Create(viewModel));
+        commands.Register(DuplicateLineCommand.Create(viewModel));
+        commands.Register(MoveLineUpCommand.Create(viewModel));
+        commands.Register(MoveLineDownCommand.Create(viewModel));
+        commands.Register(IndentSelectionCommand.Create(viewModel));
+        commands.Register(OutdentSelectionCommand.Create(viewModel));
+        commands.Register(TrimTrailingWhitespaceCommand.Create(viewModel));
 
         // Search commands
         commands.Register(FindCommand.Create(viewModel));

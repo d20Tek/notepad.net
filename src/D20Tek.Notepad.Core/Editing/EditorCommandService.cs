@@ -39,6 +39,18 @@ public sealed class EditorCommandService(EditorSession session)
 
     public void SelectAll() => _session.SelectAll();
 
+    public void DuplicateLine() => _session.DuplicateLine();
+
+    public void MoveLineUp() => _session.MoveLineUp();
+
+    public void MoveLineDown() => _session.MoveLineDown();
+
+    public void IndentLines(string indent) => _session.IndentLines(indent);
+
+    public void OutdentLines(string indent) => _session.OutdentLines(indent);
+
+    public void TrimTrailingWhitespace() => _session.TrimTrailingWhitespace();
+
     // Undo / Redo
     public void Undo() => _session.Undo();
 

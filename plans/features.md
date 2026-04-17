@@ -52,6 +52,10 @@
 | Insert/Overwrite mode | Insert key / View menu | Toggle insert-overwrite mode; OVR/INS in status bar; block cursor in overwrite |
 | | | |
 | Large file support | | P1 | Load large text files using memory mapped file |
+| Duplicate Line/Selection | Ctrl+Shift+D | P3 | Copy current line (or selection) below caret. Very common text manipulation shortcut — straightforward to implement via EditorSession using existing insert/split logic. |
+| Move Line Up/Down | Alt+Up / Alt+Down | P3 | Swap current line with the one above/below. Operates directly on Lines list with an undo operation. Avoids the cut-paste dance users would otherwise do. |
+| Indent/Outdent Selection | Tab / Shift+Tab (multi-line) | P3 | When multiple lines are selected, Tab prepends indent to each line and Shift+Tab removes one level. Your Tab key already inserts, but multi-line selection indentation is a distinct operation users expect. Needs a bulk ReplaceRangeOperation for undo support. |
+| Trim Trailing Whitespace | Edit menu | P3 | Single command that strips trailing spaces/tabs from every line. Simple iteration over Lines with a compound undo operation. Handy for cleaning up text files before saving. |
 
 ---
 
@@ -61,11 +65,7 @@
 
 | Feature | Shortcut | Effort | Rationale |
 |---------|----------|--------|-----------|
-| Duplicate Line/Selection | Ctrl+Shift+D | Low | Copy current line (or selection) below caret. Very common text manipulation shortcut — straightforward to implement via EditorSession using existing insert/split logic. |
-| Move Line Up/Down | Alt+Up / Alt+Down | Low | Swap current line with the one above/below. Operates directly on Lines list with an undo operation. Avoids the cut-paste dance users would otherwise do. |
-| Indent/Outdent Selection | Tab / Shift+Tab (multi-line) | Medium | When multiple lines are selected, Tab prepends indent to each line and Shift+Tab removes one level. Your Tab key already inserts, but multi-line selection indentation is a distinct operation users expect. Needs a bulk ReplaceRangeOperation for undo support. |
 | Status Bar Enhancements | | | word count and selection length. StatusDetails just needs two new fields. The infrastructure is fully in place. |
-| Trim Trailing Whitespace | Edit menu | Low | Single command that strips trailing spaces/tabs from every line. Simple iteration over Lines with a compound undo operation. Handy for cleaning up text files before saving. |
 
 ---
 

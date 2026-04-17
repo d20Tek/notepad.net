@@ -125,6 +125,61 @@ public sealed partial class EditorViewModel
         Refresh();
     }
 
+    // Line Manipulation Methods
+    public void DuplicateLine()
+    {
+        EndTypingGroupIfNeeded();
+        Commands.DuplicateLine();
+        CheckDirtyStateChanged();
+        EnsureCaretVisible();
+    }
+
+    public void MoveLineUp()
+    {
+        EndTypingGroupIfNeeded();
+        Commands.MoveLineUp();
+        CheckDirtyStateChanged();
+        EnsureCaretVisible();
+    }
+
+    public void MoveLineDown()
+    {
+        EndTypingGroupIfNeeded();
+        Commands.MoveLineDown();
+        CheckDirtyStateChanged();
+        EnsureCaretVisible();
+    }
+
+    public void IndentSelection()
+    {
+        EndTypingGroupIfNeeded();
+        string indent = Settings.UseSpacesForTab
+            ? new string(' ', Settings.TabSize)
+            : "\t";
+        Commands.IndentLines(indent);
+        CheckDirtyStateChanged();
+        EnsureCaretVisible();
+    }
+
+    public void OutdentSelection()
+    {
+        EndTypingGroupIfNeeded();
+        string indent = Settings.UseSpacesForTab
+            ? new string(' ', Settings.TabSize)
+            : "\t";
+        Commands.OutdentLines(indent);
+        CheckDirtyStateChanged();
+        EnsureCaretVisible();
+    }
+
+    public void TrimTrailingWhitespace()
+    {
+        EndTypingGroupIfNeeded();
+        Commands.TrimTrailingWhitespace();
+        CheckDirtyStateChanged();
+        EnsureCaretVisible();
+    }
+
     // Typing Group Management
     private void BeginTypingGroupIfNeeded()
     {

@@ -83,6 +83,10 @@ This is the fourth public preview of the project. This release includes a compre
 - Zoom behavior with status bar hint to use terminal zoom, and message box if status bar is hidden
 - Insert/Overwrite mode toggle
 - Help/About dialog with version info & link to documentation
+- Duplicate line or selection.
+- Move line up and down.
+- Indent and outdent selection or line.
+- Trim trailing whitespace from the current line.
 
 ### ✔️ Large File Support with Memory-Mapped Files
 - Loads files of 10MB or larger using memory-mapped files for efficient access.
