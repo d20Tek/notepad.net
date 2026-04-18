@@ -1,4 +1,4 @@
-﻿# Notepad.Tui — Alpha Release (v0.3.1)
+﻿# Notepad.Tui — Alpha Release (v0.3.2)
 
 A fast, clean, and modern **terminal-based text viewer** for .NET, inspired by classic tools like Notepad and contemporary editor engines.  
 This alpha focuses on delivering a rock‑solid view and editing experience with smooth navigation, precise selection, and a responsive UI built on top of Terminal.Gui.
@@ -101,11 +101,7 @@ The following features are planned for future updates:
 
 | Feature | Shortcut | Rationale |
 |---------|----------|-----------|
-| Duplicate Line/Selection | Ctrl+Shift+D | Copy current line (or selection) below caret. Very common text manipulation shortcut. |
-| Move Line Up/Down | Alt+Up / Alt+Down | Swap current line with the one above/below. Operates directly on Lines list with an undo operation. |
-| Indent/Outdent Selection | Tab / Shift+Tab (multi-line) | When multiple lines are selected, Tab prepends indent to each line and Shift+Tab removes one level. |
 | Status Bar Enhancements | | word count and selection length. StatusDetails just needs two new fields. |
-| Trim Trailing Whitespace | Edit menu | Single command that strips trailing spaces/tabs from every line. |
 
 ---
 
