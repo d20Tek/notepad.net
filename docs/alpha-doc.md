@@ -130,5 +130,5 @@ This architecture is designed for long‑term maintainability and future feature
 The Notepad.Tui tool is available as a global .NET tool installable from NuGet.org. You can install it using the following command:
 
 ```bash
-dotnet tool install --global notepad.tui --version 0.2.5
+dotnet tool install --global notepad.tui --version 0.3.4
 ```
