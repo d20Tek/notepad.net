@@ -5,7 +5,7 @@
   <ItemGroup>
     <!-- Add your package versions here -->
     <!-- Test package versions here -->
-    <PackageVersion Include="MSTest" Version="4.2.3" />
+    <PackageVersion Include="MSTest" Version="4.4.0" />
     <PackageVersion Include="Terminal.Gui" Version="1.19.0" />
   </ItemGroup>
 </Project>
