@@ -56,4 +56,4 @@ jobs:
         user: ${{ secrets.NUGET_USER }}
 
     - name: Publish packages (nuget.org)
-      run: dotnet nuget push notepad.tui.${VERSION}.nupkg --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      run: dotnet nuget push "notepad.*.nupkg" --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
