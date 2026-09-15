@@ -27,7 +27,6 @@
     <File Path="plans/word-wrap-tasks.md" />
     <File Path="plans/zoom-tasks.md" />
   </Folder>
-  <Folder Name="/benchmarks/" />
   <Folder Name="/src/">
     <Project Path="src/D20Tek.Notepad.Core/D20Tek.Notepad.Core.csproj" />
     <Project Path="src/D20Tek.Notepad.Tui/D20Tek.Notepad.Tui.csproj" />
