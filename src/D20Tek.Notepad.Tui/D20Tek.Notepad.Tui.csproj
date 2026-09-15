@@ -13,6 +13,7 @@
     <Description>An implementation of the classic Notepad app in .NET focused on fast, easy text viewing and editing with no frills (and no integrated AI). A simple console application that lets you quickly load and edit text based files.</Description>
     <Copyright>Copyright (c) d20Tek.  All rights reserved.</Copyright>
     <PackageReadmeFile>alpha-doc.md</PackageReadmeFile>
+    <PackageIcon>package-icon.png</PackageIcon>
     <PackageTags>notepad; terminal text viewer; text editor; terminal; text viewer</PackageTags>
     <PackAsTool>True</PackAsTool>
     <PackageProjectUrl>https://github.com/d20Tek/notepad.net</PackageProjectUrl>
@@ -24,6 +25,10 @@
 
   <ItemGroup>
     <None Include="..\..\docs\alpha-doc.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\package-icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
